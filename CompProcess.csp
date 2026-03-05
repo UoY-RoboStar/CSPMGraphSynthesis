@@ -1,0 +1,7 @@
+channel secondTestingChannel
+channel testingChannel
+channel b
+channel d
+channel e
+CompProcess = secondTestingChannel -> testingChannel -> SKIP; b -> d -> e -> STOP
+assert CompProcess :[deadlock free]

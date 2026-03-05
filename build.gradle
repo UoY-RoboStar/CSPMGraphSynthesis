@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'net.jcip:jcip-annotations:1.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.jgrapht:jgrapht-core:1.5.2'
+    implementation 'org.jgrapht:jgrapht-ext:1.5.2'
+    implementation 'com.github.vlsi.mxgraph:jgraphx:4.2.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    implementation 'org.apache.poi:poi:5.5.1'
+    implementation 'org.apache.poi:poi-ooxml:5.5.1'
+    implementation("org.dhatim:fastexcel-reader:0.19.0")
+    implementation("org.dhatim:fastexcel:0.19.0")
+    implementation("com.opencsv:opencsv:5.10")
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,6 @@
+channel a
+channel b
+channel c
+channel e
+ParLoopProcess = a -> b -> SKIP[|{e,a}|]c -> e -> ParLoopProcess
+assert ParLoopProcess :[deadlock free]
