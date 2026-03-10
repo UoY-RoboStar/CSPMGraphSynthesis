@@ -2,5 +2,5 @@ channel a
 channel b
 channel c
 channel e
-ParProcess = a -> b -> SKIP[|{a,e}|]c -> e -> STOP
+ParProcess = a -> b -> SKIP[|{e,a}|]c -> e -> STOP
 assert ParProcess :[deadlock free]

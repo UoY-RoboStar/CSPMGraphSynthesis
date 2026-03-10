@@ -1,0 +1,6 @@
+channel AwhDJu
+channel gjExPj
+channel XWRmrGI
+channel cDNgnYSoYTWj
+UkZpC = AwhDJu -> gjExPj -> XWRmrGI -> cDNgnYSoYTWj -> STOP
+assert UkZpC :[deadlock free]

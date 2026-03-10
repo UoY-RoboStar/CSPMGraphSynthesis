@@ -1,0 +1,9 @@
+channel DGhvyJ
+channel nPxUJTpia
+channel IPsMXSVnpnDAiIrbHMzyWxMH
+channel ZpdtcFIBYkhlKOYRfwwtT
+channel tiTPIOMRHeXpAps
+channel caDpUklHWvYTY
+channel Qhxi
+OyAAKuUM = DGhvyJ -> nPxUJTpia -> IPsMXSVnpnDAiIrbHMzyWxMH -> ZpdtcFIBYkhlKOYRfwwtT -> tiTPIOMRHeXpAps -> caDpUklHWvYTY -> Qhxi -> STOP
+assert OyAAKuUM :[deadlock free]

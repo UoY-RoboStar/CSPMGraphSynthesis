@@ -106,8 +106,9 @@ public class DatasetGenerator {
     }
 
     public void addEncodedCspEntryToDataSet(String csp, FDROutput dataEntry){
-        String encodedString = Base64.getEncoder().encodeToString(csp.getBytes());
-        addEntryToDataSet(encodedString, dataEntry);
+        //String encodedString = Base64.getEncoder().encodeToString(csp.getBytes());
+        //String encodedString = csp.replace("\n", "<NL>");
+        addEntryToDataSet(csp, dataEntry);
     }
 
     public void addEntryToDataSet(String csp, FDROutput dataEntry) {

@@ -1,0 +1,3 @@
+channel bSNKjKQgCNlDyRFP
+Ideiev = bSNKjKQgCNlDyRFP -> STOP
+assert Ideiev :[deadlock free]

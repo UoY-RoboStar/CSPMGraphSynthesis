@@ -1,0 +1,11 @@
+channel dqNwGaEWdPJDEwrlsZfRvvm
+channel qSXFGx
+channel dTAcMIHCcgfpyLSCTBe
+channel iDXwaoEbLPvMQ
+channel iwXRdXXgvVOJk
+channel WyvdjH
+channel YIeUeEYMrKt
+channel UHXxItFqnZRCvQzUwzFj
+channel nopH
+CaQOU = dqNwGaEWdPJDEwrlsZfRvvm -> qSXFGx -> dTAcMIHCcgfpyLSCTBe -> iDXwaoEbLPvMQ -> iwXRdXXgvVOJk -> WyvdjH -> YIeUeEYMrKt -> UHXxItFqnZRCvQzUwzFj -> nopH -> SKIP
+assert CaQOU :[deadlock free]

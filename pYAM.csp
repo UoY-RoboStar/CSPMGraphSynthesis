@@ -1,0 +1,7 @@
+channel bk
+channel GpcitJDGyE
+channel khNNQqdvOrbkeiuJRUDKZRom
+channel BVTvL
+channel ytsQ
+pYAM = bk -> GpcitJDGyE -> khNNQqdvOrbkeiuJRUDKZRom -> BVTvL -> ytsQ -> SKIP
+assert pYAM :[deadlock free]

@@ -1,0 +1,10 @@
+channel dZoKUZwFCHiHgdXdbQrtIZF
+channel z
+channel PIcvKnZMOLpsWLdPsM
+channel rfVwxCKQX
+KIZLjlwlmH = dZoKUZwFCHiHgdXdbQrtIZF -> z -> PIcvKnZMOLpsWLdPsM -> nRDVR
+nRDVR = PIcvKnZMOLpsWLdPsM -> dZoKUZwFCHiHgdXdbQrtIZF -> rfVwxCKQX -> z -> MBR
+MBR = z -> PIcvKnZMOLpsWLdPsM -> STOP
+assert KIZLjlwlmH :[deadlock free]
+assert nRDVR :[deadlock free]
+assert MBR :[deadlock free]

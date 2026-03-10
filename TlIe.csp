@@ -1,0 +1,3 @@
+channel LmVShzzqXHFehaNuTOSP
+TlIe = LmVShzzqXHFehaNuTOSP -> SKIP
+assert TlIe :[deadlock free]

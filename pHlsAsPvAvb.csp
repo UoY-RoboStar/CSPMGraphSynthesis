@@ -1,0 +1,5 @@
+channel QkC
+lQkbnm = QkC -> pHlsAsPvAvb
+pHlsAsPvAvb = QkC -> SKIP
+assert lQkbnm :[deadlock free]
+assert pHlsAsPvAvb :[deadlock free]

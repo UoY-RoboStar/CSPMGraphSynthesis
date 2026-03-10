@@ -1,0 +1,14 @@
+channel rkxiKy
+channel s
+channel DlAaujcEw
+channel xkszDWTUjDtJZBTy
+channel ERzwPCARFMAuPFk
+channel RFfvMxAeUCUItcOZx
+channel WWwThzZTwHQDJXo
+channel WWCqd
+channel UzHFDKfCaoPnzxVPNkjtxGS
+channel YJXxYKXrYHk
+channel HkWFFrkZTct
+channel aJs
+zzJjeef = rkxiKy -> s -> DlAaujcEw -> xkszDWTUjDtJZBTy -> ERzwPCARFMAuPFk -> RFfvMxAeUCUItcOZx -> WWwThzZTwHQDJXo -> WWCqd -> UzHFDKfCaoPnzxVPNkjtxGS -> YJXxYKXrYHk -> HkWFFrkZTct -> aJs -> STOP
+assert zzJjeef :[deadlock free]

@@ -1,0 +1,4 @@
+channel RURBghrTf
+channel MIPyOV
+bcxQ = RURBghrTf -> MIPyOV -> STOP
+assert bcxQ :[deadlock free]

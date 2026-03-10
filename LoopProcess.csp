@@ -2,7 +2,8 @@ channel a
 channel b
 channel c
 channel e
-LoopProcess = a -> b -> SKIP; c -> e -> Qd->e -> Q
-Q = d->e -> Q
+channel d
+LoopProcess = a -> b -> SKIP; c -> e -> Q
+Q = d -> e -> Q
 assert LoopProcess :[deadlock free]
 assert Q :[deadlock free]

@@ -1,0 +1,14 @@
+channel qOLZLQTbyStQ
+channel csLCS
+channel GExshkWyuSR
+channel bkljuJlhwDAsJi
+channel AGGPomfGkMcT
+channel SNYwwEnMKhYupt
+channel A
+channel hTgFZaLdRmwNV
+channel UpCVCheWnwJ
+channel X
+WRaMv = qOLZLQTbyStQ -> csLCS -> GExshkWyuSR -> bkljuJlhwDAsJi -> AGGPomfGkMcT -> SNYwwEnMKhYupt -> A -> hTgFZaLdRmwNV -> UpCVCheWnwJ -> fjrnaxuAMXh
+fjrnaxuAMXh = X -> GExshkWyuSR -> A -> SKIP
+assert WRaMv :[deadlock free]
+assert fjrnaxuAMXh :[deadlock free]

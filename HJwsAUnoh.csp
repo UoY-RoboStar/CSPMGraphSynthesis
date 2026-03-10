@@ -1,0 +1,3 @@
+channel bcvy
+HJwsAUnoh = bcvy -> SKIP
+assert HJwsAUnoh :[deadlock free]

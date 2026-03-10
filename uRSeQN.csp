@@ -1,0 +1,3 @@
+channel yPLdzGRKFAEtYJId
+uRSeQN = yPLdzGRKFAEtYJId -> SKIP
+assert uRSeQN :[deadlock free]

@@ -1,0 +1,5 @@
+channel YjFgVeocMDSgHZDTzQ
+nQsPsKXuAVK = YjFgVeocMDSgHZDTzQ -> FEZ
+FEZ = YjFgVeocMDSgHZDTzQ -> SKIP
+assert nQsPsKXuAVK :[deadlock free]
+assert FEZ :[deadlock free]

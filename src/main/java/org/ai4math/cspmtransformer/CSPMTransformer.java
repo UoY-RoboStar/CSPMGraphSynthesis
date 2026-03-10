@@ -51,10 +51,12 @@ public class CSPMTransformer {
         List<String> channels = getChannels(graph);
 
         for (String channel: channels){
-            this.currentCSPFile += StringConstants.channelDeclaration().replace("name", channel);
+            if (!channel.isEmpty()) {
+                this.currentCSPFile += StringConstants.channelDeclaration().replace("name", channel);
+            }
         }
 
-        //todo: add definitions for typed channels, need to determine type based on the var somehow and then
+        // todo: add definitions for typed channels, need to determine type based on the var somehow and then
         // specify the datatype if needed, or define a constant if a literal value
 
     }
@@ -221,6 +223,9 @@ public class CSPMTransformer {
 
     private String addEdgeDefinition(RelationshipEdge vertexEdge, CSPVertex targetVertex){
         String processTarget = targetVertex.getName();
+        if (vertexEdge.getLabel().isEmpty()){
+            return processTarget;
+        }
         return vertexEdge.getLabel() + " -> " + processTarget;
     }
 
@@ -249,7 +254,7 @@ public class CSPMTransformer {
 
         for (RelationshipEdge edge: graph.edgeSet()) {
             if (edge.getLabel() != null){
-                String[] edgeComponents = edge.getLabel().split(" ");
+                String[] edgeComponents = edge.getLabel().split(" -> ");
                 for (String component : edgeComponents) {
                     // "[a-zA-Z]*(;\\n)" would be a process, not a channel
                     if (component.matches("[a-zA-Z]*")) {

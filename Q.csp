@@ -1,9 +1,14 @@
-channel a
-channel b
-channel c
-channel e
-channel d
-LoopProcess = a -> b -> SKIP; c -> e -> Q
-Q = d -> e -> Q
-assert LoopProcess :[deadlock free]
+channel SmwgdP
+channel vKwlSCcaqVKLdwpZB
+channel BjpBehLriweBDHqzKtCD
+channel bBotuHwzAyHoZaODxosTakj
+channel ZonBaGyRSrFcVhPy
+channel nnCvFRDJQ
+BKTVPA = SmwgdP -> vKwlSCcaqVKLdwpZB -> BjpBehLriweBDHqzKtCD -> bBotuHwzAyHoZaODxosTakj -> ZonBaGyRSrFcVhPy -> fVZnUh
+fVZnUh = nnCvFRDJQ -> ZonBaGyRSrFcVhPy -> DYzZPxum
+DYzZPxum = SmwgdP -> bBotuHwzAyHoZaODxosTakj -> ZonBaGyRSrFcVhPy -> Q
+Q = BjpBehLriweBDHqzKtCD -> SmwgdP -> nnCvFRDJQ -> bBotuHwzAyHoZaODxosTakj -> STOP
+assert BKTVPA :[deadlock free]
+assert fVZnUh :[deadlock free]
+assert DYzZPxum :[deadlock free]
 assert Q :[deadlock free]

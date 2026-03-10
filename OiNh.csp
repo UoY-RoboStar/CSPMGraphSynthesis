@@ -1,0 +1,4 @@
+channel jRseq
+channel KRKIRXpeQCyc
+OiNh = jRseq -> KRKIRXpeQCyc -> STOP
+assert OiNh :[deadlock free]

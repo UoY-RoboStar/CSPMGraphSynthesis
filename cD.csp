@@ -1,0 +1,8 @@
+channel KOZuFvKCtMhKiVEzNEDWeitr
+channel SazRIEc
+channel krKMFFOsdC
+channel YjjFS
+channel W
+channel p
+cD = KOZuFvKCtMhKiVEzNEDWeitr -> SazRIEc -> krKMFFOsdC -> YjjFS -> W -> p -> SKIP
+assert cD :[deadlock free]

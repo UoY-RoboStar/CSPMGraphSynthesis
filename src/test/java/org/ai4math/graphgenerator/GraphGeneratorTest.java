@@ -14,11 +14,13 @@ import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.util.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GraphGeneratorTest {
 
@@ -189,4 +191,135 @@ public class GraphGeneratorTest {
 
         assertTrue(imgFile.exists());
     }
+
+    @Test
+    void givenCountOfOne_whenGenerateBaseGraphs_thenAValidGraphShouldBeDefined() throws IOException{
+        GraphGenerator graphGenerator = new GraphGenerator();
+        graphGenerator.GenerateBaseGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+
+        assertEquals(1, graphs.size(), "Number of graphs is not equal to 1");
+        assertFalse(vertices.isEmpty(), "Graph has no vertices");
+        List<CSPVertex> vertx = vertices.stream().toList();
+
+        assertTrue(vertx.getFirst().isInitialVertex(), "First vertex is not initial");
+
+        JGraphXAdapter<CSPVertex, RelationshipEdge> graphAdapter =
+                new JGraphXAdapter<CSPVertex, RelationshipEdge>(graph);
+        mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+        layout.execute(graphAdapter.getDefaultParent());
+
+        BufferedImage image =
+                mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+        File imgFile = new File("src/test/resources/"+vertx.getFirst().getName()+".png");
+        ImageIO.write(image, "PNG", imgFile);
+
+        assertTrue(imgFile.exists());
+    }
+
+    @Test
+    void givenCountOfTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
+        GraphGenerator graphGenerator = new GraphGenerator();
+        graphGenerator.GenerateBaseGraphs(2);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size(), "Number of graphs is not equal to 1");
+
+        for (CSPGraph cspGraph : graphs) {
+            Set<CSPVertex> vertices = cspGraph.vertexSet();
+
+            assertFalse(vertices.isEmpty(), "Graph has no vertices");
+            List<CSPVertex> vertx = vertices.stream().toList();
+
+            assertTrue(vertx.getFirst().isInitialVertex(),
+                    "First vertex with name: "+vertx.getFirst().getName()+" is not initial");
+
+            JGraphXAdapter<CSPVertex, RelationshipEdge> graphAdapter =
+                    new JGraphXAdapter<CSPVertex, RelationshipEdge>(cspGraph);
+            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+            layout.execute(graphAdapter.getDefaultParent());
+
+            BufferedImage image =
+                    mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+            File imgFile = new File("src/test/resources/"+vertx.getFirst().getName()+".png");
+            ImageIO.write(image, "PNG", imgFile);
+
+            assertTrue(imgFile.exists());
+        }
+    }
+
+    @Test
+    void givenCountGreaterThanTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
+        GraphGenerator graphGenerator = new GraphGenerator();
+        graphGenerator.GenerateBaseGraphs(5);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(5, graphs.size(), "Number of graphs is not equal to 1");
+
+        for (CSPGraph cspGraph : graphs) {
+            Set<CSPVertex> vertices = cspGraph.vertexSet();
+
+            assertFalse(vertices.isEmpty(), "Graph has no vertices");
+            List<CSPVertex> vertx = vertices.stream().toList();
+
+            assertTrue(vertx.getFirst().isInitialVertex(),
+                    "First vertex with name: "+vertx.getFirst().getName()+" is not initial");
+
+            JGraphXAdapter<CSPVertex, RelationshipEdge> graphAdapter =
+                    new JGraphXAdapter<CSPVertex, RelationshipEdge>(cspGraph);
+            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+            layout.execute(graphAdapter.getDefaultParent());
+
+            BufferedImage image =
+                    mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+            File imgFile = new File("src/test/resources/"+vertx.getFirst().getName()+".png");
+            ImageIO.write(image, "PNG", imgFile);
+
+            assertTrue(imgFile.exists());
+        }
+    }
+
+    @Test
+    void givenCountOfOne_whenGenerateBaseGraphsThenCombinedGraph_thenAValidGraphShouldBeDefined() throws IOException{
+        GraphGenerator graphGenerator = new GraphGenerator();
+        graphGenerator.GenerateBaseGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+
+        assertEquals(1, graphs.size(), "Number of graphs is not equal to 1");
+        assertFalse(vertices.isEmpty(), "Graph has no vertices");
+        List<CSPVertex> vertx = vertices.stream().toList();
+
+        assertTrue(vertx.getFirst().isInitialVertex(), "First vertex is not initial");
+
+        graphGenerator.CombineGraphs(1);
+
+        graphs = graphGenerator.getGraphs();
+        graph = graphs.getFirst();
+        vertices = graph.vertexSet();
+
+        assertEquals(1, graphs.size(), "Number of graphs is not equal to 1");
+        assertFalse(vertices.isEmpty(), "Graph has no vertices");
+        vertx = vertices.stream().toList();
+
+        assertTrue(vertx.getFirst().isInitialVertex(), "First vertex is not initial");
+
+        JGraphXAdapter<CSPVertex, RelationshipEdge> graphAdapter =
+                new JGraphXAdapter<CSPVertex, RelationshipEdge>(graph);
+        mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+        layout.execute(graphAdapter.getDefaultParent());
+
+        BufferedImage image =
+                mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+        File imgFile = new File("src/test/resources/"+vertx.getFirst().getName()+".png");
+        ImageIO.write(image, "PNG", imgFile);
+
+        assertTrue(imgFile.exists());
+    }
+
 }

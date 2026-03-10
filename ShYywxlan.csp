@@ -1,0 +1,12 @@
+channel gDATRfMtzLYgclfRVbMD
+channel VarVFkwGJ
+channel VUQqBPJkPrPRhQPjLbODyJNc
+channel dujHfzvyiVATUjgys
+channel YKlCXJsvlbrVdbN
+channel DDbBa
+channel LqMt
+channel NIH
+channel INpLcUgfHRVDJbkVUEo
+channel JMQUnJDvEAnRBzWVf
+ShYywxlan = gDATRfMtzLYgclfRVbMD -> VarVFkwGJ -> VUQqBPJkPrPRhQPjLbODyJNc -> dujHfzvyiVATUjgys -> YKlCXJsvlbrVdbN -> DDbBa -> LqMt -> NIH -> INpLcUgfHRVDJbkVUEo -> JMQUnJDvEAnRBzWVf -> STOP
+assert ShYywxlan :[deadlock free]

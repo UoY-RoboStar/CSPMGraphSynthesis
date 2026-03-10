@@ -1,0 +1,8 @@
+channel WQhujNCgoPYLJuwhKTr
+channel KOQegwCyr
+channel tsHcZtutnfHHkzkvvlrqYVL
+channel pVJwZqWjmDDLOWssUemwuRP
+channel F
+channel dsMjphrpHePsoym
+RXAW = WQhujNCgoPYLJuwhKTr -> KOQegwCyr -> tsHcZtutnfHHkzkvvlrqYVL -> pVJwZqWjmDDLOWssUemwuRP -> F -> dsMjphrpHePsoym -> STOP
+assert RXAW :[deadlock free]
