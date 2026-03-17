@@ -118,19 +118,20 @@ public class DatasetGenerator {
             CSVWriter writer = new CSVWriter(fileWriter);
 
             if (!this.exists) {
-                String[] headings = new String[]{"CSP", "Passed", "CounterExample"};
+                String[] headings = new String[]{"CSP", "Assertion", "Passed", "CounterExample"};
                 writer.writeNext(headings);
             }
 
             for (FDRResults fdrResults : dataEntry.getFdrResults()) {
                 boolean passed = fdrResults.isPassed();
+                String assertion = fdrResults.getAssertionString();
                 if (passed) {
-                    String[] entry = new String[]{csp, "true", ""};
+                    String[] entry = new String[]{csp, assertion, "true", ""};
                     writer.writeNext(entry);
                     System.out.println("Row added for passed test, to file: " + this.datasetPath);
                 } else {
                     for (FDRCounterexample counterexample : fdrResults.getFdrCounterexamples()) {
-                        String[] entry = new String[]{csp, "false", counterexample.getProcessesTrace().toString()};
+                        String[] entry = new String[]{csp, assertion, "false", counterexample.getProcessesTrace().toString()};
                         writer.writeNext(entry);
                         System.out.println("Row added for failed test, to file: " + this.datasetPath);
                     }

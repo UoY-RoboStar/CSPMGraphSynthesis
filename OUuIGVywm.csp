@@ -1,0 +1,6 @@
+channel HhEmiVQnsiWuSlJpArd
+channel aeUGFtroZfCM
+channel MHyXkQUoLtERVbT
+channel kqOxHnFG
+OUuIGVywm = HhEmiVQnsiWuSlJpArd -> aeUGFtroZfCM -> MHyXkQUoLtERVbT -> kqOxHnFG -> SKIP
+assert OUuIGVywm :[deadlock free]

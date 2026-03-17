@@ -8,13 +8,14 @@ import org.ai4math.vandv.utils.FDRResults;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
 public class FDRInvocation {
     private static final String FDR_COMMAND = "refines";
     private static final String TAUS = "--reveal-taus";
-    private static final String FORMAT = "--format=framed_json";
+    private static final String FORMAT = "--format=json";
     private static final String QUIET = "--q";
 
     private FDROutput fdrOutput;
@@ -66,9 +67,12 @@ public class FDRInvocation {
     }
 
     // Helper method to read an InputStream into a String
-    private String readStream(java.io.InputStream is) {
-        return new BufferedReader(new InputStreamReader(is))
-                .lines().collect(Collectors.joining("\n"));
+    private String readStream(InputStream is) throws IOException {
+        if (is.available()>0) {
+            return new BufferedReader(new InputStreamReader(is))
+                    .lines().collect(Collectors.joining("\n"));
+        }
+        return "";
     }
 
     private void parseData(JsonNode parsedData){

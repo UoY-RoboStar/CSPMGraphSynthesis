@@ -1,0 +1,4 @@
+channel cKvLoVorxqfzmFwjH
+channel dWlLTYNDud
+pVuWejaOc = cKvLoVorxqfzmFwjH -> dWlLTYNDud -> STOP
+assert pVuWejaOc :[deadlock free]

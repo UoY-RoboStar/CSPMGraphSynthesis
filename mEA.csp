@@ -1,0 +1,4 @@
+channel nAAeBQ
+channel BP
+mEA = nAAeBQ -> BP -> SKIP
+assert mEA :[deadlock free]

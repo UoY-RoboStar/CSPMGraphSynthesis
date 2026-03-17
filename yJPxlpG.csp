@@ -1,0 +1,7 @@
+channel ZfzlvtWBeeFKCWeMlpq
+channel JCHLVrGvVzhTwvLrvS
+channel BlfyEbMKaaCpwX
+channel hvjci
+channel MLkRHjFFWvWMoBVXDIget
+yJPxlpG = ZfzlvtWBeeFKCWeMlpq -> JCHLVrGvVzhTwvLrvS -> BlfyEbMKaaCpwX -> hvjci -> MLkRHjFFWvWMoBVXDIget -> SKIP
+assert yJPxlpG :[deadlock free]

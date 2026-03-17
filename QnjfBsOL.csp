@@ -1,0 +1,14 @@
+channel OBRedTMulzbPOW
+channel tbkL
+channel cubAhiNpGyUrpmKpfaE
+channel GK
+channel eo
+channel SdD
+channel GNtlwlADjSKwPuExATCtVUmL
+channel iWvjpyApMiVjXECaded
+channel cYhSbbCcFqHMjcuxRo
+channel i
+channel pXEFHOlQDdjwx
+channel HVofgaSbqyALcgkPAtIeK
+QnjfBsOL = OBRedTMulzbPOW -> tbkL -> cubAhiNpGyUrpmKpfaE -> GK -> eo -> SdD -> GNtlwlADjSKwPuExATCtVUmL -> iWvjpyApMiVjXECaded -> cYhSbbCcFqHMjcuxRo -> i -> pXEFHOlQDdjwx -> HVofgaSbqyALcgkPAtIeK -> SKIP
+assert QnjfBsOL :[deadlock free]

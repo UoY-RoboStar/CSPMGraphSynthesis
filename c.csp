@@ -1,0 +1,6 @@
+channel qeWxvXdlYaGgODWaEnCmWxf
+channel oxjPk
+channel PlPVJhFjufGVQoBt
+channel zsGDlVQTCMbfoaTDrvVi
+c = qeWxvXdlYaGgODWaEnCmWxf -> oxjPk -> PlPVJhFjufGVQoBt -> zsGDlVQTCMbfoaTDrvVi -> SKIP
+assert c :[deadlock free]

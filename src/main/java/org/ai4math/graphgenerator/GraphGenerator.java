@@ -144,7 +144,7 @@ public class GraphGenerator {
             if (r.nextBoolean()){
                 CSPVertex newInitProcess = new CSPVertex(RandomStringUtils.randomAlphabetic(1, 12),true, true);
                 CSPGraph newGraph = GenerateGraph(newInitProcess, messages, 4);
-                // todo: need a new function that doesn't end in SKIP or STOP  and returns the final vertex
+                // todo: need a new function that doesn't end in STOP and returns the final vertex. If final vertex is a SKIP, can be seq but not par
                 if (!newGraph.vertexSet().isEmpty()) {
                     Graphs.addGraph(graph, newGraph);
                 }
@@ -165,7 +165,7 @@ public class GraphGenerator {
                     // add new graph, then add tick transition to seqcomp, then add sourcegraph
                     CSPVertex newInitProcess = new CSPVertex(RandomStringUtils.randomAlphabetic(1, 12), true, true);
                     CSPGraph newGraph = GenerateGraph(newInitProcess, messages, 4);
-                    // todo: need a new function that doesn't end in SKIP or STOP  and returns the final vertex                      if (!newGraph.vertexSet().isEmpty()) {
+                    // todo: need a new function that doesn't end in SKIP or STOP  and returns the final vertex
                     if (!newGraph.vertexSet().isEmpty()) {
 
                         Graphs.addGraph(graph, newGraph);

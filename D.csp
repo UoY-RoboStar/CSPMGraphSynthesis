@@ -1,0 +1,10 @@
+channel vlBiscQQwcbolpzDFKvYtzXj
+channel iCsrcWdCUmclNcGnhaFjobys
+channel TgJGRw
+channel UixkSxhd
+channel shajIPVODCVhj
+channel wrOMtxzMGaXrsfVTcQiRw
+D = vlBiscQQwcbolpzDFKvYtzXj -> iCsrcWdCUmclNcGnhaFjobys -> TgJGRw -> UixkSxhd -> AlOvjMwFT
+AlOvjMwFT = UixkSxhd -> shajIPVODCVhj -> TgJGRw -> wrOMtxzMGaXrsfVTcQiRw -> STOP
+assert D :[deadlock free]
+assert AlOvjMwFT :[deadlock free]
