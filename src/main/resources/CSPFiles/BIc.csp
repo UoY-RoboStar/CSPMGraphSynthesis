@@ -1,0 +1,11 @@
+channel LwByVvLn
+channel fuVPEz
+channel DrAg
+channel NBE
+channel tuxx
+channel EFvLLOheNkBvKeQJrdsOVXh
+channel PtsQecyFIdeUXX
+channel mYSrhZMslzzowWcSuUcxL
+channel fNXPyHAejntVYnVQL
+BIc = LwByVvLn -> fuVPEz -> DrAg -> NBE -> tuxx -> EFvLLOheNkBvKeQJrdsOVXh -> PtsQecyFIdeUXX -> mYSrhZMslzzowWcSuUcxL -> fNXPyHAejntVYnVQL -> SKIP
+assert BIc :[deadlock free]

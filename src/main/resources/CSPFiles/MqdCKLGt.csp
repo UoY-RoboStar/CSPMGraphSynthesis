@@ -1,0 +1,9 @@
+channel nL
+channel uohlE
+channel GKcMzZklXaUzkfA
+channel cFbeRqBui
+channel XaxNqLDsUgmBLHQRnzJCZa
+channel FvOMVuwXIzWYqIhgDQHfHGzj
+channel qsVwyCkQpz
+MqdCKLGt = nL -> uohlE -> GKcMzZklXaUzkfA -> cFbeRqBui -> XaxNqLDsUgmBLHQRnzJCZa -> FvOMVuwXIzWYqIhgDQHfHGzj -> qsVwyCkQpz -> SKIP
+assert MqdCKLGt :[deadlock free]

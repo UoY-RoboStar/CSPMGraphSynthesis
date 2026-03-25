@@ -1,0 +1,18 @@
+channel h
+channel ljZEze
+channel oKd
+channel EGqOcq
+channel MWlDVLKREmXWLp
+channel fovqix
+channel AIYQ
+channel emd
+channel ozSzggmImJjROxxFkJgzl
+channel CwCvCCQOFdHBUCNQTPD
+channel yzqXLIJqYciNhuuuXPo
+channel FNMsHYTjjXyLsIZ
+sSvj = h -> ljZEze -> oKd -> EGqOcq -> MWlDVLKREmXWLp -> mis
+mis = fovqix -> AIYQ -> MWlDVLKREmXWLp -> TApUbS
+TApUbS = emd -> fovqix -> ljZEze -> MWlDVLKREmXWLp -> ozSzggmImJjROxxFkJgzl -> CwCvCCQOFdHBUCNQTPD -> AIYQ -> yzqXLIJqYciNhuuuXPo -> FNMsHYTjjXyLsIZ -> STOP
+assert sSvj :[deadlock free]
+assert mis :[deadlock free]
+assert TApUbS :[deadlock free]

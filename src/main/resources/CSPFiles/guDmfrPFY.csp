@@ -1,0 +1,71 @@
+channel S
+channel SgeuITEhow
+channel Xo
+channel OTnJqpPYWFpCTehdtuXrW
+channel yjUXxiHuX
+channel ePNX
+channel RHRLNXpFb
+channel AbYROMcDkWkIgWtJDoBg
+channel KjPGXpwRU
+channel v
+channel WkrZBZQeOt
+channel SRvlqUxgxwvVwzuNb
+channel jxhItSNbYWcOOKlGblTIL
+channel by
+channel mcXeyZYtHk
+channel AzmmmZeFh
+channel vfIPy
+channel YMCXcppSlcBWmfWRoZtiw
+channel QzeGFTSltPSYX
+channel Rb
+channel rnTClXHuRzqmLg
+channel nbSHzbEhnZD
+channel hjiAOQhAoMTsPBjj
+channel cKGTJQLEWSeiBYZY
+channel MFXbGgvcQRWHskd
+channel nqhMhFgPaytl
+channel xSsxieRVeeQpcAOv
+channel sfTNbDWceyT
+channel ENvgrdbHYTPApNQwBzR
+channel HeuIdVZjLozagcewb
+channel fbg
+channel GshyNvqqH
+channel ARg
+channel MUYhzExTzLcXDRhxV
+channel nYvnIYJyDiRHgZDjvip
+channel KRoSkxwIhmQmLIetBvRDr
+channel EkArWehXKkSscs
+channel ZPatjUWRGnWaOg
+channel xoXxuNgU
+channel rWucP
+channel xIT
+Hf = S -> SgeuITEhow -> Xo -> OTnJqpPYWFpCTehdtuXrW -> HcvKbQfdziS
+HcvKbQfdziS = Xo -> yjUXxiHuX -> ePNX -> JZnjMzgfu
+JZnjMzgfu = RHRLNXpFb -> ePNX -> gXwaeJ
+gXwaeJ = SgeuITEhow -> OTnJqpPYWFpCTehdtuXrW -> S -> yjUXxiHuX -> AbYROMcDkWkIgWtJDoBg -> w; AbYROMcDkWkIgWtJDoBg -> Xo -> STOP
+w = RHRLNXpFb -> S -> AbYROMcDkWkIgWtJDoBg -> Hf
+External Choice = (Xo -> KjPGXpwRU -> STOP) [] ((v -> WkrZBZQeOt -> SRvlqUxgxwvVwzuNb -> jxhItSNbYWcOOKlGblTIL -> by -> Xo -> mcXeyZYtHk -> AzmmmZeFh -> vfIPy -> KjPGXpwRU -> OTnJqpPYWFpCTehdtuXrW -> YMCXcppSlcBWmfWRoZtiw -> lvmpTy) [] (jxhItSNbYWcOOKlGblTIL -> nbSHzbEhnZD -> QzeGFTSltPSYX -> Xo -> AzmmmZeFh -> guDmfrPFY))
+lvmpTy = QzeGFTSltPSYX -> jxhItSNbYWcOOKlGblTIL -> Rb -> OTnJqpPYWFpCTehdtuXrW -> AzmmmZeFh -> WkrZBZQeOt -> vfIPy -> rnTClXHuRzqmLg -> KjPGXpwRU -> nbSHzbEhnZD -> guDmfrPFY
+guDmfrPFY = YMCXcppSlcBWmfWRoZtiw -> SKIP
+Interleave = (xoXxuNgU -> hjiAOQhAoMTsPBjj -> nYvnIYJyDiRHgZDjvip -> nqhMhFgPaytl -> fbg -> cKGTJQLEWSeiBYZY -> xIT -> KRoSkxwIhmQmLIetBvRDr -> MUYhzExTzLcXDRhxV -> HeuIdVZjLozagcewb -> ENvgrdbHYTPApNQwBzR -> ARg -> EkArWehXKkSscs -> OTnJqpPYWFpCTehdtuXrW -> xSsxieRVeeQpcAOv -> GshyNvqqH -> STOP) ||| ((xoXxuNgU -> Xo -> EkArWehXKkSscs -> ARg -> xSsxieRVeeQpcAOv -> HeuIdVZjLozagcewb -> KRoSkxwIhmQmLIetBvRDr -> nqhMhFgPaytl -> MUYhzExTzLcXDRhxV -> cKGTJQLEWSeiBYZY -> GshyNvqqH -> STOP) ||| (GshyNvqqH -> xSsxieRVeeQpcAOv -> KRoSkxwIhmQmLIetBvRDr -> xIT -> MFXbGgvcQRWHskd -> OTnJqpPYWFpCTehdtuXrW -> fbg -> EkArWehXKkSscs -> Interleave))
+UetuQ = hjiAOQhAoMTsPBjj -> cKGTJQLEWSeiBYZY -> MFXbGgvcQRWHskd -> nqhMhFgPaytl -> xSsxieRVeeQpcAOv -> sfTNbDWceyT -> ENvgrdbHYTPApNQwBzR -> HeuIdVZjLozagcewb -> fbg -> GshyNvqqH -> Xo -> ARg -> MUYhzExTzLcXDRhxV -> nYvnIYJyDiRHgZDjvip -> KRoSkxwIhmQmLIetBvRDr -> EkArWehXKkSscs -> s
+s = MFXbGgvcQRWHskd -> cKGTJQLEWSeiBYZY -> nqhMhFgPaytl -> ENvgrdbHYTPApNQwBzR -> Xo -> sfTNbDWceyT -> ZPatjUWRGnWaOg -> xoXxuNgU -> hjiAOQhAoMTsPBjj -> fbg -> ARg -> o
+o = fbg -> hjiAOQhAoMTsPBjj -> ENvgrdbHYTPApNQwBzR -> nYvnIYJyDiRHgZDjvip -> GshyNvqqH -> Xo -> MUYhzExTzLcXDRhxV -> ZPatjUWRGnWaOg -> HeuIdVZjLozagcewb -> nqhMhFgPaytl -> MFXbGgvcQRWHskd -> rWucP -> EkArWehXKkSscs -> OTnJqpPYWFpCTehdtuXrW -> ARg -> xIT -> Bl
+Bl = fbg -> nYvnIYJyDiRHgZDjvip -> KRoSkxwIhmQmLIetBvRDr -> eMdNDskNj
+eMdNDskNj = fbg -> ARg -> OTnJqpPYWFpCTehdtuXrW -> xSsxieRVeeQpcAOv -> Interleave(xoXxuNgU -> hjiAOQhAoMTsPBjj -> nYvnIYJyDiRHgZDjvip -> nqhMhFgPaytl -> fbg -> cKGTJQLEWSeiBYZY -> xIT -> KRoSkxwIhmQmLIetBvRDr -> MUYhzExTzLcXDRhxV -> HeuIdVZjLozagcewb -> ENvgrdbHYTPApNQwBzR -> ARg -> EkArWehXKkSscs -> OTnJqpPYWFpCTehdtuXrW -> xSsxieRVeeQpcAOv -> GshyNvqqH -> STOP) ||| ((xoXxuNgU -> Xo -> EkArWehXKkSscs -> ARg -> xSsxieRVeeQpcAOv -> HeuIdVZjLozagcewb -> KRoSkxwIhmQmLIetBvRDr -> nqhMhFgPaytl -> MUYhzExTzLcXDRhxV -> cKGTJQLEWSeiBYZY -> GshyNvqqH -> STOP) ||| (GshyNvqqH -> xSsxieRVeeQpcAOv -> KRoSkxwIhmQmLIetBvRDr -> xIT -> MFXbGgvcQRWHskd -> OTnJqpPYWFpCTehdtuXrW -> fbg -> EkArWehXKkSscs -> Interleave)ENvgrdbHYTPApNQwBzR -> xIT -> MFXbGgvcQRWHskd -> KRoSkxwIhmQmLIetBvRDr -> GshyNvqqH -> nYvnIYJyDiRHgZDjvip -> MUYhzExTzLcXDRhxV -> HeuIdVZjLozagcewb -> Xo -> EkArWehXKkSscs -> OTnJqpPYWFpCTehdtuXrW -> rWucP -> hjiAOQhAoMTsPBjj -> ARg -> sfTNbDWceyT -> xSsxieRVeeQpcAOv -> fbg -> nqhMhFgPaytl -> cKGTJQLEWSeiBYZY -> STOP
+iO = OTnJqpPYWFpCTehdtuXrW -> Xo -> STOP
+assert Hf :[deadlock free]
+assert HcvKbQfdziS :[deadlock free]
+assert JZnjMzgfu :[deadlock free]
+assert gXwaeJ :[deadlock free]
+assert w :[deadlock free]
+assert External Choice :[deadlock free]
+assert lvmpTy :[deadlock free]
+assert guDmfrPFY :[deadlock free]
+assert Interleave :[deadlock free]
+assert UetuQ :[deadlock free]
+assert s :[deadlock free]
+assert o :[deadlock free]
+assert Bl :[deadlock free]
+assert eMdNDskNj :[deadlock free]
+assert iO :[deadlock free]

@@ -1,0 +1,3 @@
+channel kMzcrSGSAJCjtkBncpD
+ihtiXzBG = kMzcrSGSAJCjtkBncpD -> STOP
+assert ihtiXzBG :[deadlock free]

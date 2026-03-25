@@ -1,0 +1,18 @@
+channel k
+channel FVNRr
+channel eytasSdGGsdDYnL
+channel vTFoY
+channel IHceZrt
+channel yCmfFUsOsWQZxIFeg
+channel OPHsApPeCiCJwJYh
+channel RAlrsDJgDzUtQmdxWrGYLs
+channel ccRuuPwBCei
+channel LzPvcksHkVXcesVcDC
+channel DI
+channel jROYyjbqYjS
+channel mxbfzHfmNSknWsTAHRhCyjI
+channel nzJZJucwse
+channel GPUimGzdOc
+channel tK
+TGQYcTa = k -> FVNRr -> eytasSdGGsdDYnL -> vTFoY -> IHceZrt -> yCmfFUsOsWQZxIFeg -> OPHsApPeCiCJwJYh -> RAlrsDJgDzUtQmdxWrGYLs -> ccRuuPwBCei -> LzPvcksHkVXcesVcDC -> DI -> jROYyjbqYjS -> mxbfzHfmNSknWsTAHRhCyjI -> nzJZJucwse -> GPUimGzdOc -> tK -> SKIP
+assert TGQYcTa :[deadlock free]

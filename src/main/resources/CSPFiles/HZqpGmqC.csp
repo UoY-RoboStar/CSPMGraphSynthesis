@@ -1,0 +1,5 @@
+channel TIIHdTRrlWIeiWaetpkf
+channel LI
+channel GsocUGQFYv
+HZqpGmqC = TIIHdTRrlWIeiWaetpkf -> LI -> GsocUGQFYv -> STOP
+assert HZqpGmqC :[deadlock free]

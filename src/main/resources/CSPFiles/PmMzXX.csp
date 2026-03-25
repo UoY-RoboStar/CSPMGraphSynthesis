@@ -1,0 +1,49 @@
+channel okVMRYcmWXkJauuF
+channel PEKt
+channel KeGaW
+channel BBQRUPObCJlITFPWIodhT
+channel SyDZGWB
+channel CdH
+channel iLGpWzH
+channel XnlThZCfDK
+channel PES
+channel JF
+channel eCfPtUqGvO
+channel CtYbXaEGjwsQUqYMXnql
+channel FMFRbfsHpGpILv
+channel kMcZw
+channel VUDLrggIa
+channel eDSa
+channel RLOINuojQhgGT
+channel XegeR
+channel wwXDkIyrGU
+channel FiViqmrph
+channel eJHEGXHDYkwx
+channel lWCTP
+channel FOpaaFAcWYVQdSJYrtspiA
+channel mnKuJ
+channel TXjVrjkXjvnGiNWf
+channel soRWKGjdgkfjdLMBNmeaUd
+channel QhmQTW
+channel tZXjbQLGUJhWNLtPNG
+channel i
+channel ayQocczx
+channel WmjGGAInWq
+channel zsfxI
+channel ShArpnKiLJkRsOSOKrsBeYs
+channel SosodMNAWNrTCXLoTMRisPBP
+channel NNUaK
+aJatRFp = (okVMRYcmWXkJauuF -> PEKt -> KeGaW -> BBQRUPObCJlITFPWIodhT -> SyDZGWB -> CdH -> iLGpWzH -> XnlThZCfDK -> PES -> JF -> eCfPtUqGvO -> CtYbXaEGjwsQUqYMXnql -> FMFRbfsHpGpILv -> SKIP) ||| (kMcZw -> VUDLrggIa -> eDSa -> KeGaW -> BBQRUPObCJlITFPWIodhT -> RLOINuojQhgGT -> XegeR -> wwXDkIyrGU -> FiViqmrph -> PEKt -> FMFRbfsHpGpILv -> XnlThZCfDK -> eJHEGXHDYkwx -> lWCTP -> FOpaaFAcWYVQdSJYrtspiA -> CdH -> okVMRYcmWXkJauuF -> eCfPtUqGvO -> mnKuJ -> CtYbXaEGjwsQUqYMXnql -> TXjVrjkXjvnGiNWf -> soRWKGjdgkfjdLMBNmeaUd -> QhmQTW -> PES -> tZXjbQLGUJhWNLtPNG -> SKIP)
+nrKkJ = kMcZw -> SyDZGWB -> i -> ayQocczx -> wwXDkIyrGU -> CdH -> eDSa -> WmjGGAInWq -> TXjVrjkXjvnGiNWf -> zsfxI -> PmMzXX
+PmMzXX = iLGpWzH -> wwXDkIyrGU -> LJOIrpCM
+LJOIrpCM = CdH -> i -> kMcZw -> wwXDkIyrGU -> ShArpnKiLJkRsOSOKrsBeYs -> iLGpWzH -> nxBZarddE
+nxBZarddE = WmjGGAInWq -> mnKuJ -> zsfxI -> kMcZw -> iLGpWzH -> SosodMNAWNrTCXLoTMRisPBP -> NNUaK -> eDSa -> i -> wwXDkIyrGU -> TXjVrjkXjvnGiNWf -> ayQocczx -> bZBezk; i -> ayQocczx -> WmjGGAInWq -> SyDZGWB -> zsfxI -> ShArpnKiLJkRsOSOKrsBeYs -> FiViqmrph -> TXjVrjkXjvnGiNWf -> CdH -> wwXDkIyrGU -> kMcZw -> SosodMNAWNrTCXLoTMRisPBP -> iLGpWzH -> mnKuJ -> SKIP
+bZBezk = FiViqmrph -> NNUaK -> ayQocczx -> i -> SyDZGWB -> TXjVrjkXjvnGiNWf -> ShArpnKiLJkRsOSOKrsBeYs -> VUDLrggIa -> STOP
+rTevjv = FiViqmrph -> iLGpWzH -> NNUaK -> TXjVrjkXjvnGiNWf -> eDSa -> ayQocczx -> SyDZGWB -> ShArpnKiLJkRsOSOKrsBeYs -> kMcZw -> wwXDkIyrGU -> mnKuJ -> VUDLrggIa -> zsfxI -> CdH -> SKIP
+assert aJatRFp :[deadlock free]
+assert nrKkJ :[deadlock free]
+assert PmMzXX :[deadlock free]
+assert LJOIrpCM :[deadlock free]
+assert nxBZarddE :[deadlock free]
+assert bZBezk :[deadlock free]
+assert rTevjv :[deadlock free]

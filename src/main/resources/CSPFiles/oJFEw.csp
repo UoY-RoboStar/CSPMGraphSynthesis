@@ -1,0 +1,12 @@
+channel OtGzRWDWuvxL
+channel KAEZz
+channel uWFwCALdZondRKmPWA
+channel GseFONzXl
+channel AMBiNYChZ
+channel dlpUYLlHOPGCpezsy
+channel TpUJFQ
+channel ZVyUhJSLUgIL
+channel ZdnLhhbJRXUBnEvUTUtRMdaf
+channel hSMiKbIYWVTcIXiLjQoz
+oJFEw = OtGzRWDWuvxL -> KAEZz -> uWFwCALdZondRKmPWA -> GseFONzXl -> AMBiNYChZ -> dlpUYLlHOPGCpezsy -> TpUJFQ -> ZVyUhJSLUgIL -> ZdnLhhbJRXUBnEvUTUtRMdaf -> hSMiKbIYWVTcIXiLjQoz -> SKIP
+assert oJFEw :[deadlock free]

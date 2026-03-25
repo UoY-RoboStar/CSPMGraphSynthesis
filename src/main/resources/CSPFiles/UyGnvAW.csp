@@ -1,0 +1,7 @@
+channel cuHRpUKvULQSoXiH
+channel XcKzylwrfNANFWINdyNbyddL
+channel jSeVeuyLgjGH
+channel oxH
+channel Ea
+UyGnvAW = cuHRpUKvULQSoXiH -> XcKzylwrfNANFWINdyNbyddL -> jSeVeuyLgjGH -> oxH -> Ea -> STOP
+assert UyGnvAW :[deadlock free]

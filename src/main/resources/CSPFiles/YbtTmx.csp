@@ -1,0 +1,10 @@
+channel KgUAhVyywzuMkTvFKiTlz
+channel kbeYsRDz
+channel vayXGLvWkABCwGkQLYVdV
+channel RFeFgLDjKxy
+channel maMLkPwXFAmDrZviYoWRxAbx
+channel plbqZbgbDObDoBxTPEqeP
+channel JO
+channel RnzBnaWNS
+YbtTmx = KgUAhVyywzuMkTvFKiTlz -> kbeYsRDz -> vayXGLvWkABCwGkQLYVdV -> RFeFgLDjKxy -> maMLkPwXFAmDrZviYoWRxAbx -> plbqZbgbDObDoBxTPEqeP -> JO -> RnzBnaWNS -> SKIP
+assert YbtTmx :[deadlock free]

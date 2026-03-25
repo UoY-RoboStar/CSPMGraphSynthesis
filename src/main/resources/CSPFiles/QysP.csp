@@ -1,0 +1,8 @@
+channel tUkcogzoqVYY
+channel ZyuGvVscmQbdTmB
+channel gbwtxSNIaw
+channel NpqFYT
+channel IEMxUxLDpeiAKALNbGzMj
+channel ZBIVEqtCabXE
+QysP = tUkcogzoqVYY -> ZyuGvVscmQbdTmB -> gbwtxSNIaw -> NpqFYT -> IEMxUxLDpeiAKALNbGzMj -> ZBIVEqtCabXE -> STOP
+assert QysP :[deadlock free]

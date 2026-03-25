@@ -14,7 +14,7 @@ public class FDRCounterexample {
         for (String entry : this.trace){
             String convertedEntry = eventMap.get(entry);
             if (this.processesTrace == null) {
-                this.processesTrace = new ArrayList<>(Arrays.asList(convertedEntry));
+                this.processesTrace = new ArrayList<>(List.of(convertedEntry));
             }
             else {
                 boolean added = this.processesTrace.add(convertedEntry);

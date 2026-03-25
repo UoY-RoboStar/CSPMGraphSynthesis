@@ -1,0 +1,3 @@
+channel aXZq
+lgEYmLfAn = aXZq -> SKIP
+assert lgEYmLfAn :[deadlock free]

@@ -1,0 +1,3 @@
+channel pIoIpsm
+YxvnwmRWLm = pIoIpsm -> SKIP
+assert YxvnwmRWLm :[deadlock free]

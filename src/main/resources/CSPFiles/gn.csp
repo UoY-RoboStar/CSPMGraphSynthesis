@@ -1,0 +1,3 @@
+channel fqWUiGOlqLaebnSyr
+gn = fqWUiGOlqLaebnSyr -> STOP
+assert gn :[deadlock free]

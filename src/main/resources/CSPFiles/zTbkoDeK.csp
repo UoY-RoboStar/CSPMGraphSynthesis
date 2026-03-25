@@ -1,0 +1,16 @@
+channel AsroSBha
+channel ClrrLx
+channel fUfdjpk
+channel elwxoNwNBFhQ
+channel XIVVSlfo
+channel zVZU
+channel VdLJcIfLccZ
+channel AGMRlFmilTRxJx
+channel zSOlkDDzjbEkQ
+channel QDbqWJcLoTYAo
+DZVCCQrwb = AsroSBha -> ClrrLx -> fUfdjpk -> ZWd
+ZWd = elwxoNwNBFhQ -> XIVVSlfo -> zVZU -> zTbkoDeK
+zTbkoDeK = VdLJcIfLccZ -> ClrrLx -> XIVVSlfo -> elwxoNwNBFhQ -> AGMRlFmilTRxJx -> zSOlkDDzjbEkQ -> QDbqWJcLoTYAo -> zVZU -> STOP
+assert DZVCCQrwb :[deadlock free]
+assert ZWd :[deadlock free]
+assert zTbkoDeK :[deadlock free]

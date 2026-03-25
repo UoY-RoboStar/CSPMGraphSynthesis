@@ -1,0 +1,12 @@
+channel aBxsxsb
+channel eNU
+channel WBPCjUivbz
+channel erZuZjZQRAcDaYDCx
+channel VTunSySqi
+channel cDSPTUqCZKLgboyGfWUmZ
+channel crGDtYOwoBllCBZ
+channel zymujGPSYChr
+channel DJYclUegOr
+channel CaMQ
+IdkAIvrk = aBxsxsb -> eNU -> WBPCjUivbz -> erZuZjZQRAcDaYDCx -> VTunSySqi -> cDSPTUqCZKLgboyGfWUmZ -> crGDtYOwoBllCBZ -> zymujGPSYChr -> DJYclUegOr -> CaMQ -> SKIP
+assert IdkAIvrk :[deadlock free]

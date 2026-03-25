@@ -1,0 +1,11 @@
+channel vkLQqXO
+channel tuSdQPcMqpcLwp
+channel QSLBhMZwVWNvZT
+channel wsMAhYspbDhyjl
+channel JYI
+channel FxjwHJBNAbEHVjw
+channel B
+channel qMOMJCxtIGtfwyVJSjihpYd
+channel ous
+xnO = vkLQqXO -> tuSdQPcMqpcLwp -> QSLBhMZwVWNvZT -> wsMAhYspbDhyjl -> JYI -> FxjwHJBNAbEHVjw -> B -> qMOMJCxtIGtfwyVJSjihpYd -> ous -> STOP
+assert xnO :[deadlock free]

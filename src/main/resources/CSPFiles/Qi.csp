@@ -1,0 +1,9 @@
+channel hJvNWCR
+channel WjjkBuUpdfGHU
+channel iCfOWR
+Qi = hJvNWCR -> KXVeaX
+KXVeaX = WjjkBuUpdfGHU -> iCfOWR -> UwzM
+UwzM = iCfOWR -> hJvNWCR -> STOP
+assert Qi :[deadlock free]
+assert KXVeaX :[deadlock free]
+assert UwzM :[deadlock free]

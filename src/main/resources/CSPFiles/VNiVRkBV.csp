@@ -1,0 +1,42 @@
+channel JUmqSSUOisAodhWVWBf
+channel LFBdZzkSgd
+channel k
+channel zZk
+channel FdEcxfulsg
+channel CMOmJJcoZj
+channel qeou
+channel hoXEG
+channel e
+channel nPFepnkISx
+channel XhBLoBmnxUAqwv
+channel iilAhWMDgDdSssDEkSQLm
+channel EwBUFD
+channel wzqF
+channel HLIkzh
+channel tMBetjxP
+channel pDKjrpBerdvrYuWcRbphkIg
+channel OkNHYFpDyEYaGzSJiH
+channel lQifFrflRzLJrEke
+channel lgMwzyjbBpxYnyKlugxeOgn
+channel qFiDkDfJopjWEpYjDWkOO
+channel vKyY
+channel ZSO
+channel K
+yDksPPq = (hoXEG -> iilAhWMDgDdSssDEkSQLm -> XhBLoBmnxUAqwv -> zZk -> lgMwzyjbBpxYnyKlugxeOgn -> e -> LFBdZzkSgd -> nPFepnkISx -> FdEcxfulsg -> qFiDkDfJopjWEpYjDWkOO -> lQifFrflRzLJrEke -> qeou -> k -> tMBetjxP -> STOP) ||| (iilAhWMDgDdSssDEkSQLm -> SKIP)
+XvDlqbvxV = JUmqSSUOisAodhWVWBf -> LFBdZzkSgd -> RnF
+RnF = k -> zZk -> FdEcxfulsg -> CMOmJJcoZj -> JUmqSSUOisAodhWVWBf -> qeou -> hoXEG -> e -> LFBdZzkSgd -> nPFepnkISx -> SS
+SS = XhBLoBmnxUAqwv -> JUmqSSUOisAodhWVWBf -> e -> iilAhWMDgDdSssDEkSQLm -> CMOmJJcoZj -> EwBUFD -> wzqF -> HLIkzh -> LFBdZzkSgd -> tMBetjxP -> pDKjrpBerdvrYuWcRbphkIg -> k -> laikmWho
+laikmWho = OkNHYFpDyEYaGzSJiH -> lQifFrflRzLJrEke -> qeou -> hoXEG -> XhBLoBmnxUAqwv -> CMOmJJcoZj -> k -> zZk -> iilAhWMDgDdSssDEkSQLm -> tMBetjxP -> lgMwzyjbBpxYnyKlugxeOgn -> LFBdZzkSgd -> qFiDkDfJopjWEpYjDWkOO -> EwBUFD -> VNiVRkBV
+VNiVRkBV = CMOmJJcoZj -> lQifFrflRzLJrEke -> HLIkzh -> tMBetjxP -> yDksPPq
+RQIT = (vKyY -> qFiDkDfJopjWEpYjDWkOO -> SS) |~| (qFiDkDfJopjWEpYjDWkOO -> iilAhWMDgDdSssDEkSQLm -> ZSO -> K -> vKyY -> Xlpe)
+Xlpe = ZSO -> qFiDkDfJopjWEpYjDWkOO -> vKyY -> lQifFrflRzLJrEke -> SKIP
+oW = iilAhWMDgDdSssDEkSQLm -> qFiDkDfJopjWEpYjDWkOO -> lQifFrflRzLJrEke -> STOP
+assert yDksPPq :[deadlock free]
+assert XvDlqbvxV :[deadlock free]
+assert RnF :[deadlock free]
+assert SS :[deadlock free]
+assert laikmWho :[deadlock free]
+assert VNiVRkBV :[deadlock free]
+assert RQIT :[deadlock free]
+assert Xlpe :[deadlock free]
+assert oW :[deadlock free]

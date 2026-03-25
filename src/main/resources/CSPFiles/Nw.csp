@@ -1,0 +1,54 @@
+channel oSNeHQJeZjr
+channel PSsIhJPWPWOLjLrRGDBkL
+channel CISyeLaisQdVlVWB
+channel wgMX
+channel cqzNloLalEumavCPK
+channel eXVtOLHHVtMg
+channel uiEayVWQVwTnvlUcA
+channel BpLYfj
+channel nCuGOQUMktofXWZnfKN
+channel xihXRKxfZUKbSVvAqdclebr
+channel FH
+channel jy
+channel RT
+channel FNpv
+channel nM
+channel USehIOtjrZszb
+channel kcO
+channel oqnMKRn
+channel IwNQasDEicwYN
+channel oJHFoAdwMsPoVhmdIau
+channel uMthiwTyJ
+channel scvfBfkJELZn
+channel RLvthrRRLxUGfJy
+channel JmzURYyzkAiCdLeNNjA
+channel RyXTYjMtwvkcd
+channel nGknsrPmFtnZkcmC
+channel mUpOphPqVKPCL
+channel NOejllVhZnOHdvsfzjVYw
+channel boPlfUxCdOdogtOzVFZ
+channel LctnZjdvlXzvgbzFzliML
+V = SKIP
+QqH = oSNeHQJeZjr -> PSsIhJPWPWOLjLrRGDBkL -> CISyeLaisQdVlVWB -> wgMX ->  -> cqzNloLalEumavCPK -> eXVtOLHHVtMg -> elrj
+elrj = oSNeHQJeZjr ->  -> uiEayVWQVwTnvlUcA -> BpLYfj -> nCuGOQUMktofXWZnfKN -> xihXRKxfZUKbSVvAqdclebr -> FH -> jy -> eXVtOLHHVtMg -> RT -> FNpv -> wgMX -> nM -> CISyeLaisQdVlVWB -> USehIOtjrZszb -> kcO -> oqnMKRn -> IwNQasDEicwYN -> cqzNloLalEumavCPK -> bKP
+bKP = cqzNloLalEumavCPK -> BpLYfj -> IwNQasDEicwYN -> oJHFoAdwMsPoVhmdIau -> PSsIhJPWPWOLjLrRGDBkL ->  -> FNpv -> nCuGOQUMktofXWZnfKN -> oqnMKRn -> uMthiwTyJ -> GGJpoalfd
+GGJpoalfd = nM -> kcO -> CISyeLaisQdVlVWB -> uiEayVWQVwTnvlUcA -> jy -> wgMX -> eXVtOLHHVtMg -> IwNQasDEicwYN -> RT -> oJHFoAdwMsPoVhmdIau -> HpFbP; USehIOtjrZszb -> FNpv -> IwNQasDEicwYN -> wgMX -> scvfBfkJELZn -> uiEayVWQVwTnvlUcA -> RLvthrRRLxUGfJy -> JmzURYyzkAiCdLeNNjA -> oqnMKRn -> uMthiwTyJ ->  -> nCuGOQUMktofXWZnfKN -> eXVtOLHHVtMg -> jy -> FH -> PSsIhJPWPWOLjLrRGDBkL -> RT -> xihXRKxfZUKbSVvAqdclebr -> cqzNloLalEumavCPK -> V
+HpFbP = RT -> jy -> PSsIhJPWPWOLjLrRGDBkL -> FNpv -> CISyeLaisQdVlVWB -> kcO -> wgMX -> USehIOtjrZszb -> elrj
+qbBOznQzfxj = KsdBMTQF
+KsdBMTQF = RN
+RN = BJIg
+BJIg = Nw; SKIP
+Nw = elrj
+gYUmoWur = nGknsrPmFtnZkcmC -> NOejllVhZnOHdvsfzjVYw -> boPlfUxCdOdogtOzVFZ -> LctnZjdvlXzvgbzFzliML -> SKIP
+assert V :[deadlock free]
+assert QqH :[deadlock free]
+assert elrj :[deadlock free]
+assert bKP :[deadlock free]
+assert GGJpoalfd :[deadlock free]
+assert HpFbP :[deadlock free]
+assert qbBOznQzfxj :[deadlock free]
+assert KsdBMTQF :[deadlock free]
+assert RN :[deadlock free]
+assert BJIg :[deadlock free]
+assert Nw :[deadlock free]
+assert gYUmoWur :[deadlock free]

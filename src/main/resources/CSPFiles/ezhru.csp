@@ -1,0 +1,5 @@
+channel Yj
+channel CrIKOcbeNza
+channel PePSLAh
+ezhru = Yj -> CrIKOcbeNza -> PePSLAh -> SKIP
+assert ezhru :[deadlock free]

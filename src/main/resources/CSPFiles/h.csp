@@ -1,0 +1,15 @@
+channel phmJ
+channel WoEigxumvtxVZSK
+channel fDxZUqbzlHuos
+channel b
+channel lkSjTFSjVeeQYLTzuqWSh
+channel XI
+channel RWPLauteRydurGiJ
+channel fTweCGvcEvLXZJn
+channel rhILstphhT
+YcZgzggyGBI = phmJ -> WoEigxumvtxVZSK -> fDxZUqbzlHuos -> b -> lkSjTFSjVeeQYLTzuqWSh -> h
+h = XI -> b -> fDxZUqbzlHuos -> RWPLauteRydurGiJ -> phmJ -> Xu
+Xu = RWPLauteRydurGiJ -> b -> fTweCGvcEvLXZJn -> lkSjTFSjVeeQYLTzuqWSh -> phmJ -> rhILstphhT -> WoEigxumvtxVZSK -> XI -> SKIP
+assert YcZgzggyGBI :[deadlock free]
+assert h :[deadlock free]
+assert Xu :[deadlock free]

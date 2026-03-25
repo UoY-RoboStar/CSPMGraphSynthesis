@@ -18,12 +18,11 @@ public class FDROutput {
     private Map<String, String> eventMapParsed;
 
     public FDROutput(){
-
     }
 
     public void addResults(JsonNode results) {
         if (this.results == null) {
-            this.results = new ArrayList<>(Arrays.asList(results));
+            this.results = new ArrayList<>(List.of(results));
         }
         else {
             this.results.add(results);
@@ -32,7 +31,7 @@ public class FDROutput {
 
     public void addWarnings(JsonNode warnings) {
         if (this.warnings == null) {
-            this.warnings = new ArrayList<>(Arrays.asList(warnings));
+            this.warnings = new ArrayList<>(List.of(warnings));
         }
         else {
             this.warnings.add(warnings);
@@ -41,7 +40,7 @@ public class FDROutput {
 
     public void addError(JsonNode errors) {
         if (this.errors == null) {
-            this.errors = new ArrayList<>(Arrays.asList(errors));
+            this.errors = new ArrayList<>(List.of(errors));
         }
         else {
             this.errors.add(errors);
@@ -70,7 +69,7 @@ public class FDROutput {
 
     public void addFdrResults(FDRResults fdrResults){
         if (this.fdrResults == null) {
-            this.fdrResults = new ArrayList<>(Arrays.asList(fdrResults));
+            this.fdrResults = new ArrayList<>(List.of(fdrResults));
         }
         else {
             this.fdrResults.add(fdrResults);
@@ -97,16 +96,7 @@ public class FDROutput {
         TypeReference<Map<String, String>> typeReferenceMap = new TypeReference<Map<String, String>>() {};
         if (eventMap != null) {
             try {
-                Map<String, String> parsedEventMap = new ObjectMapper().readValue(eventMap.traverse(), typeReferenceMap);
-                this.eventMapParsed = parsedEventMap;//.entrySet()
-                        //.stream()
-                        //.filter(e -> e.getKey() != null)
-                        //.collect(
-                        //        Collectors.toMap(
-                       //                 e -> Integer.valueOf(e.getKey()),
-                       //                 Map.Entry::getValue
-                        //        )
-                        //);
+                this.eventMapParsed = new ObjectMapper().readValue(eventMap.traverse(), typeReferenceMap);
             } catch (IOException e) {
                 System.out.println("Error encountered parsing the eventMap: " + e.getMessage());
             }
@@ -115,9 +105,9 @@ public class FDROutput {
 
     public void transformCounterexamples(){
         parseEventMap(this.eventMap);
-        if (eventMap != null) {
+        if (this.eventMap != null && this.fdrResults != null) {
             for (FDRResults fdrResult : this.fdrResults) {
-                if (!fdrResult.isPassed()) {
+                if (!fdrResult.isPassed() && fdrResult.getErrors()==null) {
                     for (FDRCounterexample counterexamples : fdrResult.getFdrCounterexamples()) {
                         counterexamples.convertTraceToProcesses(this.eventMapParsed);
                     }

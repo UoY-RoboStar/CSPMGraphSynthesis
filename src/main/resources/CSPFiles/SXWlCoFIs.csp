@@ -1,0 +1,3 @@
+channel NbY
+SXWlCoFIs = NbY -> SKIP
+assert SXWlCoFIs :[deadlock free]

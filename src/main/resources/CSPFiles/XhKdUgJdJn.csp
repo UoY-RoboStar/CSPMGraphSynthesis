@@ -1,0 +1,14 @@
+channel ouBnawuJt
+channel Mkt
+channel AkTiOAWfjnxQi
+channel mYXdHlIrLYggksZlZSmCuWH
+channel cgTfvkqubmcYXE
+channel gbRluiXTEKYlHjjF
+channel ntsRVGcFVOjoUmgKQ
+channel pAruNJnQLE
+channel zCOxZ
+channel tmeWYfZBbPRVpdS
+XhKdUgJdJn = ouBnawuJt -> Mkt -> AkTiOAWfjnxQi -> mYXdHlIrLYggksZlZSmCuWH -> cgTfvkqubmcYXE -> gbRluiXTEKYlHjjF -> G
+G = ntsRVGcFVOjoUmgKQ -> ouBnawuJt -> pAruNJnQLE -> zCOxZ -> Mkt -> AkTiOAWfjnxQi -> cgTfvkqubmcYXE -> gbRluiXTEKYlHjjF -> tmeWYfZBbPRVpdS -> mYXdHlIrLYggksZlZSmCuWH -> STOP
+assert XhKdUgJdJn :[deadlock free]
+assert G :[deadlock free]

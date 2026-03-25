@@ -1,0 +1,15 @@
+channel HemPw
+channel YnPwHqfMuWFAa
+channel lsdvlXrBiV
+channel lcbXbcnaIzhxew
+channel yUWfRyTyhHB
+channel iJTsikliI
+channel YGQyJPSfQgqdjEbojKh
+VyJCjros = YnPwHqfMuWFAa -> SKIP
+QEUdMxdWd = (HemPw -> YnPwHqfMuWFAa -> lsdvlXrBiV -> lcbXbcnaIzhxew -> VyJCjros; iJTsikliI -> YGQyJPSfQgqdjEbojKh -> uyfDU) ||| (yUWfRyTyhHB -> HemPw -> lcbXbcnaIzhxew -> LDSUH)
+LDSUH = HemPw -> STOP
+uyfDU = YGQyJPSfQgqdjEbojKh -> SKIP
+assert VyJCjros :[deadlock free]
+assert QEUdMxdWd :[deadlock free]
+assert LDSUH :[deadlock free]
+assert uyfDU :[deadlock free]

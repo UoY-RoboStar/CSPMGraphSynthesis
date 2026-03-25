@@ -1,0 +1,10 @@
+channel ekmuxNfrENVVVVPMPS
+channel PZqZmEGR
+channel DHEXYitCIiPzJs
+channel UdagGltRB
+channel qYrknwtakrwgYRwMS
+channel QrzcplDSymVk
+channel tPaGkpxnmXJjPNhccUzAcFJ
+channel oXgRtFlehvbNbQGpzjhrj
+UCqcH = ekmuxNfrENVVVVPMPS -> PZqZmEGR -> DHEXYitCIiPzJs -> UdagGltRB -> qYrknwtakrwgYRwMS -> QrzcplDSymVk -> tPaGkpxnmXJjPNhccUzAcFJ -> oXgRtFlehvbNbQGpzjhrj -> STOP
+assert UCqcH :[deadlock free]

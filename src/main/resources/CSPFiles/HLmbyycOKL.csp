@@ -1,0 +1,8 @@
+channel FROeLQBkY
+channel KdJEtwY
+channel dp
+channel WzXYvNQNvExklMUfTHUlMQsv
+channel AWCwqFkMdC
+channel ZzbNQU
+HLmbyycOKL = FROeLQBkY -> KdJEtwY -> dp -> WzXYvNQNvExklMUfTHUlMQsv -> AWCwqFkMdC -> ZzbNQU -> SKIP
+assert HLmbyycOKL :[deadlock free]

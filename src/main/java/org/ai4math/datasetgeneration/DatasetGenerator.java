@@ -1,5 +1,6 @@
 package org.ai4math.datasetgeneration;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.opencsv.CSVWriter;
 import org.ai4math.utils.CSPFileUtils;
 import org.ai4math.vandv.utils.FDRCounterexample;
@@ -8,13 +9,17 @@ import org.ai4math.vandv.utils.FDRResults;
 
 import java.io.*;
 import java.util.Base64;
+import java.util.List;
 
 public class DatasetGenerator {
     private String datasetPath;
+    private String errorPath;
     private boolean exists;
+    private boolean errorExists;
 
     public DatasetGenerator(String datasetPath){
         this.datasetPath = new CSPFileUtils().getResourcePath(datasetPath);
+        this.errorPath = new CSPFileUtils().getResourcePath("Error.csv");
 
         try{
             File dataFile = new File(this.datasetPath);
@@ -25,6 +30,17 @@ public class DatasetGenerator {
             }
         } catch (IOException e){
             System.out.println("An error occurred when creating the dataset file at: "+this.datasetPath);
+        }
+
+        try{
+            File errorFile = new File(this.errorPath);
+            if (errorFile.createNewFile()){
+                System.out.println("File created at: "+this.errorPath);
+            } else {
+                System.out.println("File already existed at: "+this.errorPath);
+            }
+        } catch (IOException e){
+            System.out.println("An error occurred when creating the error file at: "+this.errorPath);
         }
 
     }
@@ -105,6 +121,10 @@ public class DatasetGenerator {
         this.exists = new File(this.datasetPath).length() != 0;
     }
 
+    private void emptyErrorset(){
+        this.errorExists = new File(this.errorPath).length() != 0;
+    }
+
     public void addEncodedCspEntryToDataSet(String csp, FDROutput dataEntry){
         //String encodedString = Base64.getEncoder().encodeToString(csp.getBytes());
         //String encodedString = csp.replace("\n", "<NL>");
@@ -121,21 +141,66 @@ public class DatasetGenerator {
                 String[] headings = new String[]{"CSP", "Assertion", "Passed", "CounterExample"};
                 writer.writeNext(headings);
             }
-
-            for (FDRResults fdrResults : dataEntry.getFdrResults()) {
-                boolean passed = fdrResults.isPassed();
-                String assertion = fdrResults.getAssertionString();
-                if (passed) {
-                    String[] entry = new String[]{csp, assertion, "true", ""};
-                    writer.writeNext(entry);
-                    System.out.println("Row added for passed test, to file: " + this.datasetPath);
-                } else {
-                    for (FDRCounterexample counterexample : fdrResults.getFdrCounterexamples()) {
-                        String[] entry = new String[]{csp, assertion, "false", counterexample.getProcessesTrace().toString()};
+            if (dataEntry.getErrors() != null) {
+                addErrorToDataset(csp, "", dataEntry.getErrors());
+            }
+            else {
+                for (FDRResults fdrResults : dataEntry.getFdrResults()) {
+                    boolean passed = fdrResults.isPassed();
+                    String assertion = fdrResults.getAssertionString();
+                    if (passed) {
+                        String[] entry = new String[]{csp, assertion, "true", ""};
                         writer.writeNext(entry);
-                        System.out.println("Row added for failed test, to file: " + this.datasetPath);
+                        System.out.println("Row added for passed test, to file: " + this.datasetPath);
+                    } else {
+                        if (fdrResults.getFdrCounterexamples() == null) {
+                            addErrorToDataset(csp, assertion, fdrResults.getErrors());
+                        } else {
+                            for (FDRCounterexample counterexample : fdrResults.getFdrCounterexamples()) {
+                                String[] entry;
+                                if (counterexample.getProcessesTrace() == null) {
+                                    entry = new String[]{csp, assertion, "false", ""};
+                                } else {
+                                    entry = new String[]{csp, assertion, "false", counterexample.getProcessesTrace().toString()};
+                                }
+                                writer.writeNext(entry);
+                                System.out.println("Row added for failed test, to file: " + this.datasetPath);
+                            }
+                        }
                     }
                 }
+            }
+
+            fileWriter.flush();
+
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void addErrorToDataset(String csp, String assertion, List<JsonNode> errors) {
+        try {
+            emptyErrorset();
+            FileWriter fileWriter = new FileWriter(this.errorPath, this.errorExists);
+            CSVWriter writer = new CSVWriter(fileWriter);
+
+            if (!this.errorExists) {
+                String[] headings = new String[]{"CSP", "Assertion", "ErrorType"};
+                writer.writeNext(headings);
+            }
+
+            for (JsonNode error : errors) {
+                if (error.size()>64){
+                    if (error.asText().substring(0,64).matches("^An operator that cannot be recursed through was recursed through$")) {
+                        String[] entry = new String[]{csp, assertion, "Operator cannot be recursed through"};
+                        writer.writeNext(entry);
+                        System.out.println("Row added for error, to file: " + this.errorPath);
+                        continue;
+                    }
+                }
+                String[] entry = new String[]{csp, assertion, error.asText()};
+                writer.writeNext(entry);
+                System.out.println("Row added for error, to file: " + this.errorPath);
             }
 
             fileWriter.flush();

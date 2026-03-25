@@ -1,0 +1,30 @@
+channel ISFBFxEzWOiPwXm
+channel EeeSttJdSFB
+channel xZgRCrGXdbeEwdRH
+channel p
+channel cIWioawicjzEnzggcdoWIFUw
+channel iWrkbSTKWY
+channel moGpEpAtHEKc
+channel bXuNrMFRJLKKZs
+channel qMUZVZRUcZjLMJ
+channel N
+channel Ador
+channel b
+channel QwhFnwRrQBlA
+channel tGbwyWFx
+channel WpaJnlZosFV
+channel VOJxLppVQgg
+ad = iWrkbSTKWY -> SKIP
+Aaw = qMUZVZRUcZjLMJ -> EeeSttJdSFB -> p -> ISFBFxEzWOiPwXm -> moGpEpAtHEKc -> cIWioawicjzEnzggcdoWIFUw -> iWrkbSTKWY -> SKIP
+ZScyLOUCNh = N -> iWrkbSTKWY -> Ador -> b -> QwhFnwRrQBlA -> tGbwyWFx -> WpaJnlZosFV -> dazu
+dazu = tGbwyWFx -> QwhFnwRrQBlA -> Ador -> iWrkbSTKWY -> b -> VOJxLppVQgg -> WpaJnlZosFV -> JloU
+JloU = N -> VOJxLppVQgg -> Ador -> iWrkbSTKWY -> tGbwyWFx -> CuJE
+CuJE = VOJxLppVQgg -> WpaJnlZosFV -> iWrkbSTKWY -> b -> QwhFnwRrQBlA -> Ador -> tGbwyWFx -> y; iWrkbSTKWY -> VOJxLppVQgg -> tGbwyWFx -> Ador -> QwhFnwRrQBlA -> N -> WpaJnlZosFV -> SKIP
+y = iWrkbSTKWY -> Ador -> VOJxLppVQgg -> b -> STOP
+assert ad :[deadlock free]
+assert Aaw :[deadlock free]
+assert ZScyLOUCNh :[deadlock free]
+assert dazu :[deadlock free]
+assert JloU :[deadlock free]
+assert CuJE :[deadlock free]
+assert y :[deadlock free]

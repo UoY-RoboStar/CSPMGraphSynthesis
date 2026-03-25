@@ -1,0 +1,3 @@
+channel fDImMKLRTFBgyAxXOlD
+nC = fDImMKLRTFBgyAxXOlD -> SKIP
+assert nC :[deadlock free]

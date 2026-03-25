@@ -1,0 +1,8 @@
+channel Qh
+channel BqFdldWxdMrrSCGCrdKgOcSK
+channel aqmYRxNtSe
+channel WGbzoUUxDeIIj
+channel kGgxxNujVDKQJQ
+channel v
+gwAZ = Qh -> BqFdldWxdMrrSCGCrdKgOcSK -> aqmYRxNtSe -> WGbzoUUxDeIIj -> kGgxxNujVDKQJQ -> v -> SKIP
+assert gwAZ :[deadlock free]

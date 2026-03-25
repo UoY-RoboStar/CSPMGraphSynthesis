@@ -1,0 +1,3 @@
+channel eaXISQJBtZovsDOKg
+gFT = eaXISQJBtZovsDOKg -> STOP
+assert gFT :[deadlock free]

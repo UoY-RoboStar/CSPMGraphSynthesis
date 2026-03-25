@@ -1,0 +1,14 @@
+channel XcjX
+channel QJTZTHe
+channel NzTsgsgkd
+channel YqSPLgDW
+channel FaMhGtCWRxWBAkUG
+channel GKjxxBExFVwZ
+channel VCSuXvjFALJHMaZcRtaAZghD
+channel ONpOGZymkA
+r = XcjX -> QJTZTHe -> NzTsgsgkd -> YqSPLgDW -> FaMhGtCWRxWBAkUG -> GKjxxBExFVwZ -> VCSuXvjFALJHMaZcRtaAZghD -> KnxjB
+KnxjB = QJTZTHe -> Lh
+Lh = NzTsgsgkd -> QJTZTHe -> FaMhGtCWRxWBAkUG -> GKjxxBExFVwZ -> ONpOGZymkA -> YqSPLgDW -> STOP
+assert r :[deadlock free]
+assert KnxjB :[deadlock free]
+assert Lh :[deadlock free]

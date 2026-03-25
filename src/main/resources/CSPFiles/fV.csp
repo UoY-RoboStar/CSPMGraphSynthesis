@@ -1,0 +1,12 @@
+channel yqKZvGP
+channel FBjY
+channel bloKPcFBQkxBQTywmDfMuJT
+channel KeDAVrjnxf
+channel IOUdpxJrkxFkRfB
+channel MLoyA
+channel HqOmhzGYJdBPZRhBrPRXyl
+channel fKTXfFgJteHlWrfzuZr
+wncYNyp = yqKZvGP -> fV
+fV = FBjY -> bloKPcFBQkxBQTywmDfMuJT -> KeDAVrjnxf -> IOUdpxJrkxFkRfB -> yqKZvGP -> MLoyA -> HqOmhzGYJdBPZRhBrPRXyl -> fKTXfFgJteHlWrfzuZr -> STOP
+assert wncYNyp :[deadlock free]
+assert fV :[deadlock free]

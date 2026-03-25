@@ -1,0 +1,8 @@
+channel oyvhcaeGYDBvvQOoOumbV
+channel DarZZ
+channel qFWdVu
+channel MeZnGdXwfBwDrWbXUXtFxGQY
+channel pVohUzdAe
+channel RaUoDuaFmNIwmJELdcPiN
+Huzh = oyvhcaeGYDBvvQOoOumbV -> DarZZ -> qFWdVu -> MeZnGdXwfBwDrWbXUXtFxGQY -> pVohUzdAe -> RaUoDuaFmNIwmJELdcPiN -> STOP
+assert Huzh :[deadlock free]

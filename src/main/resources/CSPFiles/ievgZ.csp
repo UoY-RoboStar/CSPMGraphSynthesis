@@ -1,0 +1,4 @@
+channel jtJJXoceyLXHQS
+channel ixgiZM
+ievgZ = jtJJXoceyLXHQS -> ixgiZM -> STOP
+assert ievgZ :[deadlock free]

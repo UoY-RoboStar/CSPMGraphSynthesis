@@ -1,4 +1,0 @@
-channel OrZcHllVaBJKCkUS
-channel ACwMVv
-r = OrZcHllVaBJKCkUS -> ACwMVv -> SKIP
-assert r :[deadlock free]

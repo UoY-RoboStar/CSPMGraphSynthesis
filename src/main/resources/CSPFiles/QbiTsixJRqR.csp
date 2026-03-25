@@ -1,0 +1,34 @@
+channel LrFd
+channel pQieohuAulrNBwdacN
+channel OrRcVIMYNKdL
+channel YGHobOxjcmmuBJxz
+channel pEjqHF
+channel VhYCJ
+channel WHaJUIsyV
+channel byeD
+channel gIAgfkCqEmSy
+channel WhJdYIjTzlqRu
+channel obW
+channel oxMBTFWJLanSHjcojBo
+channel EfEAHNuGbiuZFss
+channel okSUELVGWAyZFgCsg
+channel FINuKnVydeYOAFOPn
+channel WIeiGOUEdhIAFogILevPQbkA
+channel yWIHV
+channel nJbmLkYeNqeAzyVW
+zSl = OrRcVIMYNKdL -> oxMBTFWJLanSHjcojBo -> WIeiGOUEdhIAFogILevPQbkA -> WhJdYIjTzlqRu -> obW -> STOP
+QbiTsixJRqR = LrFd -> bKypEH
+bKypEH = pQieohuAulrNBwdacN -> OrRcVIMYNKdL -> YGHobOxjcmmuBJxz -> pEjqHF -> LrFd -> VhYCJ -> WHaJUIsyV -> byeD -> gIAgfkCqEmSy -> ZBBhwiAJ
+ZBBhwiAJ = YGHobOxjcmmuBJxz -> WhJdYIjTzlqRu -> obW -> oxMBTFWJLanSHjcojBo -> pEjqHF -> EfEAHNuGbiuZFss -> ZlDzHInxx
+ZlDzHInxx = OrRcVIMYNKdL -> LrFd -> VhYCJ -> okSUELVGWAyZFgCsg -> FINuKnVydeYOAFOPn -> oxMBTFWJLanSHjcojBo -> WIeiGOUEdhIAFogILevPQbkA -> pQieohuAulrNBwdacN -> WhJdYIjTzlqRu -> pEjqHF -> WHaJUIsyV -> yWIHV -> Iw; yWIHV -> pEjqHF -> YGHobOxjcmmuBJxz -> WhJdYIjTzlqRu -> VhYCJ -> EfEAHNuGbiuZFss -> okSUELVGWAyZFgCsg -> OrRcVIMYNKdL -> obW -> byeD -> FINuKnVydeYOAFOPn -> WIeiGOUEdhIAFogILevPQbkA -> pQieohuAulrNBwdacN -> oxMBTFWJLanSHjcojBo -> gIAgfkCqEmSy -> LrFd -> nJbmLkYeNqeAzyVW -> zSl
+Iw = obW -> WHaJUIsyV -> pQieohuAulrNBwdacN -> nJbmLkYeNqeAzyVW -> LrFd -> pEjqHF -> byeD -> YGHobOxjcmmuBJxz -> oxMBTFWJLanSHjcojBo -> gIAgfkCqEmSy -> VhYCJ -> yWIHV -> QbiTsixJRqR
+lIpCmHXORMr = (VhYCJ -> ZlDzHInxx) [] (WIeiGOUEdhIAFogILevPQbkA -> oxMBTFWJLanSHjcojBo -> okSUELVGWAyZFgCsg -> yWIHV -> byeD -> obW -> FINuKnVydeYOAFOPn -> YGHobOxjcmmuBJxz -> pQieohuAulrNBwdacN -> OrRcVIMYNKdL -> STOP)
+edbMug = FINuKnVydeYOAFOPn -> okSUELVGWAyZFgCsg -> VhYCJ -> pQieohuAulrNBwdacN -> oxMBTFWJLanSHjcojBo -> yWIHV -> byeD -> WIeiGOUEdhIAFogILevPQbkA -> OrRcVIMYNKdL -> YGHobOxjcmmuBJxz -> WhJdYIjTzlqRu -> zSl
+assert zSl :[deadlock free]
+assert QbiTsixJRqR :[deadlock free]
+assert bKypEH :[deadlock free]
+assert ZBBhwiAJ :[deadlock free]
+assert ZlDzHInxx :[deadlock free]
+assert Iw :[deadlock free]
+assert lIpCmHXORMr :[deadlock free]
+assert edbMug :[deadlock free]

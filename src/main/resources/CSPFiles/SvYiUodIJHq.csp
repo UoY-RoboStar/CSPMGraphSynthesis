@@ -1,0 +1,7 @@
+channel JFnMjZoGjhMxeWHtb
+channel PBnlepwGAqRhOmv
+channel xeuMcCA
+channel KTr
+channel otDlOaQxrkRSp
+SvYiUodIJHq = JFnMjZoGjhMxeWHtb -> PBnlepwGAqRhOmv -> xeuMcCA -> KTr -> otDlOaQxrkRSp -> STOP
+assert SvYiUodIJHq :[deadlock free]

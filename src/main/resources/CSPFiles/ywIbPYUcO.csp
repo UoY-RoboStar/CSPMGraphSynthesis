@@ -1,0 +1,9 @@
+channel itqceVhZBf
+channel nvyCjqJzoqvqhjWmbNuskoT
+channel gbZrzwRyikSf
+channel oOXCNvYZDFSS
+channel uzJRlilK
+ZbK = itqceVhZBf -> nvyCjqJzoqvqhjWmbNuskoT -> gbZrzwRyikSf -> oOXCNvYZDFSS -> uzJRlilK -> ywIbPYUcO
+ywIbPYUcO = gbZrzwRyikSf -> SKIP
+assert ZbK :[deadlock free]
+assert ywIbPYUcO :[deadlock free]

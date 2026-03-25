@@ -1,0 +1,6 @@
+channel ZDdTNO
+channel GrKomvLbtJRFfPfLh
+BJdrh = ZDdTNO -> ozAonmEePj
+ozAonmEePj = GrKomvLbtJRFfPfLh -> SKIP
+assert BJdrh :[deadlock free]
+assert ozAonmEePj :[deadlock free]

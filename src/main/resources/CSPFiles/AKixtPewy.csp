@@ -1,0 +1,10 @@
+channel ONkMzzFrRFBofXxUOiieEIa
+channel lBgCjWz
+channel wqILnZH
+channel rEk
+channel wEHxut
+channel CdgNuXmesTcpXPECfl
+channel DSbWm
+channel esPYxaxujnbxXvLpwkaySIma
+AKixtPewy = ONkMzzFrRFBofXxUOiieEIa -> lBgCjWz -> wqILnZH -> rEk -> wEHxut -> CdgNuXmesTcpXPECfl -> DSbWm -> esPYxaxujnbxXvLpwkaySIma -> STOP
+assert AKixtPewy :[deadlock free]

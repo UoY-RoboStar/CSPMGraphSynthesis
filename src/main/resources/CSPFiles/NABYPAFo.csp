@@ -1,0 +1,67 @@
+channel RdmfJuOgZ
+channel ZnMSH
+channel CLZmUrofqfizagiOmTvczKX
+channel ELXHpqy
+channel VPulzuqnhHn
+channel QMXVyXNDQZRgKf
+channel oETENwog
+channel gAUalBbnCRikTFWVHYRGF
+channel rOblSwLD
+channel XSUGQqeeXKJhfpbuOk
+channel naDxJ
+channel TMpk
+channel pZAJAoDJTXjSKSxarf
+channel GUPQflMqwuXpdHaFV
+channel ztqYYqDOqLljQXVochwV
+channel dHslgUQkrEQaNtKP
+channel XVeDUuCwoVoGzYPIELEZSuBH
+channel mDCDNXLEVmGYKqTi
+channel nhXBUorplFtHIZx
+channel oTc
+channel QXWW
+channel NeE
+channel YskB
+channel NaFrgVZlPlO
+channel AiKSwGhEwOjpChwcC
+channel whkHY
+channel sHQoPowuQyLZWzemXhzc
+channel nGwQCcF
+channel HNpthHNiKWB
+channel BpOVLbK
+channel qK
+channel TtvVeKpHLMjMzNuLS
+channel dmikthCpyLHRQKxlIFmqobb
+channel fqOIIhxyOZsyjNVf
+channel OLf
+channel EquAcSXSQOMgvRUhiDolhe
+channel ljHidymP
+ielAGESKs = QMXVyXNDQZRgKf -> CLZmUrofqfizagiOmTvczKX -> gAUalBbnCRikTFWVHYRGF -> ZnMSH -> SKIP
+uexVk = ZnMSH -> CLZmUrofqfizagiOmTvczKX -> STOP
+vvJjxBfH = ELXHpqy -> ZnMSH -> VPulzuqnhHn -> QMXVyXNDQZRgKf -> oETENwog -> gAUalBbnCRikTFWVHYRGF -> rOblSwLD -> CLZmUrofqfizagiOmTvczKX -> XSUGQqeeXKJhfpbuOk -> naDxJ -> WbDKSe
+WbDKSe = XSUGQqeeXKJhfpbuOk -> VPulzuqnhHn -> TMpk -> CLZmUrofqfizagiOmTvczKX -> ZnMSH -> ELXHpqy -> lMF
+lMF = CLZmUrofqfizagiOmTvczKX -> QMXVyXNDQZRgKf -> XSUGQqeeXKJhfpbuOk -> naDxJ -> ELXHpqy -> TMpk -> r
+r = gAUalBbnCRikTFWVHYRGF -> oETENwog -> XSUGQqeeXKJhfpbuOk -> jjoL; VPulzuqnhHn -> ZnMSH -> QMXVyXNDQZRgKf -> TMpk -> naDxJ -> XSUGQqeeXKJhfpbuOk -> oETENwog -> ielAGESKs
+jjoL = 
+NABYPAFo = NeE -> YskB -> GUPQflMqwuXpdHaFV -> NaFrgVZlPlO -> nhXBUorplFtHIZx -> AiKSwGhEwOjpChwcC -> whkHY -> QMXVyXNDQZRgKf -> sHQoPowuQyLZWzemXhzc -> STOP
+s = gAUalBbnCRikTFWVHYRGF -> QMXVyXNDQZRgKf -> CLZmUrofqfizagiOmTvczKX -> ZnMSH -> TtvVeKpHLMjMzNuLS -> HNpthHNiKWB -> nGwQCcF -> dmikthCpyLHRQKxlIFmqobb -> fqOIIhxyOZsyjNVf -> OLf -> jHZmdmWbUIO
+jHZmdmWbUIO = CLZmUrofqfizagiOmTvczKX -> gAUalBbnCRikTFWVHYRGF -> STOP
+kjcuRTTDKSY = ZnMSH -> QMXVyXNDQZRgKf -> CLZmUrofqfizagiOmTvczKX -> EquAcSXSQOMgvRUhiDolhe -> WssGN
+WssGN = ZnMSH -> xr
+xr = QMXVyXNDQZRgKf -> okSGZRFiK
+okSGZRFiK = ZnMSH -> ljHidymP -> QMXVyXNDQZRgKf -> gAUalBbnCRikTFWVHYRGF -> VoAJykXRLTu; gAUalBbnCRikTFWVHYRGF -> QMXVyXNDQZRgKf -> EquAcSXSQOMgvRUhiDolhe -> CLZmUrofqfizagiOmTvczKX -> SKIP
+VoAJykXRLTu = QMXVyXNDQZRgKf -> SKIP
+assert ielAGESKs :[deadlock free]
+assert uexVk :[deadlock free]
+assert vvJjxBfH :[deadlock free]
+assert WbDKSe :[deadlock free]
+assert lMF :[deadlock free]
+assert r :[deadlock free]
+assert jjoL :[deadlock free]
+assert NABYPAFo :[deadlock free]
+assert s :[deadlock free]
+assert jHZmdmWbUIO :[deadlock free]
+assert kjcuRTTDKSY :[deadlock free]
+assert WssGN :[deadlock free]
+assert xr :[deadlock free]
+assert okSGZRFiK :[deadlock free]
+assert VoAJykXRLTu :[deadlock free]

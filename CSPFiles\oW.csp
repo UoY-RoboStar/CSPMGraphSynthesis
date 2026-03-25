@@ -1,0 +1,10 @@
+channel oNjQfeoemvikkPybf
+channel wZvNlvCmjgSLI
+channel fZqQrxuHXkvKbKoyGJDZUKV
+channel lElDLxsJddPwUnC
+channel ydPhKRzuKPiLKcGJxGmko
+channel lTcKsPIQSzqKoY
+qNok = oNjQfeoemvikkPybf -> wZvNlvCmjgSLI -> fZqQrxuHXkvKbKoyGJDZUKV -> lElDLxsJddPwUnC -> ydPhKRzuKPiLKcGJxGmko -> oW
+oW = oNjQfeoemvikkPybf -> lTcKsPIQSzqKoY -> ydPhKRzuKPiLKcGJxGmko -> lElDLxsJddPwUnC -> SKIP
+assert qNok :[deadlock free]
+assert oW :[deadlock free]

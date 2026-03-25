@@ -1,0 +1,9 @@
+channel DaJnc
+channel KNOJIzwqgxfYIBNqbEAffcY
+channel kMgYozrPOxenkk
+channel NEplDFVjOQmLaeVBvPCzwn
+channel BhlylaqZZsmgRwmrV
+channel XiCAcXTWfTCZrYYVj
+channel nfxZadqjXW
+YQiadwbiE = DaJnc -> KNOJIzwqgxfYIBNqbEAffcY -> kMgYozrPOxenkk -> NEplDFVjOQmLaeVBvPCzwn -> BhlylaqZZsmgRwmrV -> XiCAcXTWfTCZrYYVj -> nfxZadqjXW -> STOP
+assert YQiadwbiE :[deadlock free]

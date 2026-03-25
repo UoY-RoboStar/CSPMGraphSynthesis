@@ -1,0 +1,9 @@
+channel kc
+channel jUWyHKybmyQuNTlvjqMaEUNK
+channel IbzqZoqgvUgUrhSuZ
+channel yCnSvCToiRbUf
+channel EGFJIMffmKiDCaotPw
+channel NcFO
+channel XJZDmpTxgDmFRCodl
+WQxYgviMiEI = kc -> jUWyHKybmyQuNTlvjqMaEUNK -> IbzqZoqgvUgUrhSuZ -> yCnSvCToiRbUf -> EGFJIMffmKiDCaotPw -> NcFO -> XJZDmpTxgDmFRCodl -> STOP
+assert WQxYgviMiEI :[deadlock free]

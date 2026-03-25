@@ -1,0 +1,3 @@
+channel oKTRGBkOMzRaghXmDb
+rLd = oKTRGBkOMzRaghXmDb -> SKIP
+assert rLd :[deadlock free]

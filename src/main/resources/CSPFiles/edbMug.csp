@@ -1,0 +1,16 @@
+channel FINuKnVydeYOAFOPn
+channel okSUELVGWAyZFgCsg
+channel VhYCJ
+channel pQieohuAulrNBwdacN
+channel oxMBTFWJLanSHjcojBo
+channel yWIHV
+channel byeD
+channel WIeiGOUEdhIAFogILevPQbkA
+channel OrRcVIMYNKdL
+channel YGHobOxjcmmuBJxz
+channel WhJdYIjTzlqRu
+channel obW
+edbMug = FINuKnVydeYOAFOPn -> okSUELVGWAyZFgCsg -> VhYCJ -> pQieohuAulrNBwdacN -> oxMBTFWJLanSHjcojBo -> yWIHV -> byeD -> WIeiGOUEdhIAFogILevPQbkA -> OrRcVIMYNKdL -> YGHobOxjcmmuBJxz -> WhJdYIjTzlqRu -> zSl
+zSl = OrRcVIMYNKdL -> oxMBTFWJLanSHjcojBo -> WIeiGOUEdhIAFogILevPQbkA -> WhJdYIjTzlqRu -> obW -> STOP
+assert edbMug :[deadlock free]
+assert zSl :[deadlock free]

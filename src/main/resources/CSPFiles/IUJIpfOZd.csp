@@ -1,0 +1,8 @@
+channel B
+channel iAEjpfblcTsPwubo
+channel H
+channel JIsyIhdpgRt
+channel noCOkwzLQmknVkKFBFTUSFP
+channel BGiLWBVJoI
+IUJIpfOZd = B -> iAEjpfblcTsPwubo -> H -> JIsyIhdpgRt -> noCOkwzLQmknVkKFBFTUSFP -> BGiLWBVJoI -> STOP
+assert IUJIpfOZd :[deadlock free]

@@ -1,0 +1,21 @@
+channel NAqPDRXdZHWAtJyNYMULXq
+channel UiAzCVKN
+channel ZWpFGzwICBJJiCCSK
+channel cJDAnmgWOLLcARYPAcmA
+channel EVLVEXQNVMCsAZFnXYEguF
+channel TnYVhojjYCvWfZrP
+channel hSjcHuloUvVtiUGnyHBdWmj
+channel YhJBQeTcpSwZkamYTillw
+channel GCQxArc
+channel MsJiTTOixrxlgywUmY
+channel ZQuEdMLahTwHGaMilpNq
+channel eyyTvmWBfyOGODKSKn
+channel DXDijRKkjrsHN
+channel jWObtFqhMJ
+channel CTSQvAPncfNDlDJllvduSGNg
+channel jevhXFOyvhKgovNA
+channel EyDtMRzMuMRUtm
+channel sqNOCA
+channel sSQXDKgTH
+TY = NAqPDRXdZHWAtJyNYMULXq -> UiAzCVKN -> ZWpFGzwICBJJiCCSK -> cJDAnmgWOLLcARYPAcmA -> EVLVEXQNVMCsAZFnXYEguF -> TnYVhojjYCvWfZrP -> hSjcHuloUvVtiUGnyHBdWmj -> YhJBQeTcpSwZkamYTillw -> GCQxArc -> MsJiTTOixrxlgywUmY -> ZQuEdMLahTwHGaMilpNq -> eyyTvmWBfyOGODKSKn -> DXDijRKkjrsHN -> jWObtFqhMJ -> CTSQvAPncfNDlDJllvduSGNg -> jevhXFOyvhKgovNA -> EyDtMRzMuMRUtm -> sqNOCA -> sSQXDKgTH -> SKIP
+assert TY :[deadlock free]

@@ -1,0 +1,4 @@
+channel ejJq
+channel SVLhGhPO
+wXkFvLDLl = ejJq -> SVLhGhPO -> STOP
+assert wXkFvLDLl :[deadlock free]

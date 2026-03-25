@@ -1,0 +1,6 @@
+channel jUazXVoqUiqLlAMvWZedXXSp
+channel FzusFXATJDNm
+cZvTmXsVkG = jUazXVoqUiqLlAMvWZedXXSp -> FzusFXATJDNm -> sbOrxvQK
+sbOrxvQK = jUazXVoqUiqLlAMvWZedXXSp -> FzusFXATJDNm -> STOP
+assert cZvTmXsVkG :[deadlock free]
+assert sbOrxvQK :[deadlock free]

@@ -1,0 +1,8 @@
+channel XKpeU
+channel tVlRJWzgdCKUzqV
+channel xxPHFibTkfOIlQWdCmK
+channel zjhvcvRaNN
+channel bfdwBsitMYRLcQmgJtoEfCu
+channel eEOIBSiWgbImsRHxo
+rgQIipPBJCk = XKpeU -> tVlRJWzgdCKUzqV -> xxPHFibTkfOIlQWdCmK -> zjhvcvRaNN -> bfdwBsitMYRLcQmgJtoEfCu -> eEOIBSiWgbImsRHxo -> SKIP
+assert rgQIipPBJCk :[deadlock free]

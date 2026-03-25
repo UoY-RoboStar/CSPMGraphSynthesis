@@ -1,0 +1,7 @@
+channel yUYFUVYvjYBBcjJ
+channel pinPjrfyWkz
+channel GmiSswJdWS
+IE = yUYFUVYvjYBBcjJ -> MTxxxf
+MTxxxf = pinPjrfyWkz -> GmiSswJdWS -> SKIP
+assert IE :[deadlock free]
+assert MTxxxf :[deadlock free]

@@ -1,0 +1,16 @@
+channel FiViqmrph
+channel iLGpWzH
+channel NNUaK
+channel TXjVrjkXjvnGiNWf
+channel eDSa
+channel ayQocczx
+channel SyDZGWB
+channel ShArpnKiLJkRsOSOKrsBeYs
+channel kMcZw
+channel wwXDkIyrGU
+channel mnKuJ
+channel VUDLrggIa
+channel zsfxI
+channel CdH
+rTevjv = FiViqmrph -> iLGpWzH -> NNUaK -> TXjVrjkXjvnGiNWf -> eDSa -> ayQocczx -> SyDZGWB -> ShArpnKiLJkRsOSOKrsBeYs -> kMcZw -> wwXDkIyrGU -> mnKuJ -> VUDLrggIa -> zsfxI -> CdH -> SKIP
+assert rTevjv :[deadlock free]

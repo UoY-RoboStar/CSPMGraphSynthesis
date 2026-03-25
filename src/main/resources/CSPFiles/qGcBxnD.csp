@@ -1,0 +1,5 @@
+channel ZRNxFm
+channel IqtDe
+channel PnoazsuCMejHyThhcM
+qGcBxnD = ZRNxFm -> IqtDe -> PnoazsuCMejHyThhcM -> STOP
+assert qGcBxnD :[deadlock free]

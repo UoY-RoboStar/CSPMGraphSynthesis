@@ -1,0 +1,39 @@
+channel dyjDetYfmGlwczvZcQwH
+channel vNVefLTXInGoIM
+channel IC
+channel Y
+channel FtOGykCoDLLoi
+channel eqTgYbzszFuGm
+channel CWRQoVJxYUnFCjXZGixSqv
+channel TizSOZEJOizRdgArLARkevE
+channel hsSuYpMXeFLKpFFOza
+channel lFrQyQGJhn
+channel GCVdgAl
+channel xpDMEOcnMJuasStUc
+channel cKAIzAaqonWLHGotVQ
+channel bs
+channel qrHwywuxJmlk
+channel beWSSHGGbf
+channel tWxymNvOLwiPfqyOA
+channel BuQusLIudQqz
+channel tQYRdwIfwjPMHoaErYL
+channel RrtlmLtwkYFTdYsovrxN
+channel ZckKDLhdLbhe
+channel TEo
+channel oxAcZZiGUzEIH
+channel kGhakGfcsNobEPqrPqW
+channel uNsgMFIhGqDwvRrSsjwwMugf
+MELuB = FtOGykCoDLLoi -> eqTgYbzszFuGm -> Y -> vNVefLTXInGoIM -> CWRQoVJxYUnFCjXZGixSqv -> TizSOZEJOizRdgArLARkevE -> hsSuYpMXeFLKpFFOza -> lFrQyQGJhn -> GCVdgAl -> IC -> dyjDetYfmGlwczvZcQwH -> xpDMEOcnMJuasStUc -> cKAIzAaqonWLHGotVQ -> STOP
+sjrWnGAX = dyjDetYfmGlwczvZcQwH -> AGYF
+AGYF = dyjDetYfmGlwczvZcQwH -> bs -> qrHwywuxJmlk -> IC -> beWSSHGGbf -> cKAIzAaqonWLHGotVQ -> CWRQoVJxYUnFCjXZGixSqv -> hsSuYpMXeFLKpFFOza -> tWxymNvOLwiPfqyOA -> bVOOlSqqvN
+bVOOlSqqvN = BuQusLIudQqz -> tQYRdwIfwjPMHoaErYL -> RrtlmLtwkYFTdYsovrxN -> ZckKDLhdLbhe -> TEo -> beWSSHGGbf -> dyjDetYfmGlwczvZcQwH -> tWxymNvOLwiPfqyOA -> bs -> TizSOZEJOizRdgArLARkevE -> cKAIzAaqonWLHGotVQ -> CWRQoVJxYUnFCjXZGixSqv -> smeOQjczq
+smeOQjczq = oxAcZZiGUzEIH -> RrtlmLtwkYFTdYsovrxN -> TizSOZEJOizRdgArLARkevE -> v; dyjDetYfmGlwczvZcQwH -> RrtlmLtwkYFTdYsovrxN -> ZckKDLhdLbhe -> uNsgMFIhGqDwvRrSsjwwMugf -> CWRQoVJxYUnFCjXZGixSqv -> tWxymNvOLwiPfqyOA -> IC -> TizSOZEJOizRdgArLARkevE -> TEo -> GCVdgAl -> tQYRdwIfwjPMHoaErYL -> Y -> BuQusLIudQqz -> bs -> qrHwywuxJmlk -> kGhakGfcsNobEPqrPqW -> beWSSHGGbf -> SKIP
+v = 
+U = dyjDetYfmGlwczvZcQwH -> uNsgMFIhGqDwvRrSsjwwMugf -> cKAIzAaqonWLHGotVQ -> GCVdgAl -> CWRQoVJxYUnFCjXZGixSqv -> qrHwywuxJmlk -> IC -> hsSuYpMXeFLKpFFOza -> TizSOZEJOizRdgArLARkevE -> Y -> SKIP
+assert MELuB :[deadlock free]
+assert sjrWnGAX :[deadlock free]
+assert AGYF :[deadlock free]
+assert bVOOlSqqvN :[deadlock free]
+assert smeOQjczq :[deadlock free]
+assert v :[deadlock free]
+assert U :[deadlock free]

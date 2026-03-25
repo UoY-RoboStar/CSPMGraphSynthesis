@@ -1,0 +1,18 @@
+channel ZceldCEWkAZSulOp
+channel hboaVgOADQFPLETEIfhRA
+channel oTJMnFTFKfvoGCzLBW
+channel TKysxsbdKvwSHFszu
+channel pqLk
+channel ckubJtORSCaMAMr
+channel PTCPaNVPHYYeFtpeUKgOTg
+channel qDEJRhY
+channel wbQzMJgSMnC
+channel vhTEFEzlq
+channel EUvueDWgsAxeqxkbulM
+channel zAuvOAAqMtLFgaS
+channel DGdbPtSu
+channel rhEeZSICdfIYyQegk
+Nvl = ZceldCEWkAZSulOp -> hboaVgOADQFPLETEIfhRA -> oTJMnFTFKfvoGCzLBW -> TKysxsbdKvwSHFszu -> pqLk -> ckubJtORSCaMAMr -> PTCPaNVPHYYeFtpeUKgOTg -> qDEJRhY -> wbQzMJgSMnC -> vhTEFEzlq -> EUvueDWgsAxeqxkbulM -> zAuvOAAqMtLFgaS -> b
+b = PTCPaNVPHYYeFtpeUKgOTg -> ckubJtORSCaMAMr -> EUvueDWgsAxeqxkbulM -> DGdbPtSu -> oTJMnFTFKfvoGCzLBW -> zAuvOAAqMtLFgaS -> rhEeZSICdfIYyQegk -> STOP
+assert Nvl :[deadlock free]
+assert b :[deadlock free]

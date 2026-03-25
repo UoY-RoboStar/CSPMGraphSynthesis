@@ -1,0 +1,12 @@
+channel Fuwyvua
+channel PpkdaHujKLUQCsH
+channel zJQAdYFZfAVejkxXcG
+channel COYKTFDIG
+channel tjMtegWZP
+channel zYpmFiAVKTWyLAkhtLguX
+channel DgvAJnwH
+channel RHatLruLTgcgYqIKC
+channel mYYzic
+channel WZakBxZMSSbpLkQf
+ITFHTQcU = Fuwyvua -> PpkdaHujKLUQCsH -> zJQAdYFZfAVejkxXcG -> COYKTFDIG -> tjMtegWZP -> zYpmFiAVKTWyLAkhtLguX -> DgvAJnwH -> RHatLruLTgcgYqIKC -> mYYzic -> WZakBxZMSSbpLkQf -> SKIP
+assert ITFHTQcU :[deadlock free]

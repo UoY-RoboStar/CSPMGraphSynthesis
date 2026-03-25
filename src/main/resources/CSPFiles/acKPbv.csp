@@ -1,0 +1,5 @@
+channel qVSuiukKiGjBlY
+channel eFzNulenRzQqWpHB
+channel EiIPYEpdXUCrhMblmCqbvfjt
+acKPbv = qVSuiukKiGjBlY -> eFzNulenRzQqWpHB -> EiIPYEpdXUCrhMblmCqbvfjt -> SKIP
+assert acKPbv :[deadlock free]

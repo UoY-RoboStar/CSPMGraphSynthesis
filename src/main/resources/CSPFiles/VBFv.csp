@@ -1,0 +1,7 @@
+channel pIXkEpJopYW
+channel xEExdLJxn
+channel TvzsUJCdHRANorsY
+channel n
+channel OBxbJsNmzdcXG
+VBFv = pIXkEpJopYW -> xEExdLJxn -> TvzsUJCdHRANorsY -> n -> OBxbJsNmzdcXG -> SKIP
+assert VBFv :[deadlock free]

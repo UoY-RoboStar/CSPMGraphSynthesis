@@ -1,0 +1,6 @@
+channel qwMvABYgOrZsEnMjZSwVGNJ
+channel GpSj
+channel XHwnMngAwdajAWsvM
+channel XBjnzS
+SaVDc = qwMvABYgOrZsEnMjZSwVGNJ -> GpSj -> XHwnMngAwdajAWsvM -> XBjnzS -> STOP
+assert SaVDc :[deadlock free]
