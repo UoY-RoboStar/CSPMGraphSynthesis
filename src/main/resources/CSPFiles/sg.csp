@@ -1,0 +1,9 @@
+channel DdsQpXfFicrIH
+channel OBHsLaTxJZakJqobsKv
+channel fnUqNbpekjRthimQpZjlG
+channel gkHsXAQxbpPNRZXDEAhtn
+channel UKbRRCJEjxd
+sg = DdsQpXfFicrIH -> OBHsLaTxJZakJqobsKv -> BRh
+BRh = fnUqNbpekjRthimQpZjlG -> gkHsXAQxbpPNRZXDEAhtn -> UKbRRCJEjxd -> DdsQpXfFicrIH -> SKIP
+assert sg :[deadlock free]
+assert BRh :[deadlock free]

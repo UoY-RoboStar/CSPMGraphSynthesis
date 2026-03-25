@@ -1,0 +1,10 @@
+channel IUsAYjZaEQMEao
+channel eHlgpeoriGknLj
+channel X
+channel BHsfroLKhNtSFYsPnArpsXcE
+channel ZWXPO
+channel QbyKXhlD
+channel AhmhHZOT
+channel QHhvuQpZRzamzqG
+KoIaN = IUsAYjZaEQMEao -> eHlgpeoriGknLj -> X -> BHsfroLKhNtSFYsPnArpsXcE -> ZWXPO -> QbyKXhlD -> AhmhHZOT -> QHhvuQpZRzamzqG -> SKIP
+assert KoIaN :[deadlock free]

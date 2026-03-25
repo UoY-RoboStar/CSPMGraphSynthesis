@@ -1,0 +1,3 @@
+channel BTcGcCFpbsepeBs
+MRL = BTcGcCFpbsepeBs -> SKIP
+assert MRL :[deadlock free]

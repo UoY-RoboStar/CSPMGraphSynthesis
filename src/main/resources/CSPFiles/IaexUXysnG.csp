@@ -1,0 +1,11 @@
+channel jOm
+channel QfJWrHqF
+channel vairFsGeNkMKfR
+channel IuHrWccKxGfhaSaoWDrOCi
+channel gfSiKJjEIlgistrTlqJeSa
+channel teOhYDNoaluneJIJCFp
+channel EbCrQORbtt
+channel FhlkvdUgaSWCiyY
+channel ZxAHA
+IaexUXysnG = jOm -> QfJWrHqF -> vairFsGeNkMKfR -> IuHrWccKxGfhaSaoWDrOCi -> gfSiKJjEIlgistrTlqJeSa -> teOhYDNoaluneJIJCFp -> EbCrQORbtt -> FhlkvdUgaSWCiyY -> ZxAHA -> SKIP
+assert IaexUXysnG :[deadlock free]

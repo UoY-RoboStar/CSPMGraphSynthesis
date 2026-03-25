@@ -1,0 +1,7 @@
+channel JoKKmlMtEgGbTannaBqtgRF
+channel vjVHzFdrOfifubvjmuUexR
+channel xumenDwQS
+tpNSBoIg = JoKKmlMtEgGbTannaBqtgRF -> vjVHzFdrOfifubvjmuUexR -> jjYIM
+jjYIM = vjVHzFdrOfifubvjmuUexR -> xumenDwQS -> STOP
+assert tpNSBoIg :[deadlock free]
+assert jjYIM :[deadlock free]

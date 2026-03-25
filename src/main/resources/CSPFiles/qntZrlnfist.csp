@@ -1,0 +1,4 @@
+channel dESyp
+channel kX
+qntZrlnfist = dESyp -> kX -> SKIP
+assert qntZrlnfist :[deadlock free]

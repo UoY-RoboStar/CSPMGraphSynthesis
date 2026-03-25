@@ -1,0 +1,14 @@
+channel GwrGWAZHI
+channel utxDjgTNUpIdwFQkzwxcZRb
+channel sUuDkiPSpMqJjAswI
+channel XMYLryDFDgXTvHbmpDB
+channel K
+channel rCsUrBtmHnKxbF
+channel wRLgNgzTkrWlkR
+channel PJXBCPH
+hBLjvHVcB = GwrGWAZHI -> utxDjgTNUpIdwFQkzwxcZRb -> sUuDkiPSpMqJjAswI -> XMYLryDFDgXTvHbmpDB -> K -> Reb
+Reb = rCsUrBtmHnKxbF -> XMYLryDFDgXTvHbmpDB -> sUuDkiPSpMqJjAswI -> K -> utxDjgTNUpIdwFQkzwxcZRb -> wRLgNgzTkrWlkR -> PJXBCPH -> CiIjtl
+CiIjtl = PJXBCPH -> XMYLryDFDgXTvHbmpDB -> rCsUrBtmHnKxbF -> SKIP
+assert hBLjvHVcB :[deadlock free]
+assert Reb :[deadlock free]
+assert CiIjtl :[deadlock free]

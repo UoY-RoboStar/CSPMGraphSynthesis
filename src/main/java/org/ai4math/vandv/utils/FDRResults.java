@@ -39,7 +39,7 @@ public class FDRResults {
 
     public void addError(JsonNode errors) {
         if (this.errors == null) {
-            this.errors = new ArrayList<>(Arrays.asList(errors));
+            this.errors = new ArrayList<>(List.of(errors));
         }
         else {
             this.errors.add(errors);
@@ -52,7 +52,7 @@ public class FDRResults {
 
     public void addCounterexamples(JsonNode counterexamples) {
         if (this.counterexamples == null) {
-            this.counterexamples = new ArrayList<>(Arrays.asList(counterexamples));
+            this.counterexamples = new ArrayList<>(List.of(counterexamples));
         }
         else {
             this.counterexamples.add(counterexamples);
@@ -71,7 +71,7 @@ public class FDRResults {
         }
 
         if (this.fdrCounterexamples == null) {
-            this.fdrCounterexamples = new ArrayList<>(Arrays.asList(fdrCounterexample));
+            this.fdrCounterexamples = new ArrayList<>(List.of(fdrCounterexample));
         }
         else {
             this.fdrCounterexamples.add(fdrCounterexample);

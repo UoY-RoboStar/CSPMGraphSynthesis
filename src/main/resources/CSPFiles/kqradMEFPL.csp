@@ -1,0 +1,13 @@
+channel XOz
+channel qYUwThSnVIkBMTiIF
+channel MCHwHJBMUYboSOAtpqB
+channel mgC
+channel vPLPrKkZGgUfQrroDjzYqE
+channel qxOpf
+channel lneTvmSLyquLKIhueLIp
+kqradMEFPL = XOz -> qYUwThSnVIkBMTiIF -> MCHwHJBMUYboSOAtpqB -> mgC -> vPLPrKkZGgUfQrroDjzYqE -> qxOpf -> Tg
+Tg = qxOpf -> MCHwHJBMUYboSOAtpqB -> lneTvmSLyquLKIhueLIp -> qYUwThSnVIkBMTiIF -> vPLPrKkZGgUfQrroDjzYqE -> gnXseOwMa
+gnXseOwMa = vPLPrKkZGgUfQrroDjzYqE -> mgC -> qYUwThSnVIkBMTiIF -> qxOpf -> XOz -> MCHwHJBMUYboSOAtpqB -> SKIP
+assert kqradMEFPL :[deadlock free]
+assert Tg :[deadlock free]
+assert gnXseOwMa :[deadlock free]

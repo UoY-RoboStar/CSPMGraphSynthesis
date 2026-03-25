@@ -1,0 +1,19 @@
+channel Nklh
+channel qdLYkmSBd
+channel QgKRDBDJqLipW
+channel EyxrhHfq
+channel i
+channel MkcuvEl
+channel VMSoBSwByREHdhQZSDnsf
+channel NGVzKnJX
+channel vfMAbWbygfPUXV
+channel LqNsRtxS
+channel EwRedslPmwOJtOeBPEuoE
+channel tjiAcvXnQGn
+channel ruGlHOObugNeQPygpxzTp
+channel lO
+channel pvMnAIh
+L = Nklh -> qdLYkmSBd -> QgKRDBDJqLipW -> EyxrhHfq -> i -> MkcuvEl -> VMSoBSwByREHdhQZSDnsf -> NGVzKnJX -> vfMAbWbygfPUXV -> LqNsRtxS -> EwRedslPmwOJtOeBPEuoE -> tjiAcvXnQGn -> ruGlHOObugNeQPygpxzTp -> lO -> pvMnAIh -> STIJwzeqd
+STIJwzeqd = EyxrhHfq -> STOP
+assert L :[deadlock free]
+assert STIJwzeqd :[deadlock free]

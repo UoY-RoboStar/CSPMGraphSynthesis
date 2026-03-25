@@ -1,0 +1,4 @@
+channel AkYBUEzKGZ
+channel nVUmg
+QxT = AkYBUEzKGZ -> nVUmg -> SKIP
+assert QxT :[deadlock free]

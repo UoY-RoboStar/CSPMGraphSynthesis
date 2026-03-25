@@ -1,0 +1,4 @@
+channel yikDVceRAQDAKf
+channel mKAJFw
+pbgPrdGHAg = yikDVceRAQDAKf -> mKAJFw -> SKIP
+assert pbgPrdGHAg :[deadlock free]

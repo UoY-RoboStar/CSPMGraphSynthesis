@@ -1,0 +1,10 @@
+channel PZnaa
+channel uBuKCYdK
+channel jSZwWzwXVzAB
+channel FVabpwKDRhGwLu
+channel GJrQbHFhDNNtrdzzVkcqcWoP
+channel z
+dPe = PZnaa -> uBuKCYdK -> jSZwWzwXVzAB -> FVabpwKDRhGwLu -> uLXBYCAqh
+uLXBYCAqh = GJrQbHFhDNNtrdzzVkcqcWoP -> z -> STOP
+assert dPe :[deadlock free]
+assert uLXBYCAqh :[deadlock free]

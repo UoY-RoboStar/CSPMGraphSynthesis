@@ -16,11 +16,11 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws IOException {
         GraphGenerator graphGenerator = new GraphGenerator();
-        List<CSPGraph> graphs = graphGenerator.GenerateGraphSet();
+        List<CSPGraph> graphs = graphGenerator.generateGraphSet();
 
         CSPMTransformer cspmTransformer = new CSPMTransformer();
         for (CSPGraph graph: graphs) {
-            cspmTransformer.GraphToCSPM(graph,graph.getInitialVertex().getName());
+            cspmTransformer.graphToCSPM(graph,graph.getInitialVertex().getName());
         }
         List<String> cspFiles = cspmTransformer.getCspFiles();
 

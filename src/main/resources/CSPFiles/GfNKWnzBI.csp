@@ -1,0 +1,7 @@
+channel obFJbYBSsWAGLsW
+channel VghrlYBU
+channel aVAnEoMMtvamQNRHiEHTpb
+channel ofUSOFsWI
+channel tbIDuVXLlx
+GfNKWnzBI = obFJbYBSsWAGLsW -> VghrlYBU -> aVAnEoMMtvamQNRHiEHTpb -> ofUSOFsWI -> tbIDuVXLlx -> SKIP
+assert GfNKWnzBI :[deadlock free]

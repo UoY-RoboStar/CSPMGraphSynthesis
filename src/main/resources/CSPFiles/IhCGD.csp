@@ -1,0 +1,7 @@
+channel LiCYgpYAWTDMLLhl
+channel mCEzcBYiUztPnZOLKXvb
+channel Zmh
+channel vecqY
+channel QeFHFvdCFWXzqlC
+IhCGD = LiCYgpYAWTDMLLhl -> mCEzcBYiUztPnZOLKXvb -> Zmh -> vecqY -> QeFHFvdCFWXzqlC -> STOP
+assert IhCGD :[deadlock free]

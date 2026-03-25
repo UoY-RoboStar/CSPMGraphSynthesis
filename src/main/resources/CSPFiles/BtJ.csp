@@ -1,0 +1,10 @@
+channel yigXIwoKuGYnmofCiiuhaXW
+channel lJNCvnfx
+channel IDoebSWdaZdM
+channel oYUjumP
+BtJ = yigXIwoKuGYnmofCiiuhaXW -> lJNCvnfx -> cBbAu
+cBbAu = IDoebSWdaZdM -> DU
+DU = lJNCvnfx -> oYUjumP -> IDoebSWdaZdM -> STOP
+assert BtJ :[deadlock free]
+assert cBbAu :[deadlock free]
+assert DU :[deadlock free]

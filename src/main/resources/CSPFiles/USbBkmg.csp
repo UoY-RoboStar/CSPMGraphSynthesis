@@ -1,0 +1,11 @@
+channel xLDjYzlftfVr
+channel DcnocHlvUASWvJumtIMglDTt
+channel noEcRoyn
+channel dNaePrKHLgcUMhrRSqkZrqJf
+channel ItoSdxguBaqTIpIrGOHHl
+channel ofBtCyOaWifhfzy
+channel ImuufL
+tHMlZA = xLDjYzlftfVr -> DcnocHlvUASWvJumtIMglDTt -> noEcRoyn -> dNaePrKHLgcUMhrRSqkZrqJf -> ItoSdxguBaqTIpIrGOHHl -> ofBtCyOaWifhfzy -> USbBkmg
+USbBkmg = ImuufL -> noEcRoyn -> ofBtCyOaWifhfzy -> dNaePrKHLgcUMhrRSqkZrqJf -> STOP
+assert tHMlZA :[deadlock free]
+assert USbBkmg :[deadlock free]

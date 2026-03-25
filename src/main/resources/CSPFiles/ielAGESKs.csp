@@ -1,0 +1,6 @@
+channel QMXVyXNDQZRgKf
+channel CLZmUrofqfizagiOmTvczKX
+channel gAUalBbnCRikTFWVHYRGF
+channel ZnMSH
+ielAGESKs = QMXVyXNDQZRgKf -> CLZmUrofqfizagiOmTvczKX -> gAUalBbnCRikTFWVHYRGF -> ZnMSH -> SKIP
+assert ielAGESKs :[deadlock free]

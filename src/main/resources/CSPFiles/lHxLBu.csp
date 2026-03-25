@@ -1,0 +1,8 @@
+channel YBbnVcWLSisOhhSGcrulTRdG
+channel tvB
+channel ZuooexBtwkUZ
+channel VgN
+lHxLBu = YBbnVcWLSisOhhSGcrulTRdG -> tvB -> ZuooexBtwkUZ -> Eo
+Eo = YBbnVcWLSisOhhSGcrulTRdG -> tvB -> ZuooexBtwkUZ -> VgN -> STOP
+assert lHxLBu :[deadlock free]
+assert Eo :[deadlock free]

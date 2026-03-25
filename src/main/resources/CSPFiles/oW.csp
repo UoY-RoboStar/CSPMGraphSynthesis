@@ -1,0 +1,5 @@
+channel iilAhWMDgDdSssDEkSQLm
+channel qFiDkDfJopjWEpYjDWkOO
+channel lQifFrflRzLJrEke
+oW = iilAhWMDgDdSssDEkSQLm -> qFiDkDfJopjWEpYjDWkOO -> lQifFrflRzLJrEke -> STOP
+assert oW :[deadlock free]

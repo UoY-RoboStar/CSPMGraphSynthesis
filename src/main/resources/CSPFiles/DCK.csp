@@ -1,0 +1,8 @@
+channel rIleUyUAosoYFQGCZJB
+channel qscRFJokQYgAOLOLfqbO
+channel ySIQDrYvb
+channel Wq
+channel oNHk
+channel hVkkjriEAGigkDXQW
+DCK = rIleUyUAosoYFQGCZJB -> qscRFJokQYgAOLOLfqbO -> ySIQDrYvb -> Wq -> oNHk -> hVkkjriEAGigkDXQW -> SKIP
+assert DCK :[deadlock free]

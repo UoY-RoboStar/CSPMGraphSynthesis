@@ -1,0 +1,8 @@
+channel hkIwKGKaeXurE
+channel rZdZXSSfvKNQCbshcowwddu
+channel SycftaNzTQSDjed
+channel QMPlFDpo
+TxXaWmIcjNF = hkIwKGKaeXurE -> rZdZXSSfvKNQCbshcowwddu -> SycftaNzTQSDjed -> Kq
+Kq = rZdZXSSfvKNQCbshcowwddu -> hkIwKGKaeXurE -> QMPlFDpo -> SKIP
+assert TxXaWmIcjNF :[deadlock free]
+assert Kq :[deadlock free]

@@ -1,0 +1,3 @@
+channel liKUVPInTSv
+AagzaDbBrC = liKUVPInTSv -> STOP
+assert AagzaDbBrC :[deadlock free]

@@ -1,0 +1,4 @@
+channel msEzTMqygxokeYnPVoT
+channel mMvTtgVWcYSvdyayUz
+fy = msEzTMqygxokeYnPVoT -> mMvTtgVWcYSvdyayUz -> STOP
+assert fy :[deadlock free]

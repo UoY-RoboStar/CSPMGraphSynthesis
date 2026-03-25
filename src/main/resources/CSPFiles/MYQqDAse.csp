@@ -1,0 +1,13 @@
+channel RnnBdFGAZ
+channel BSaahqFYUVjQgIfw
+channel OGq
+channel rLjTZwoNfZFlCDM
+channel gLcRsOjLCgeXAhhBWAhP
+channel NENc
+channel jVjxASbOIQkmRPWw
+channel wyKItcsfR
+channel vqdVQ
+MYQqDAse = RnnBdFGAZ -> BSaahqFYUVjQgIfw -> OGq -> rLjTZwoNfZFlCDM -> gLcRsOjLCgeXAhhBWAhP -> NENc -> jVjxASbOIQkmRPWw -> wyKItcsfR -> vqdVQ -> p
+p = OGq -> vqdVQ -> jVjxASbOIQkmRPWw -> wyKItcsfR -> SKIP
+assert MYQqDAse :[deadlock free]
+assert p :[deadlock free]

@@ -1,0 +1,3 @@
+channel hZo
+WaOksjq = hZo -> SKIP
+assert WaOksjq :[deadlock free]

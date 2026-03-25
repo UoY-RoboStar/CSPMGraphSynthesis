@@ -195,7 +195,7 @@ public class GraphGeneratorTest {
     @Test
     void givenCountOfOne_whenGenerateBaseGraphs_thenAValidGraphShouldBeDefined() throws IOException{
         GraphGenerator graphGenerator = new GraphGenerator();
-        graphGenerator.GenerateBaseGraphs(1);
+        graphGenerator.generateBaseGraphs(1);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
         CSPGraph graph = graphs.getFirst();
@@ -223,7 +223,7 @@ public class GraphGeneratorTest {
     @Test
     void givenCountOfTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
         GraphGenerator graphGenerator = new GraphGenerator();
-        graphGenerator.GenerateBaseGraphs(2);
+        graphGenerator.generateBaseGraphs(2);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
         assertEquals(2, graphs.size(), "Number of graphs is not equal to 1");
@@ -254,7 +254,7 @@ public class GraphGeneratorTest {
     @Test
     void givenCountGreaterThanTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
         GraphGenerator graphGenerator = new GraphGenerator();
-        graphGenerator.GenerateBaseGraphs(5);
+        graphGenerator.generateBaseGraphs(5);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
         assertEquals(5, graphs.size(), "Number of graphs is not equal to 1");
@@ -285,7 +285,7 @@ public class GraphGeneratorTest {
     @Test
     void givenCountOfOne_whenGenerateBaseGraphsThenCombinedGraph_thenAValidGraphShouldBeDefined() throws IOException{
         GraphGenerator graphGenerator = new GraphGenerator();
-        graphGenerator.GenerateBaseGraphs(1);
+        graphGenerator.generateBaseGraphs(1);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
         CSPGraph graph = graphs.getFirst();
@@ -297,7 +297,7 @@ public class GraphGeneratorTest {
 
         assertTrue(vertx.getFirst().isInitialVertex(), "First vertex is not initial");
 
-        graphGenerator.CombineGraphs(1);
+        graphGenerator.combineGraphs(1);
 
         graphs = graphGenerator.getGraphs();
         graph = graphs.getFirst();

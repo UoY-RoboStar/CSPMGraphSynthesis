@@ -1,0 +1,23 @@
+channel UVeMpIhcZBJMbWIzVRhzBEOJ
+channel PdwjqBIYuVkSFTnSPLmhz
+channel TyVDVierfHsDC
+channel AwyjBifkWMxPtqK
+channel aEhPYWlRWbecgY
+channel kTkjurisvercyofCe
+channel GCyGdEdSIhvcNAO
+channel fhByxZsFYUlSjagnJG
+channel ksrqKwanpXHZPyJZQZsPJQHi
+channel ImGGVyUiOeTOyjsnlxbrKgJ
+channel pMnkDU
+channel xsRrYQWlPbzPBFQnV
+channel yxFmrRJDCT
+channel tnYYKzLXyuJTmFcclVY
+channel PbhdAsSAyEt
+channel B
+channel HexKgRbQzrFGA
+channel UGZhlsrJRuQePWpoaIPyI
+channel wjuakHFA
+KDNE = UVeMpIhcZBJMbWIzVRhzBEOJ -> PdwjqBIYuVkSFTnSPLmhz -> TyVDVierfHsDC -> AwyjBifkWMxPtqK -> aEhPYWlRWbecgY -> kTkjurisvercyofCe -> GCyGdEdSIhvcNAO -> fhByxZsFYUlSjagnJG -> ksrqKwanpXHZPyJZQZsPJQHi -> ImGGVyUiOeTOyjsnlxbrKgJ -> pMnkDU -> xsRrYQWlPbzPBFQnV -> yxFmrRJDCT -> tnYYKzLXyuJTmFcclVY -> PbhdAsSAyEt -> B -> HexKgRbQzrFGA -> UGZhlsrJRuQePWpoaIPyI -> V
+V = AwyjBifkWMxPtqK -> ksrqKwanpXHZPyJZQZsPJQHi -> pMnkDU -> GCyGdEdSIhvcNAO -> UGZhlsrJRuQePWpoaIPyI -> wjuakHFA -> UVeMpIhcZBJMbWIzVRhzBEOJ -> yxFmrRJDCT -> B -> kTkjurisvercyofCe -> PdwjqBIYuVkSFTnSPLmhz -> HexKgRbQzrFGA -> xsRrYQWlPbzPBFQnV -> STOP
+assert KDNE :[deadlock free]
+assert V :[deadlock free]

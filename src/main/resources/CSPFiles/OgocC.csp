@@ -1,0 +1,11 @@
+channel Tgr
+channel W
+channel XvBedGgNUlnksiKwMqZpH
+channel WJdmyPtGbOuedoIcgWAk
+channel SmmuvVVlCOQHwIpyc
+channel bLIhfUrQSICTlzqd
+channel VgqBdNtyusFyPoCzidcNc
+channel UaeFfjOXDWM
+channel FOCAwezXpcx
+OgocC = Tgr -> W -> XvBedGgNUlnksiKwMqZpH -> WJdmyPtGbOuedoIcgWAk -> SmmuvVVlCOQHwIpyc -> bLIhfUrQSICTlzqd -> VgqBdNtyusFyPoCzidcNc -> UaeFfjOXDWM -> FOCAwezXpcx -> SKIP
+assert OgocC :[deadlock free]

@@ -1,0 +1,51 @@
+channel rGpPlFfWWrMZliwu
+channel yNG
+channel CXpvTLUUoiHpnuLEDVe
+channel wFlgyXKzgK
+channel pnpURg
+channel lQFSBDuvIqIPDc
+channel j
+channel QXcuFmlxs
+channel wxnLdCWN
+channel MIVMlKLAGfPAnrXTxcvm
+channel BngoibHyEVAiviqNeOx
+channel qGBhManyaG
+channel TdXenBqUbxOPBAzai
+channel xRAvpvdazPKCUAdfZc
+channel LiAinKp
+channel tkXJQ
+channel fDdYrWBQAkcMhOEiKbpQuQPy
+channel CFlpSuOssaccsV
+channel DAivnmrowqdfiIbbKfhWim
+channel PhMyhdCEFMxSYZQvOCk
+channel AZWsuIwkBCfUoCoHkg
+channel psxbCYbh
+channel VzIuysVTbfvFifipa
+channel wsvdSlnd
+channel GiPq
+channel KvhEy
+channel aBtmnPptachrwpOV
+nE = pnpURg -> LiAinKp -> wxnLdCWN -> j -> TdXenBqUbxOPBAzai -> QXcuFmlxs -> wFlgyXKzgK -> MIVMlKLAGfPAnrXTxcvm -> STOP
+DaLkj = rGpPlFfWWrMZliwu -> yNG -> CXpvTLUUoiHpnuLEDVe -> wFlgyXKzgK -> pnpURg -> lQFSBDuvIqIPDc -> j -> QXcuFmlxs -> wxnLdCWN -> MIVMlKLAGfPAnrXTxcvm -> BngoibHyEVAiviqNeOx -> qGBhManyaG -> TdXenBqUbxOPBAzai -> xRAvpvdazPKCUAdfZc -> rALwXGcmOT
+rALwXGcmOT = CXpvTLUUoiHpnuLEDVe -> qD
+qD = wxnLdCWN -> wFlgyXKzgK -> TdXenBqUbxOPBAzai -> rGpPlFfWWrMZliwu -> BngoibHyEVAiviqNeOx -> j -> QXcuFmlxs -> yNG -> FN
+FN = rGpPlFfWWrMZliwu -> j -> qGBhManyaG -> wxnLdCWN -> pnpURg -> MIVMlKLAGfPAnrXTxcvm -> yNG -> lQFSBDuvIqIPDc -> CXpvTLUUoiHpnuLEDVe -> TdXenBqUbxOPBAzai -> QXcuFmlxs -> LiAinKp -> wFlgyXKzgK -> TNI; MIVMlKLAGfPAnrXTxcvm -> pnpURg -> j -> qGBhManyaG -> nE
+TNI = TdXenBqUbxOPBAzai -> QXcuFmlxs -> yNG -> wxnLdCWN -> LiAinKp -> pnpURg -> xRAvpvdazPKCUAdfZc -> BngoibHyEVAiviqNeOx -> j -> MIVMlKLAGfPAnrXTxcvm -> CXpvTLUUoiHpnuLEDVe -> rGpPlFfWWrMZliwu -> wFlgyXKzgK -> qD
+lsoqhyh = tkXJQ -> fDdYrWBQAkcMhOEiKbpQuQPy -> CFlpSuOssaccsV -> DAivnmrowqdfiIbbKfhWim -> pnpURg -> j -> wFlgyXKzgK -> PhMyhdCEFMxSYZQvOCk -> LiAinKp -> TdXenBqUbxOPBAzai -> AZWsuIwkBCfUoCoHkg -> psxbCYbh -> QXcuFmlxs -> VzIuysVTbfvFifipa -> MIVMlKLAGfPAnrXTxcvm -> PacDJ
+PacDJ = fDdYrWBQAkcMhOEiKbpQuQPy -> wsvdSlnd -> CFlpSuOssaccsV -> wxnLdCWN -> psxbCYbh -> AZWsuIwkBCfUoCoHkg -> DAivnmrowqdfiIbbKfhWim -> LiAinKp -> kuelDjtrtTK
+kuelDjtrtTK = GiPq -> wxnLdCWN -> LiAinKp -> pnpURg -> psxbCYbh -> AZWsuIwkBCfUoCoHkg -> QXcuFmlxs -> wsvdSlnd -> VzIuysVTbfvFifipa -> wFlgyXKzgK -> j -> CFlpSuOssaccsV -> DAivnmrowqdfiIbbKfhWim -> KvhEy -> tkXJQ -> MIVMlKLAGfPAnrXTxcvm -> TdXenBqUbxOPBAzai -> fDdYrWBQAkcMhOEiKbpQuQPy -> JJqFad
+JJqFad = aBtmnPptachrwpOV -> sTZBObJa; wFlgyXKzgK -> GiPq -> pnpURg -> wsvdSlnd -> MIVMlKLAGfPAnrXTxcvm -> PhMyhdCEFMxSYZQvOCk -> nE
+sTZBObJa = aBtmnPptachrwpOV -> psxbCYbh -> KvhEy -> AZWsuIwkBCfUoCoHkg -> GiPq -> uTqb
+uTqb = TdXenBqUbxOPBAzai -> GiPq -> aBtmnPptachrwpOV -> wxnLdCWN -> QXcuFmlxs -> psxbCYbh -> uTqb
+assert nE :[deadlock free]
+assert DaLkj :[deadlock free]
+assert rALwXGcmOT :[deadlock free]
+assert qD :[deadlock free]
+assert FN :[deadlock free]
+assert TNI :[deadlock free]
+assert lsoqhyh :[deadlock free]
+assert PacDJ :[deadlock free]
+assert kuelDjtrtTK :[deadlock free]
+assert JJqFad :[deadlock free]
+assert sTZBObJa :[deadlock free]
+assert uTqb :[deadlock free]

@@ -1,0 +1,13 @@
+channel zFZSeDEItSjm
+channel j
+channel OPuFbsWOCHuVVopYlYStwRge
+channel CAgKh
+channel mzvaRLQDhOkzVDpIknUtPk
+channel VoGVkgYRXQjjIOeubjHyhwb
+channel uutfjQFvSocJuQUrtHmTIv
+channel TvmMlXFhKeyeSfml
+channel ehROefkVdTdNuxxEumScUubG
+CDvXebzM = zFZSeDEItSjm -> bmGJse
+bmGJse = j -> OPuFbsWOCHuVVopYlYStwRge -> CAgKh -> mzvaRLQDhOkzVDpIknUtPk -> VoGVkgYRXQjjIOeubjHyhwb -> uutfjQFvSocJuQUrtHmTIv -> TvmMlXFhKeyeSfml -> ehROefkVdTdNuxxEumScUubG -> SKIP
+assert CDvXebzM :[deadlock free]
+assert bmGJse :[deadlock free]

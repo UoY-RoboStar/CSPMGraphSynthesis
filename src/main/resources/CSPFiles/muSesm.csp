@@ -1,0 +1,4 @@
+channel LWMG
+channel TiVkZHsEzGomvyr
+muSesm = LWMG -> TiVkZHsEzGomvyr -> STOP
+assert muSesm :[deadlock free]

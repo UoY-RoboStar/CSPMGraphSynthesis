@@ -1,0 +1,33 @@
+channel nDba
+channel ou
+channel RQKcYDSSlOCjBabVA
+channel RHatLruLTgcgYqIKC
+channel tjMtegWZP
+channel faVIsTRFqUhPrGHBof
+channel FvkOxpLynjCdaykqbr
+channel WZakBxZMSSbpLkQf
+channel COYKTFDIG
+channel ouktVSuBpgrWvJ
+channel PpkdaHujKLUQCsH
+channel mYYzic
+channel Fuwyvua
+channel zYpmFiAVKTWyLAkhtLguX
+channel bUyOWiSEa
+channel DgvAJnwH
+channel raqDUpSZXxIIBywxZgy
+channel XCzTYl
+channel fVhuOOlUUwGcBuSHJ
+channel Hv
+channel zJQAdYFZfAVejkxXcG
+channel XMFJe
+channel I
+ITFHTQcU = Fuwyvua -> PpkdaHujKLUQCsH -> zJQAdYFZfAVejkxXcG -> COYKTFDIG -> tjMtegWZP -> zYpmFiAVKTWyLAkhtLguX -> DgvAJnwH -> RHatLruLTgcgYqIKC -> mYYzic -> WZakBxZMSSbpLkQf -> SKIP
+gUVrtoVKe = (nDba -> ou -> RQKcYDSSlOCjBabVA -> RHatLruLTgcgYqIKC -> ITFHTQcU) ||| (tjMtegWZP -> RQKcYDSSlOCjBabVA -> faVIsTRFqUhPrGHBof -> FvkOxpLynjCdaykqbr -> WZakBxZMSSbpLkQf -> COYKTFDIG -> ouktVSuBpgrWvJ -> ou -> PpkdaHujKLUQCsH -> RHatLruLTgcgYqIKC -> mYYzic -> Fuwyvua -> zYpmFiAVKTWyLAkhtLguX -> bUyOWiSEa -> DgvAJnwH -> raqDUpSZXxIIBywxZgy -> bakAvpVIz)
+bakAvpVIz = XCzTYl -> faVIsTRFqUhPrGHBof -> fVhuOOlUUwGcBuSHJ -> Fuwyvua -> FvkOxpLynjCdaykqbr -> SKIP
+yAkoCMmOhq = (zYpmFiAVKTWyLAkhtLguX -> ITFHTQcU) [| {zYpmFiAVKTWyLAkhtLguX,DgvAJnwH,I,PpkdaHujKLUQCsH,tjMtegWZP,Hv} |] (WZakBxZMSSbpLkQf -> DgvAJnwH -> COYKTFDIG -> zYpmFiAVKTWyLAkhtLguX -> Hv -> Fuwyvua -> zJQAdYFZfAVejkxXcG -> XMFJe -> tC)
+tC = mYYzic -> DgvAJnwH -> Hv -> Fuwyvua -> I -> zYpmFiAVKTWyLAkhtLguX -> RHatLruLTgcgYqIKC -> COYKTFDIG -> PpkdaHujKLUQCsH -> XMFJe -> zJQAdYFZfAVejkxXcG -> WZakBxZMSSbpLkQf -> SKIP
+assert ITFHTQcU :[deadlock free]
+assert gUVrtoVKe :[deadlock free]
+assert bakAvpVIz :[deadlock free]
+assert yAkoCMmOhq :[deadlock free]
+assert tC :[deadlock free]

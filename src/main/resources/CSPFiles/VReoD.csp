@@ -1,0 +1,27 @@
+channel fn
+channel uMUEEjgYigIqs
+channel eVkWsciGILj
+channel O
+channel PVKVFR
+channel yeuBEhEliHIgWBDBV
+channel qCIZksfTmDVFQfzU
+channel lqVRAzCqKmgOrTjeIYHkYp
+channel tjRQlAJLgtDBUGeAOsK
+channel yvCzOMLWqI
+channel xVDxMmmONMUWZQaEPqT
+channel AJyshavMsmPWv
+channel uOU
+channel PogwUioKhhCdJNmNKKCpLv
+channel vNrAFeVppDsizqCl
+channel nQqvtJD
+channel TEHJWIegKJWlEik
+channel fGHPYRqZSQw
+channel jCtE
+channel TVXmWDPFSOittueUlg
+channel qGEPJebp
+channel TzFxBkjtSdy
+channel bweEnKJbIBOpOlTS
+channel coFqhP
+channel u
+VReoD = fn -> uMUEEjgYigIqs -> eVkWsciGILj -> O -> PVKVFR -> yeuBEhEliHIgWBDBV -> qCIZksfTmDVFQfzU -> lqVRAzCqKmgOrTjeIYHkYp -> tjRQlAJLgtDBUGeAOsK -> yvCzOMLWqI -> xVDxMmmONMUWZQaEPqT -> AJyshavMsmPWv -> uOU -> PogwUioKhhCdJNmNKKCpLv -> vNrAFeVppDsizqCl -> nQqvtJD -> TEHJWIegKJWlEik -> fGHPYRqZSQw -> jCtE -> TVXmWDPFSOittueUlg -> qGEPJebp -> TzFxBkjtSdy -> bweEnKJbIBOpOlTS -> coFqhP -> u -> SKIP
+assert VReoD :[deadlock free]

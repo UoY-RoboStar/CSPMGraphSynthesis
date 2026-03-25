@@ -1,0 +1,13 @@
+channel LGzTqsqclTmfCezWqhDTCy
+channel ghfcVALXkptug
+channel BwHvYCZxReecYqyMyT
+yKF = LGzTqsqclTmfCezWqhDTCy -> ghfcVALXkptug -> xbO
+xbO = BwHvYCZxReecYqyMyT -> ghfcVALXkptug -> WZQPGTf
+WZQPGTf = BwHvYCZxReecYqyMyT -> LGzTqsqclTmfCezWqhDTCy -> lbXBfhMsgQn
+lbXBfhMsgQn = BwHvYCZxReecYqyMyT -> gJnUDeHt
+gJnUDeHt = BwHvYCZxReecYqyMyT -> STOP
+assert yKF :[deadlock free]
+assert xbO :[deadlock free]
+assert WZQPGTf :[deadlock free]
+assert lbXBfhMsgQn :[deadlock free]
+assert gJnUDeHt :[deadlock free]

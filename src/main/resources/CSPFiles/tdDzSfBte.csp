@@ -1,0 +1,5 @@
+channel V
+tdDzSfBte = V -> y
+y = V -> SKIP
+assert tdDzSfBte :[deadlock free]
+assert y :[deadlock free]

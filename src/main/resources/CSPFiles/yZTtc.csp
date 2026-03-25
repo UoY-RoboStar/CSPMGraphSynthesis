@@ -1,0 +1,8 @@
+channel HsddGNoOoppniup
+channel ltkpczazOMBHsGRXzrzVemg
+channel zlymEhwdWRdr
+channel AGzCJ
+channel UQUxhTKstuQOlQcWkvkxVBD
+channel I
+yZTtc = HsddGNoOoppniup -> ltkpczazOMBHsGRXzrzVemg -> zlymEhwdWRdr -> AGzCJ -> UQUxhTKstuQOlQcWkvkxVBD -> I -> SKIP
+assert yZTtc :[deadlock free]

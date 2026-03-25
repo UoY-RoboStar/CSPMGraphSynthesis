@@ -1,0 +1,4 @@
+channel OTnJqpPYWFpCTehdtuXrW
+channel Xo
+iO = OTnJqpPYWFpCTehdtuXrW -> Xo -> STOP
+assert iO :[deadlock free]

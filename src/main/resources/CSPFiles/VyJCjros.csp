@@ -1,0 +1,3 @@
+channel YnPwHqfMuWFAa
+VyJCjros = YnPwHqfMuWFAa -> SKIP
+assert VyJCjros :[deadlock free]

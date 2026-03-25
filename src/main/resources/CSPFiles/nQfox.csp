@@ -1,0 +1,9 @@
+channel vpeWvVP
+channel rJWHwOCf
+channel SBEISPmTOA
+channel FvGMOBZcjsZLYHoWMoItREZ
+channel WiIpmcUAwXidYiBtRYqENE
+nQfox = vpeWvVP -> rJWHwOCf -> SBEISPmTOA -> FvGMOBZcjsZLYHoWMoItREZ -> WiIpmcUAwXidYiBtRYqENE -> PApdfLnX
+PApdfLnX = WiIpmcUAwXidYiBtRYqENE -> SBEISPmTOA -> SKIP
+assert nQfox :[deadlock free]
+assert PApdfLnX :[deadlock free]

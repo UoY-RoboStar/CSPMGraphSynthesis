@@ -1,0 +1,3 @@
+channel PTiPejZ
+QuDjY = PTiPejZ -> STOP
+assert QuDjY :[deadlock free]

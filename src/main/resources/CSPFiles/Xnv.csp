@@ -1,0 +1,75 @@
+channel K
+channel qDcRslFFcvWhzhBXQWOsoH
+channel ryVoBbhkeibmTyZJbPGWCsP
+channel nkICiOezyNvuJZe
+channel bL
+channel cGgi
+channel nEE
+channel rsYFMLlOJtlitoGR
+channel AEEqARuYmXAfraqbfVIzT
+channel hLsEymkyQLIxeoDs
+channel YtDV
+channel SHrt
+channel MMXwSAfA
+channel etLkxBgNxLe
+channel S
+channel sYqfjq
+channel MiwIjcuuNhKagEfsjakrKxg
+channel pfYSDFklSteZFmwjJeRm
+channel zhKLRWszXayGMxXKoEs
+channel nRaWtVTTxN
+channel P
+channel hWq
+channel VjxbrQqlZ
+channel oyWKFfnoRfwP
+channel UuoRe
+channel DKWRwzbkHGsBRJPnP
+channel ZfYPviMlFX
+channel BIXsEmCXaDV
+channel Lt
+channel oFdekLZ
+channel iCnI
+channel zbhpjtLLbXqYNbJJHYf
+channel RVkNkOFwRKOpOmjzVLuJ
+channel qnRQfLdAuLyKzBdmhrdswfc
+channel WdTmkZzmNtiRCp
+channel rGky
+channel FMEGvSRsd
+channel DbBKeDmibBCM
+channel dCJXmCedhWtt
+channel qoIZqToFPJatQBazOQkQ
+channel hXW
+channel NFgDqR
+channel TrAyRDjAarIfjUXhUO
+channel POJWF
+channel aRsFLuYG
+channel HWa
+channel MkOgjDN
+channel QnufduDYuPKyaVlmRx
+channel fpWoKyln
+channel trUbEhClhofwJqP
+channel gQhemugitqh
+channel gEBuC
+channel Tjisk
+channel kFL
+channel TbveXQNqEPwd
+WCmUtN = ZfYPviMlFX -> hWq -> sYqfjq -> qDcRslFFcvWhzhBXQWOsoH -> etLkxBgNxLe -> rsYFMLlOJtlitoGR -> YtDV -> WheiaDHPTcy
+TIcnZ = (pfYSDFklSteZFmwjJeRm -> hLsEymkyQLIxeoDs -> nEE -> ryVoBbhkeibmTyZJbPGWCsP -> BIXsEmCXaDV -> SHrt -> zhKLRWszXayGMxXKoEs -> WCmUtN) |~| ((cGgi -> UuoRe -> rsYFMLlOJtlitoGR -> K -> oFdekLZ -> nRaWtVTTxN -> qDcRslFFcvWhzhBXQWOsoH -> ZfYPviMlFX -> MMXwSAfA -> SKIP) |~| (hLsEymkyQLIxeoDs -> P -> nRaWtVTTxN -> MiwIjcuuNhKagEfsjakrKxg -> TIcnZ))
+Xnv = K -> qDcRslFFcvWhzhBXQWOsoH -> uAxtfDK
+uAxtfDK = K -> ryVoBbhkeibmTyZJbPGWCsP -> nkICiOezyNvuJZe -> bL -> cGgi -> nEE -> rsYFMLlOJtlitoGR -> AEEqARuYmXAfraqbfVIzT -> hLsEymkyQLIxeoDs -> YtDV -> SHrt -> MMXwSAfA -> etLkxBgNxLe -> S -> sYqfjq -> MiwIjcuuNhKagEfsjakrKxg -> pfYSDFklSteZFmwjJeRm -> zhKLRWszXayGMxXKoEs -> nRaWtVTTxN -> P -> hWq -> VjxbrQqlZ -> oyWKFfnoRfwP -> Dg
+Dg = UuoRe -> nEE -> zhKLRWszXayGMxXKoEs -> S -> ryVoBbhkeibmTyZJbPGWCsP -> pfYSDFklSteZFmwjJeRm -> hLsEymkyQLIxeoDs -> AEEqARuYmXAfraqbfVIzT -> VjxbrQqlZ -> swvzFBPqOY
+swvzFBPqOY = etLkxBgNxLe -> rsYFMLlOJtlitoGR -> nEE -> UuoRe -> YtDV -> cGgi -> ryVoBbhkeibmTyZJbPGWCsP -> hLsEymkyQLIxeoDs -> nkICiOezyNvuJZe -> sYqfjq -> nRaWtVTTxN -> qDcRslFFcvWhzhBXQWOsoH -> DKWRwzbkHGsBRJPnP -> BlBIA
+BlBIA = sYqfjq -> rsYFMLlOJtlitoGR -> cGgi -> TIcnZ(pfYSDFklSteZFmwjJeRm -> hLsEymkyQLIxeoDs -> nEE -> ryVoBbhkeibmTyZJbPGWCsP -> BIXsEmCXaDV -> SHrt -> zhKLRWszXayGMxXKoEs -> WCmUtN) |~| ((cGgi -> UuoRe -> rsYFMLlOJtlitoGR -> K -> oFdekLZ -> nRaWtVTTxN -> qDcRslFFcvWhzhBXQWOsoH -> ZfYPviMlFX -> MMXwSAfA -> SKIP) |~| (hLsEymkyQLIxeoDs -> P -> nRaWtVTTxN -> MiwIjcuuNhKagEfsjakrKxg -> TIcnZ)); nEE -> ZfYPviMlFX -> VjxbrQqlZ -> ryVoBbhkeibmTyZJbPGWCsP -> UuoRe -> zhKLRWszXayGMxXKoEs -> P -> cGgi -> BIXsEmCXaDV -> hLsEymkyQLIxeoDs -> pfYSDFklSteZFmwjJeRm -> S -> Lt -> bL -> nRaWtVTTxN -> qDcRslFFcvWhzhBXQWOsoH -> EpwYcQcyB
+EpwYcQcyB = nkICiOezyNvuJZe -> P -> etLkxBgNxLe -> bL -> SHrt -> qDcRslFFcvWhzhBXQWOsoH -> nEE -> zhKLRWszXayGMxXKoEs -> hLsEymkyQLIxeoDs -> S -> cGgi -> AEEqARuYmXAfraqbfVIzT -> K -> rsYFMLlOJtlitoGR -> UuoRe -> sYqfjq -> YtDV -> oyWKFfnoRfwP -> ZfYPviMlFX -> pfYSDFklSteZFmwjJeRm -> DKWRwzbkHGsBRJPnP -> BIXsEmCXaDV -> hWq -> MMXwSAfA -> oFdekLZ -> VjxbrQqlZ -> STOP
+LpHnBffkM = Tjisk -> hWq -> RVkNkOFwRKOpOmjzVLuJ -> kFL -> gEBuC -> TrAyRDjAarIfjUXhUO -> MkOgjDN -> QnufduDYuPKyaVlmRx -> hXW -> qnRQfLdAuLyKzBdmhrdswfc -> HWa -> gQhemugitqh -> POJWF -> YtDV -> TbveXQNqEPwd -> sYqfjq -> trUbEhClhofwJqP -> dCJXmCedhWtt -> FMEGvSRsd -> WdTmkZzmNtiRCp -> rGky -> MiwIjcuuNhKagEfsjakrKxg -> SKIP
+WheiaDHPTcy = sYqfjq -> ZfYPviMlFX -> YtDV -> MiwIjcuuNhKagEfsjakrKxg -> SKIP
+assert WCmUtN :[deadlock free]
+assert TIcnZ :[deadlock free]
+assert Xnv :[deadlock free]
+assert uAxtfDK :[deadlock free]
+assert Dg :[deadlock free]
+assert swvzFBPqOY :[deadlock free]
+assert BlBIA :[deadlock free]
+assert EpwYcQcyB :[deadlock free]
+assert LpHnBffkM :[deadlock free]
+assert WheiaDHPTcy :[deadlock free]

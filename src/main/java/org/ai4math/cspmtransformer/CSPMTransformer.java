@@ -6,6 +6,8 @@ import org.ai4math.graphgenerator.utils.RelationshipEdge;
 import org.ai4math.utils.CSPFileUtils;
 
 import org.ai4math.cspmtransformer.utils.StringConstants;
+import org.apache.commons.math3.random.StableRandomGenerator;
+
 import java.util.*;
 
 import static org.ai4math.cspm.Keywords.LAMBDA;
@@ -19,6 +21,7 @@ public class CSPMTransformer {
 
     public CSPMTransformer(){
         List<String> files = new ArrayList<String>();
+        files.addAll(new CSPFileUtils().getCSPFiles());
         files.add(new CSPFileUtils().getResourcePath("graph.csp"));
         files.add(new CSPFileUtils().getResourcePath("DeadlockFreeCSP.csp"));
         this.cspFiles = files;
@@ -26,7 +29,7 @@ public class CSPMTransformer {
         this.traversed = List.of();
     }
 
-    public void GraphToCSPM (CSPGraph graph, String filename){
+    public void graphToCSPM (CSPGraph graph, String filename){
         this.currentCSPFile = "";
         addChannelDefinitions(graph);
         List<CSPVertex> initialVertices = addProcessDefinitions(graph);
@@ -79,7 +82,7 @@ public class CSPMTransformer {
     }
 
     private String addProcessDefinition(CSPVertex vertex, CSPGraph graph, boolean initial){
-        String processDefinition = "";
+        StringBuilder processDefinition = new StringBuilder();
         Set<RelationshipEdge> vertexEdges = graph.outgoingEdgesOf(vertex);
         if(traversed.contains(vertex)){
             return "";
@@ -90,129 +93,254 @@ public class CSPMTransformer {
         }
         else if (vertex.isExternalChoice()) {
             addTraversedVertex(vertex);
+            if (vertex.isProcessVertex() && !initial) {
+                return processDefinition.toString();
+            }
             Iterator<RelationshipEdge> edges = vertexEdges.iterator();
-            while(edges.hasNext()){
+            boolean incomplete = true;
+            boolean seq = false;
+            CSPVertex seqVertex = vertex;
+            while(incomplete){
                 RelationshipEdge vertexEdge = edges.next();
                 CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
-                if (edges.hasNext()) {
-                    // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
-                    processDefinition += "[] ";
+                if (targetVertex.isSeqCompositionVertex()){
+                    seq = true;
+                    seqVertex = targetVertex;
                 }
-                else {
+                if (edges.hasNext() && !targetVertex.isSeqCompositionVertex()) {
                     // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(") [] ");
+                }
+                else if (!edges.hasNext() && !targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(")");
+                    incomplete = false;
+                }
+                else if (!edges.hasNext() && targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append(")");
+                    incomplete = false;
                 }
             }
+            if (seq){
+                processDefinition.append(addProcessDefinition(seqVertex, graph, false));
+            }
+            return processDefinition.toString();
         }
         else if (vertex.isInternalChoice()){
             addTraversedVertex(vertex);
+            if (vertex.isProcessVertex() && !initial) {
+                return processDefinition.toString();
+            }
             Iterator<RelationshipEdge> edges = vertexEdges.iterator();
-            while(edges.hasNext()){
+            boolean incomplete = true;
+            boolean seq = false;
+            CSPVertex seqVertex = vertex;
+            while(incomplete){
                 RelationshipEdge vertexEdge = edges.next();
                 CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
-                if (edges.hasNext()) {
-                    // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
-                    processDefinition += "|~| ";
+                if (targetVertex.isSeqCompositionVertex()){
+                    seq = true;
+                    seqVertex = targetVertex;
                 }
-                else {
+                if (edges.hasNext() && !targetVertex.isSeqCompositionVertex()) {
                     // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(") |~| ");
+                }
+                else if (!edges.hasNext() && !targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(")");
+                    incomplete = false;
+                }
+                else if (!edges.hasNext() && targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append(")");
+                    incomplete = false;
                 }
             }
+            if (seq){
+                processDefinition.append(addProcessDefinition(seqVertex, graph, false));
+            }
+            return processDefinition.toString();
         }
         else if (vertex.isAlphabetisedParallel()){
             addTraversedVertex(vertex);
+            if (vertex.isProcessVertex() && !initial) {
+                return processDefinition.toString();
+            }
             Iterator<RelationshipEdge> edges = vertexEdges.iterator();
-            while(edges.hasNext()){
+            boolean incomplete = true;
+            boolean seq = false;
+            CSPVertex seqVertex = vertex;
+            while(incomplete){
                 RelationshipEdge vertexEdge = edges.next();
                 CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
-                if (edges.hasNext()) {
-                    // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
-                    processDefinition += "[" + vertex.getAlphabet().getFirst() + "||"
-                            + vertex.getAlphabet().getLast() + "]";
+                if (targetVertex.isSeqCompositionVertex()){
+                    seq = true;
+                    seqVertex = targetVertex;
                 }
-                else {
+                if (edges.hasNext() && !targetVertex.isSeqCompositionVertex()) {
                     // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
+                    processDefinition.append(" (")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(") [ ")
+                            .append(formatSet(vertex.getAlphabet().getFirst()))
+                            .append(" || ")
+                            .append(formatSet(vertex.getAlphabet().getLast()))
+                            .append(" ] ");
+                }
+                else if (!edges.hasNext() && !targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(")");
+                    incomplete = false;
+                }
+                else if (!edges.hasNext() && targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append(")");
+                    incomplete = false;
                 }
             }
+            if (seq){
+                processDefinition.append(addProcessDefinition(seqVertex, graph, false));
+            }
+            return processDefinition.toString();
         }
         else if (vertex.isGeneralisedParallel()){
             addTraversedVertex(vertex);
+            if (vertex.isProcessVertex() && !initial) {
+                return processDefinition.toString();
+            }
             Iterator<RelationshipEdge> edges = vertexEdges.iterator();
-            while(edges.hasNext()){
+            boolean incomplete = true;
+            boolean seq = false;
+            CSPVertex seqVertex = vertex;
+            while(incomplete){
                 RelationshipEdge vertexEdge = edges.next();
                 CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
-                if (edges.hasNext()) {
-                    // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
-                    processDefinition += "[|" + formatSet(vertex.getAlphabet().getFirst()) + "|]";
+                if (targetVertex.isSeqCompositionVertex()){
+                    seq = true;
+                    seqVertex = targetVertex;
                 }
-                else {
+                if (edges.hasNext() && !targetVertex.isSeqCompositionVertex()) {
                     // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(") [| ").append(formatSet(vertex.getAlphabet().getFirst()))
+                            .append(" |] ");
+                }
+                else if (!edges.hasNext() && !targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(")");
+                    incomplete = false;
+                }
+                else if (!edges.hasNext() && targetVertex.isSeqCompositionVertex()){
+                // todo: add check for guards
+                processDefinition.append(")");
+                incomplete = false;
                 }
             }
+            if (seq){
+                processDefinition.append(addProcessDefinition(seqVertex, graph, false));
+            }
+            return processDefinition.toString();
         }
         else if (vertex.isInterleave()){
             addTraversedVertex(vertex);
+            if (vertex.isProcessVertex() && !initial) {
+                return processDefinition.toString();
+            }
             Iterator<RelationshipEdge> edges = vertexEdges.iterator();
-            while(edges.hasNext()){
+            boolean incomplete = true;
+            boolean seq = false;
+            CSPVertex seqVertex = vertex;
+            while(incomplete){
                 RelationshipEdge vertexEdge = edges.next();
                 CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
-                if (edges.hasNext()) {
-                    // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
-                    processDefinition += "|||";
+                if (targetVertex.isSeqCompositionVertex()){
+                    seq = true;
+                    seqVertex = targetVertex;
                 }
-                else {
+                if (edges.hasNext() && !targetVertex.isSeqCompositionVertex()) {
                     // todo: add check for guards
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(") ||| ");
+                }
+                else if (!edges.hasNext() && !targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append("(")
+                            .append(addEdgeDefinition(vertexEdge, targetVertex))
+                            .append(addProcessDefinition(targetVertex, graph, false))
+                            .append(")");
+                    incomplete = false;
+                }
+                else if (!edges.hasNext() && targetVertex.isSeqCompositionVertex()){
+                    // todo: add check for guards
+                    processDefinition.append(")");
+                    incomplete = false;
                 }
             }
+            if (seq){
+                processDefinition.append(addProcessDefinition(seqVertex, graph, false));
+            }
+            return processDefinition.toString();
         }
         else if (vertex.isSeqCompositionVertex()){
             addTraversedVertex(vertex);
             for (RelationshipEdge vertexEdge : vertexEdges) {
                 CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
-                if (this.traversed.size() == 1){
-                    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
-                } else {
-                    processDefinition += "; " + addEdgeDefinition(vertexEdge, targetVertex);
-                }
-                processDefinition += addProcessDefinition(targetVertex, graph, false);
+                //if (processDefinition.length() == 0){
+                //    processDefinition += addEdgeDefinition(vertexEdge, targetVertex);
+                //} else {
+                processDefinition.append("; ").append(addEdgeDefinition(vertexEdge, targetVertex))
+                        .append(addProcessDefinition(targetVertex, graph, false));
+                //}
             }
+            return processDefinition.toString();
         }
         else if (!vertex.isStopVertex()) {
             addTraversedVertex(vertex);
+            int edgeCount = 0;
             for (RelationshipEdge vertexEdge : vertexEdges) {
                 CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
-                boolean seqCompVertex = graph.getEdgeTarget(vertexEdge).isSeqCompositionVertex();
-                if (seqCompVertex) {
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
+                boolean seqCompVertex = targetVertex.isSeqCompositionVertex();
+                if (seqCompVertex && !initial) {
+                    processDefinition.append(addProcessDefinition(targetVertex, graph, false));
                 } else if (vertex.isProcessVertex() && !initial) {
-                    return "";
+                    return processDefinition.toString();
                 } else if (vertexEdge.getLabel() != null && !vertexEdge.getLabel().equals(LAMBDA) && !seqCompVertex) {
-                    processDefinition += addEdgeDefinition(vertexEdge,targetVertex);
-                    processDefinition += addProcessDefinition(targetVertex, graph, false);
+                    if (edgeCount > 0){
+                        continue;
+                    }
+                    processDefinition.append(addEdgeDefinition(vertexEdge, targetVertex));
+                    processDefinition.append(addProcessDefinition(targetVertex, graph, false));
+                    edgeCount += 1;
                 } // todo: add handling for tau
             }
         }
 
-        return processDefinition;
+        return processDefinition.toString();
     }
 
     private String formatSet(Set<String> alphabet){
@@ -254,16 +382,31 @@ public class CSPMTransformer {
 
         for (RelationshipEdge edge: graph.edgeSet()) {
             if (edge.getLabel() != null){
+                System.out.println(edge.getLabel());
                 String[] edgeComponents = edge.getLabel().split(" -> ");
                 for (String component : edgeComponents) {
                     // "[a-zA-Z]*(;\\n)" would be a process, not a channel
                     if (component.matches("[a-zA-Z]*")) {
                         if(!channels.contains(component)){
+                            System.out.println(component);
                             channels.add(component);
                         }
                     }
 
                     // todo: add parsing for channels with var passing so "[a-zA-Z]*![a-zA-Z0-9]*" and guards
+                }
+            }
+        }
+
+        for (CSPVertex vertex: graph.vertexSet()){
+            if (vertex.isAlphabetisedParallel() || vertex.isGeneralisedParallel()){
+                for (Set<String> alphabet : vertex.getAlphabet()){
+                    for (String channel : alphabet){
+                        if(!channels.contains(channel)){
+                            System.out.println(channel);
+                            channels.add(channel);
+                        }
+                    }
                 }
             }
         }

@@ -1,0 +1,27 @@
+channel oqhTTmRaN
+channel AIRSuBlrqxPCqnqg
+channel rVQUiUmxKDAHlKMVXJeRL
+channel zDIdJzBAtiVMjFAwJqr
+channel fgNvMVbnUwNNLoSdrDWbvBF
+channel FJDlrDTJqVqzh
+channel XBIkExxerBGyuIIud
+channel Fl
+channel CppVbPdfyc
+channel xEJQmr
+channel tGJhFCWQksuPwjxDryUjar
+zuSaLFt = Fl -> CppVbPdfyc -> oqhTTmRaN -> SKIP
+NvS = (oqhTTmRaN -> XBIkExxerBGyuIIud -> fgNvMVbnUwNNLoSdrDWbvBF -> AIRSuBlrqxPCqnqg -> zDIdJzBAtiVMjFAwJqr -> CppVbPdfyc -> FJDlrDTJqVqzh -> rVQUiUmxKDAHlKMVXJeRL -> Fl -> zuSaLFt) ||| (rVQUiUmxKDAHlKMVXJeRL -> xEJQmr -> Fl -> XBIkExxerBGyuIIud -> CppVbPdfyc -> AIRSuBlrqxPCqnqg -> fgNvMVbnUwNNLoSdrDWbvBF -> zDIdJzBAtiVMjFAwJqr -> oqhTTmRaN -> SKIP)
+HzJFzAGhkZ = oqhTTmRaN -> AIRSuBlrqxPCqnqg -> rVQUiUmxKDAHlKMVXJeRL -> zDIdJzBAtiVMjFAwJqr -> fgNvMVbnUwNNLoSdrDWbvBF -> Q
+Q = FJDlrDTJqVqzh -> rpc
+rpc = XBIkExxerBGyuIIud -> rVQUiUmxKDAHlKMVXJeRL -> fgNvMVbnUwNNLoSdrDWbvBF -> AIRSuBlrqxPCqnqg -> Fl -> FJDlrDTJqVqzh -> oqhTTmRaN -> lynDBwcUxe
+lynDBwcUxe = FJDlrDTJqVqzh -> AIRSuBlrqxPCqnqg -> XBIkExxerBGyuIIud -> oqhTTmRaN -> fgNvMVbnUwNNLoSdrDWbvBF -> Fl -> zDIdJzBAtiVMjFAwJqr -> CppVbPdfyc -> jzkLKhX
+jzkLKhX = FJDlrDTJqVqzh -> zDIdJzBAtiVMjFAwJqr -> CppVbPdfyc -> xEJQmr -> rVQUiUmxKDAHlKMVXJeRL -> fgNvMVbnUwNNLoSdrDWbvBF -> NvS
+ZYOp = (tGJhFCWQksuPwjxDryUjar -> rpc) |~| (Fl -> oqhTTmRaN -> STOP)
+assert zuSaLFt :[deadlock free]
+assert NvS :[deadlock free]
+assert HzJFzAGhkZ :[deadlock free]
+assert Q :[deadlock free]
+assert rpc :[deadlock free]
+assert lynDBwcUxe :[deadlock free]
+assert jzkLKhX :[deadlock free]
+assert ZYOp :[deadlock free]

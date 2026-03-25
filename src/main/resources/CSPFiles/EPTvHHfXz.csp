@@ -1,0 +1,27 @@
+channel QRXB
+channel tojWqkKTIguoxGYH
+channel XXMvsayoinSZAHfpGhsR
+channel uCxdMxcqiKN
+channel fRYyG
+channel GcAxkhkzvhd
+channel gnICTjNCrNnQIg
+channel lSJTwRisqLHzvW
+channel PpqRuCCr
+channel eieneJDV
+channel ZlTpQgCKVLjBLd
+channel Qi
+channel ryGoOQEIrqJskOl
+channel Ecfnap
+channel GLCByAMLSZnlCXOITJP
+channel jfwfe
+channel tfBNjSiWrdmT
+channel cPAau
+channel TXtRLURiD
+channel huWGpWiSQSVQmNutaZrcHt
+channel pGaiUhpDKDGtqarlqmp
+channel PrvSBmnEmjaO
+channel znubXoDrpVklay
+channel qVaFnRDITqPgZtIae
+channel HJOfZuZYDPBlvZXvGCSxdCeD
+EPTvHHfXz = QRXB -> tojWqkKTIguoxGYH -> XXMvsayoinSZAHfpGhsR -> uCxdMxcqiKN -> fRYyG -> GcAxkhkzvhd -> gnICTjNCrNnQIg -> lSJTwRisqLHzvW -> PpqRuCCr -> eieneJDV -> ZlTpQgCKVLjBLd -> Qi -> ryGoOQEIrqJskOl -> Ecfnap -> GLCByAMLSZnlCXOITJP -> jfwfe -> tfBNjSiWrdmT -> cPAau -> TXtRLURiD -> huWGpWiSQSVQmNutaZrcHt -> pGaiUhpDKDGtqarlqmp -> PrvSBmnEmjaO -> znubXoDrpVklay -> qVaFnRDITqPgZtIae -> HJOfZuZYDPBlvZXvGCSxdCeD -> SKIP
+assert EPTvHHfXz :[deadlock free]

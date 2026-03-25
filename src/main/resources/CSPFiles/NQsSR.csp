@@ -1,0 +1,14 @@
+channel fAHvhIMbXja
+channel LTEYFcVUcNSdbpchOcEo
+channel tskzrdxnUka
+channel ouFTFja
+channel LzpAULqHAquryXB
+channel NxUCLLlwbrZhKQV
+channel gdfoOLnJfxDMNjQVCmXey
+channel LnRiOOxEdQYd
+channel lKxIOBgxhhkgwV
+channel oRImBMCcArxcQXHWpT
+channel lLCMreid
+channel LGUgUsNwbulolDDbu
+NQsSR = fAHvhIMbXja -> LTEYFcVUcNSdbpchOcEo -> tskzrdxnUka -> ouFTFja -> LzpAULqHAquryXB -> NxUCLLlwbrZhKQV -> gdfoOLnJfxDMNjQVCmXey -> LnRiOOxEdQYd -> lKxIOBgxhhkgwV -> oRImBMCcArxcQXHWpT -> lLCMreid -> LGUgUsNwbulolDDbu -> SKIP
+assert NQsSR :[deadlock free]

@@ -1,0 +1,4 @@
+channel flFFkvAmwvfF
+channel OcKavSVUpXoUOURmG
+PTiFpgSZpBK = flFFkvAmwvfF -> OcKavSVUpXoUOURmG -> SKIP
+assert PTiFpgSZpBK :[deadlock free]

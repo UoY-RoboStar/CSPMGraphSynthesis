@@ -1,0 +1,13 @@
+channel HGeJLRXiEMMVbB
+channel FvWwYeQ
+channel QpEdDIufbCMPW
+channel MRtyOIIOsYM
+channel HMDEQOzQBqIvN
+channel ez
+channel ig
+channel TqPHjAttGRza
+channel AeIDdDaRypYH
+channel nEp
+channel GEZNtHoavOGMmAvb
+DdCUYwX = HGeJLRXiEMMVbB -> FvWwYeQ -> QpEdDIufbCMPW -> MRtyOIIOsYM -> HMDEQOzQBqIvN -> ez -> ig -> TqPHjAttGRza -> AeIDdDaRypYH -> nEp -> GEZNtHoavOGMmAvb -> STOP
+assert DdCUYwX :[deadlock free]

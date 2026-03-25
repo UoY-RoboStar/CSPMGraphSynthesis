@@ -1,0 +1,15 @@
+channel FtSukteltmlzzwMsQ
+channel reEMq
+channel nOVfTlmKKJhtpgCAsDhYNMd
+channel xGpujvVSeDAeRVRkgcY
+channel gKAXaGwnNgBWAysDEMls
+channel yiGxFDzuzyUj
+channel KJyzOBonWHBqpfLqUD
+channel O
+channel TnuIm
+channel ZqCZjcNoIgXVhXlkTlCj
+channel Yx
+channel DQkEIEHdUJromERN
+channel FVnDZevbCupayySsx
+PTLKi = FtSukteltmlzzwMsQ -> reEMq -> nOVfTlmKKJhtpgCAsDhYNMd -> xGpujvVSeDAeRVRkgcY -> gKAXaGwnNgBWAysDEMls -> yiGxFDzuzyUj -> KJyzOBonWHBqpfLqUD -> O -> TnuIm -> ZqCZjcNoIgXVhXlkTlCj -> Yx -> DQkEIEHdUJromERN -> FVnDZevbCupayySsx -> STOP
+assert PTLKi :[deadlock free]

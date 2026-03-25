@@ -1,0 +1,3 @@
+channel TlSxEXQnHXYkjeVQWUALxjeZ
+fupFD = TlSxEXQnHXYkjeVQWUALxjeZ -> STOP
+assert fupFD :[deadlock free]

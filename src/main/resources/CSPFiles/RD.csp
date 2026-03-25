@@ -1,0 +1,8 @@
+channel LxrzlifIb
+channel mIiTsCNO
+channel RzutcGgONeMwt
+channel qYScTEsjjzNMD
+channel BhvLIkRxvNkdlLWYIwUMFk
+channel QRAbjiOiPiNZsDXRRhOI
+RD = LxrzlifIb -> mIiTsCNO -> RzutcGgONeMwt -> qYScTEsjjzNMD -> BhvLIkRxvNkdlLWYIwUMFk -> QRAbjiOiPiNZsDXRRhOI -> SKIP
+assert RD :[deadlock free]

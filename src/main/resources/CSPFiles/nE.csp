@@ -1,0 +1,10 @@
+channel pnpURg
+channel LiAinKp
+channel wxnLdCWN
+channel j
+channel TdXenBqUbxOPBAzai
+channel QXcuFmlxs
+channel wFlgyXKzgK
+channel MIVMlKLAGfPAnrXTxcvm
+nE = pnpURg -> LiAinKp -> wxnLdCWN -> j -> TdXenBqUbxOPBAzai -> QXcuFmlxs -> wFlgyXKzgK -> MIVMlKLAGfPAnrXTxcvm -> STOP
+assert nE :[deadlock free]

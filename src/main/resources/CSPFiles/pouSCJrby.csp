@@ -1,0 +1,13 @@
+channel wKjImZzbGzA
+channel D
+channel PnSjonSoPDW
+channel IxsQrNRYbatAkbX
+channel cbO
+channel msB
+channel ygNhRbkmfLkBEzKmKGs
+channel gFBFLBYnRJXbSa
+channel qswTE
+channel d
+channel lUShUNJkvcIErhunSHgUht
+pouSCJrby = wKjImZzbGzA -> D -> PnSjonSoPDW -> IxsQrNRYbatAkbX -> cbO -> msB -> ygNhRbkmfLkBEzKmKGs -> gFBFLBYnRJXbSa -> qswTE -> d -> lUShUNJkvcIErhunSHgUht -> SKIP
+assert pouSCJrby :[deadlock free]

@@ -1,0 +1,12 @@
+channel dyjDetYfmGlwczvZcQwH
+channel uNsgMFIhGqDwvRrSsjwwMugf
+channel cKAIzAaqonWLHGotVQ
+channel GCVdgAl
+channel CWRQoVJxYUnFCjXZGixSqv
+channel qrHwywuxJmlk
+channel IC
+channel hsSuYpMXeFLKpFFOza
+channel TizSOZEJOizRdgArLARkevE
+channel Y
+U = dyjDetYfmGlwczvZcQwH -> uNsgMFIhGqDwvRrSsjwwMugf -> cKAIzAaqonWLHGotVQ -> GCVdgAl -> CWRQoVJxYUnFCjXZGixSqv -> qrHwywuxJmlk -> IC -> hsSuYpMXeFLKpFFOza -> TizSOZEJOizRdgArLARkevE -> Y -> SKIP
+assert U :[deadlock free]

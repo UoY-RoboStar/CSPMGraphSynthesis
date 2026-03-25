@@ -1,0 +1,16 @@
+channel HDiWSHjnERBEb
+channel gxurChXqgj
+channel eGDrUwffYYlkLgVbMGBPrdut
+channel DZFTIcflL
+channel JabfWEXPSTgOgyOoe
+channel pnSgMDnqGtROKyTpCHrXR
+channel gwe
+channel ofTqym
+channel Lcgq
+channel EGENzPYcowGkURojjMLyEODK
+uz = HDiWSHjnERBEb -> HPfk
+HPfk = gxurChXqgj -> eGDrUwffYYlkLgVbMGBPrdut -> u
+u = DZFTIcflL -> JabfWEXPSTgOgyOoe -> pnSgMDnqGtROKyTpCHrXR -> gwe -> ofTqym -> Lcgq -> EGENzPYcowGkURojjMLyEODK -> SKIP
+assert uz :[deadlock free]
+assert HPfk :[deadlock free]
+assert u :[deadlock free]

@@ -1,0 +1,11 @@
+channel lUtPGLOom
+channel HMGnqs
+channel QLYpyoHAAvsJ
+channel iI
+channel zmIqmt
+channel nOwIdsJQrwrqAytBYp
+channel fFtbuMUmzpAOA
+channel bPLLOSBPX
+channel zeB
+istTlAuZ = lUtPGLOom -> HMGnqs -> QLYpyoHAAvsJ -> iI -> zmIqmt -> nOwIdsJQrwrqAytBYp -> fFtbuMUmzpAOA -> bPLLOSBPX -> zeB -> SKIP
+assert istTlAuZ :[deadlock free]

@@ -1,0 +1,7 @@
+channel fzEtVwCLcQBhrkERDwfj
+channel btBqfaCSTsbvi
+channel vgxAmV
+channel JtYaPRxhRoihAEQWffR
+channel mXIeJrNzZctDT
+vGru = fzEtVwCLcQBhrkERDwfj -> btBqfaCSTsbvi -> vgxAmV -> JtYaPRxhRoihAEQWffR -> mXIeJrNzZctDT -> STOP
+assert vGru :[deadlock free]

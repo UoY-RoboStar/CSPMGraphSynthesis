@@ -1,0 +1,5 @@
+channel rLWMpilPEUjKxGwZgd
+channel a
+channel HUsPMKIAotBwJsZXErsVXi
+s = rLWMpilPEUjKxGwZgd -> a -> HUsPMKIAotBwJsZXErsVXi -> STOP
+assert s :[deadlock free]

@@ -1,0 +1,2 @@
+VTU = SKIP
+assert VTU :[deadlock free]

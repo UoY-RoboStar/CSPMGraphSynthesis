@@ -1,0 +1,8 @@
+channel ttfhSZviCkGHPlCC
+channel s
+channel kJP
+channel A
+channel iRMAfSffkenir
+channel fTCbbgyNstVIMDJQyXLXjS
+xtMhnU = ttfhSZviCkGHPlCC -> s -> kJP -> A -> iRMAfSffkenir -> fTCbbgyNstVIMDJQyXLXjS -> STOP
+assert xtMhnU :[deadlock free]
