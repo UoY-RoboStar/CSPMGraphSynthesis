@@ -303,7 +303,7 @@ public class GraphGeneratorTest {
         graph = graphs.getFirst();
         vertices = graph.vertexSet();
 
-        assertEquals(1, graphs.size(), "Number of graphs is not equal to 1");
+        assertEquals(2, graphs.size(), "Number of graphs is not equal to 2");
         assertFalse(vertices.isEmpty(), "Graph has no vertices");
         vertx = vertices.stream().toList();
 

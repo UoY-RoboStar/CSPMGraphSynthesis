@@ -1,0 +1,6 @@
+channel testingChannel
+channel secondTestingChannel
+
+TestingProcess = STOP
+
+assert TestingProcess :[deadlock free]

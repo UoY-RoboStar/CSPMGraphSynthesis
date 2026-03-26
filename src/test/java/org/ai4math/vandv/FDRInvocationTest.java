@@ -1,5 +1,6 @@
 package org.ai4math.vandv;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.ai4math.vandv.utils.FDRCounterexample;
 import org.ai4math.vandv.utils.FDROutput;
 import org.ai4math.vandv.utils.FDRResults;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,8 +64,66 @@ public class FDRInvocationTest {
     }
 
     @Test
-    void givenInvalidDeadlockFreeCSP_whenPerformVerificationInvoked_thenOutputWithErrors() {
+    void givenValidImmediatelyDeadlockedCSP_whenPerformVerificationInvoked_thenOutputWithoutTraceFormed() {
+        {
+            FDRInvocation fdrInvocation = new FDRInvocation();
+            fdrInvocation.performVerification(getResourcePath("Deadlock.csp"));
 
+            List<String> expectedTrace = new ArrayList<>(List.of());
+
+            FDROutput fdrOutput = fdrInvocation.getFdrOutput();
+            List<FDRResults> fdrResults = fdrOutput.getFdrResults();
+            for (FDRResults fdrResult : fdrResults) {
+                assertFalse(fdrResult.isPassed(), "assertion passed");
+                List<FDRCounterexample> counterexamples = fdrResult.getFdrCounterexamples();
+                for (FDRCounterexample counterexample : counterexamples) {
+                    assertNotNull(counterexample.getProcessesTrace(),
+                            "trace is null");
+                    assertEquals(expectedTrace,counterexample.getProcessesTrace(),
+                            "nonempty trace provided: "
+                                    + counterexample.getProcessesTrace());
+                }
+            }
+        }
+    }
+
+    @Test
+    void givenInvalidCSP_whenPerformVerificationInvoked_thenOutputWithErrors() {
+        FDRInvocation fdrInvocation = new FDRInvocation();
+        fdrInvocation.performVerification(getResourcePath("Invalid.csp"));
+
+        FDROutput fdrOutput = fdrInvocation.getFdrOutput();
+        List<FDRResults> fdrResults = fdrOutput.getFdrResults();
+        assertNull(fdrResults, "Results weren't null");
+        List<JsonNode> errors = fdrOutput.getErrors();
+
+        String expectedError = "Invalid.csp:4:42-46:\n    test is not in scope";
+        String e = errors.getFirst().asText();
+        String expected = e.substring(e.length()-expectedError.length());
+        System.out.println(expected);
+        assertTrue(expected.matches(expectedError), "Unexpected error message");
+
+        assertEquals(1, errors.size(), "More than one error");
+    }
+
+    @Test
+    void givenValidCSPButInvalidCSPM_whenPerformVerificationInvoked_thenOutputWithErrors() {
+        FDRInvocation fdrInvocation = new FDRInvocation();
+        fdrInvocation.performVerification(getResourcePath("InvalidCSPM.csp"));
+
+        String expectedError = "An operator that cannot be recursed through was recursed through. " +
+                "In particular, the process:\n    TestingProcess\ncontains a recursion through the process:\n    " +
+                "secondTestingChannel -> testingChannel -> SeqProcess ; testingChannel -> STOP\n" +
+                "However, the operator  ; does not allow recursion.\nOperator Stack:\n    TestingProcess:\n        " +
+                "secondTestingChannel -> testingChannel -> SeqProcess ; testingChannel -> STOP\n";
+
+        FDROutput fdrOutput = fdrInvocation.getFdrOutput();
+        List<FDRResults> fdrResults = fdrOutput.getFdrResults();
+        assertNotNull(fdrResults, "Results were null");
+        assertNull(fdrResults.getFirst().getFdrCounterexamples(), "Counterexamples not null");
+        assertFalse(fdrResults.getFirst().isPassed(), "Assertion passed");
+        List<JsonNode> errors = fdrResults.getFirst().getErrors();
+        assertEquals(expectedError, errors.getFirst().asText(), "Unexpected error message");
     }
 
     public String getResourcePath(String resourceName){
