@@ -161,6 +161,7 @@ public class DatasetGenerator {
                                 if (counterexample.getProcessesTrace() == null) {
                                     entry = new String[]{csp, assertion, "false", ""};
                                 } else {
+                                    //format counterexample with <> not []
                                     entry = new String[]{csp, assertion, "false", counterexample.getProcessesTrace().toString()};
                                 }
                                 writer.writeNext(entry);

@@ -26,8 +26,8 @@ public class NameGenerator {
             String message = RandomStringUtils.random(length, true, false);
             if (!message.isEmpty() && nameVerifier.isChannelNameAcceptable(message)) {
                 messages.add(message);
+                i++;
             }
-            i++;
         }
 
         return messages;

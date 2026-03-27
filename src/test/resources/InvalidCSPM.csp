@@ -1,0 +1,7 @@
+channel testingChannel
+channel secondTestingChannel
+
+TestingProcess = secondTestingChannel -> testingChannel -> SeqProcess; testingChannel -> STOP
+SeqProcess = testingChannel -> TestingProcess
+
+assert TestingProcess :[deadlock free]

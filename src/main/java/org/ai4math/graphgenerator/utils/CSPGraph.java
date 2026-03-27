@@ -18,10 +18,6 @@ public class CSPGraph extends DirectedPseudograph<CSPVertex,RelationshipEdge> {
         super(RelationshipEdge.class);
     }
 
-    public CSPGraph(Supplier vertexSupplier, Supplier edgeSupplier, boolean weighted) {
-        super(vertexSupplier, edgeSupplier, weighted);
-    }
-
     public CSPVertex getInitialVertex() {
         if (this.initialVertex == null) {
             Set<CSPVertex> allVertices = this.vertexSet();

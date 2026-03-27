@@ -13,6 +13,7 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'net.jcip:jcip-annotations:1.0'
+    testImplementation 'org.mockito:mockito-core:5.21.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.jgrapht:jgrapht-core:1.5.2'
     implementation 'org.jgrapht:jgrapht-ext:1.5.2'
@@ -23,8 +24,10 @@ dependencies {
     implementation("org.dhatim:fastexcel-reader:0.19.0")
     implementation("org.dhatim:fastexcel:0.19.0")
     implementation("com.opencsv:opencsv:5.10")
+    implementation 'commons-cli:commons-cli:1.11.0'
 }
 
 test {
     useJUnitPlatform()
+    jvmArgs "-javaagent:${configurations.testRuntimeClasspath.find { it.name.contains('mockito-core') }}", '-Xshare:off'
 }

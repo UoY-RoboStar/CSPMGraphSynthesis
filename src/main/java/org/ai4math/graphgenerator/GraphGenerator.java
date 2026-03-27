@@ -21,7 +21,7 @@ public class GraphGenerator {
         this.nameVerifier = new NameVerifier();
     }
 
-    public List<CSPGraph> generateGraphSet() {
+    public List<CSPGraph> generateGraphSet(Integer baseGraphs, Integer combineGraphs) {
         // take parameters for generation and record those parameters
         // side note: make a tool to parse the csp files to get data about representation in the dataset
         //              versus representation in existing examples
@@ -32,8 +32,8 @@ public class GraphGenerator {
         graphs.add(ParallelGraph());
         graphs.add(LoopGraph());*/
 
-        generateBaseGraphs(25);
-        combineGraphs(50);
+        generateBaseGraphs(baseGraphs);
+        combineGraphs(combineGraphs);
 
         // Add graph combination step
 
@@ -56,7 +56,7 @@ public class GraphGenerator {
             CSPVertex initialProcess = new CSPVertex(processName, true, true);
             baseGraph.addVertex(initialProcess);
 
-            CSPVertex process = generateProcess();
+            CSPVertex process = generateProcess(messages);
             baseGraph.addVertex(process);
             RelationshipEdge e = baseGraph.addEdge(initialProcess, process);
             e.setLabel(label);
@@ -86,7 +86,7 @@ public class GraphGenerator {
         process.setInitialVertex(true);
         graph.addVertex(process);
 
-        CSPVertex newProcess = generateProcess();
+        CSPVertex newProcess = generateProcess(messages);
         graph.addVertex(newProcess);
         RelationshipEdge e = graph.addEdge(process, newProcess);
         e.setLabel(label);
@@ -101,7 +101,7 @@ public class GraphGenerator {
         return graph;
     }
 
-    private CSPVertex generateProcess(){
+    private CSPVertex generateProcess(List<String> messages){
         Random r = new Random();
 
         CSPVertex process = new CSPVertex("temp");
@@ -115,6 +115,22 @@ public class GraphGenerator {
         } else if (choice == 2) {
             process = generateNonTerminalProcess();
         }
+
+        int hidden = r.nextInt(0,20);
+        if (hidden == 7) {
+            Set<String> hiddenChannels = new HashSet<>(randomSubList(messages));
+            process.setHidden(hiddenChannels);
+        }
+        /*int renaming = r.nextInt(0,20);
+        if (renaming == 18) {
+            List<String> renameChannels = randomSubList(messages);
+            List<String> renamedChannels = randomSubList(messages);
+            Map<String, String> renamings = new TreeMap<>();
+            for (int i = 0; i < renameChannels.size(); i++) {
+                renamings.put(renameChannels.get(i), renamedChannels.get(i));
+            }
+            process.setRenaming(renamings);
+        }*/
 
         return process;
     }
@@ -169,7 +185,7 @@ public class GraphGenerator {
         Random r = new Random();
         int choice = r.nextInt(2);
         if (choice == 0) {
-            CSPVertex newProcess = generateProcess();
+            CSPVertex newProcess = generateProcess(messages);
             endGraph.addVertex(newProcess);
             RelationshipEdge e = endGraph.addEdge(process, newProcess);
             e.setLabel(label);
@@ -361,6 +377,7 @@ public class GraphGenerator {
     }
 
     private String generateEdge(List<String> messages){
+        //List<String> messagesTrimmed = messages. // remove empty strings from this
         if (!messages.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             sb.append(String.join(" -> ", randomSubList(messages)));
@@ -389,14 +406,23 @@ public class GraphGenerator {
     }
 
     public static <T> List<T> randomSubList(List<T> list) {
-        list.remove("");
+        //list.remove("");
         if (list.size()<2){return list;}
 
         Random r = new Random();
         int newSize = r.nextInt(1, list.size());
-        list = new ArrayList<>(list);
-        Collections.shuffle(list);
-        return list.subList(0, newSize);
+        List<T> shuffleList = new ArrayList<>(list);
+        Collections.shuffle(shuffleList);
+        return shuffleList.subList(0, newSize);
+    }
+
+    public static <T> List<T> randomSetSizeSubList(List<T> list, int size) {
+        //list.remove("");
+        if (list.size()<2){return list;}
+
+        List<T> shuffleList = new ArrayList<>(list);
+        Collections.shuffle(shuffleList);
+        return shuffleList.subList(0, size);
     }
 
     public CSPGraph basicGraph() {
