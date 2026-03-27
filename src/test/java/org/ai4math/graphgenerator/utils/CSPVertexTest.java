@@ -2,9 +2,7 @@ package org.ai4math.graphgenerator.utils;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -199,5 +197,21 @@ public class CSPVertexTest {
         CSPVertex vertex = g.vertexSet().iterator().next();
 
         assertEquals("TestName", vertex.getName(), "vertex name is unexpected");
+    }
+
+    @Test
+    void givenVertexAdded_whenSetRenaming_thenGetRenamingReturnsChannelsMapping(){
+        Map<String, String> renaming = new TreeMap<>(Map.of("testingProcess1", "testingProcess2",
+                "testingProcess2", "testingProcess3"));
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1", true, true);
+        x1.setRenaming(renaming);
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertEquals(renaming, vertex.getRenaming(), "renaming channels of vertex are unexpected");
+
     }
 }

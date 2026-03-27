@@ -1,6 +1,7 @@
 package org.ai4math.graphgenerator.utils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CSPVertex {
@@ -17,6 +18,7 @@ public class CSPVertex {
     private List<Set<String>> alphabet;
     private String name;
     private Set<String> hidden;
+    private Map<String,String> renaming;
 
     public CSPVertex(String name, boolean initialVertex){
         this.initialVertex = initialVertex;
@@ -32,6 +34,7 @@ public class CSPVertex {
         this.interleave = false;
         this.alphabet = List.of(Set.of());
         this.hidden = Set.of();
+        this.renaming = Map.of();
     }
 
     public CSPVertex(String name, boolean initialVertex, boolean processVertex){
@@ -48,6 +51,7 @@ public class CSPVertex {
         this.interleave = false;
         this.alphabet = List.of(Set.of());
         this.hidden = Set.of();
+        this.renaming = Map.of();
     }
 
     public CSPVertex(String name){
@@ -64,6 +68,7 @@ public class CSPVertex {
         this.interleave = false;
         this.alphabet = List.of(Set.of());
         this.hidden = Set.of();
+        this.renaming = Map.of();
     }
 
     public void setInitialVertex(boolean initialVertex) {
@@ -161,6 +166,10 @@ public class CSPVertex {
     public Set<String> getHidden() {
         return hidden;
     }
+
+    public Map<String, String> getRenaming() { return renaming; }
+
+    public void setRenaming(Map<String, String> renaming) { this.renaming = renaming; }
 
     public void setName(String name) {
         this.name = name;

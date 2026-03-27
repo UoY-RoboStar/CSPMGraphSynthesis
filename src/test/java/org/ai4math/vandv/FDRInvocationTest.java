@@ -78,9 +78,9 @@ public class FDRInvocationTest {
                 List<FDRCounterexample> counterexamples = fdrResult.getFdrCounterexamples();
                 for (FDRCounterexample counterexample : counterexamples) {
                     assertNotNull(counterexample.getProcessesTrace(),
-                            "trace is null");
+                            "processes trace is null");
                     assertEquals(expectedTrace,counterexample.getProcessesTrace(),
-                            "nonempty trace provided: "
+                            "nonempty processes trace provided: "
                                     + counterexample.getProcessesTrace());
                 }
             }

@@ -11,13 +11,16 @@ public class FDRCounterexample {
     private List<String> processesTrace;
 
     public void convertTraceToProcesses(Map<String, String> eventMap){
-        for (String entry : this.trace){
-            String convertedEntry = eventMap.get(entry);
-            if (this.processesTrace == null) {
-                this.processesTrace = new ArrayList<>(List.of(convertedEntry));
-            }
-            else {
-                boolean added = this.processesTrace.add(convertedEntry);
+        if (this.trace.isEmpty()){
+            this.processesTrace = List.of();
+        } else {
+            for (String entry : this.trace) {
+                String convertedEntry = eventMap.get(entry);
+                if (this.processesTrace == null) {
+                    this.processesTrace = new ArrayList<>(List.of(convertedEntry));
+                } else {
+                    this.processesTrace.add(convertedEntry);
+                }
             }
         }
     }

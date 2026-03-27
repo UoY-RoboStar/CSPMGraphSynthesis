@@ -21,9 +21,7 @@ public class CSPMTransformer {
 
     public CSPMTransformer(){
         List<String> files = new ArrayList<String>();
-        files.addAll(new CSPFileUtils().getCSPFiles());
-        files.add(new CSPFileUtils().getResourcePath("graph.csp"));
-        files.add(new CSPFileUtils().getResourcePath("DeadlockFreeCSP.csp"));
+        //files.addAll(new CSPFileUtils().getCSPFiles());
         this.cspFiles = files;
         this.currentCSPFile = "";
         this.traversed = List.of();
@@ -84,6 +82,9 @@ public class CSPMTransformer {
     private String addProcessDefinition(CSPVertex vertex, CSPGraph graph, boolean initial){
         StringBuilder processDefinition = new StringBuilder();
         Set<RelationshipEdge> vertexEdges = graph.outgoingEdgesOf(vertex);
+        if(!vertex.getHidden().isEmpty() && initial) {
+            processDefinition.append("(");
+        }
         if(traversed.contains(vertex)){
             return "";
         }
@@ -319,7 +320,7 @@ public class CSPMTransformer {
             }
             return processDefinition.toString();
         }
-        else if (!vertex.isStopVertex()) {
+        else {
             addTraversedVertex(vertex);
             int edgeCount = 0;
             for (RelationshipEdge vertexEdge : vertexEdges) {
@@ -338,6 +339,11 @@ public class CSPMTransformer {
                     edgeCount += 1;
                 } // todo: add handling for tau
             }
+        }
+        if(!vertex.getHidden().isEmpty() && initial){
+            processDefinition.append(")")
+                    .append("\\")
+                    .append(formatSet(vertex.getHidden()));
         }
 
         return processDefinition.toString();
@@ -388,7 +394,7 @@ public class CSPMTransformer {
                     // "[a-zA-Z]*(;\\n)" would be a process, not a channel
                     if (component.matches("[a-zA-Z]*")) {
                         if(!channels.contains(component)){
-                            System.out.println(component);
+                            System.out.println("Adding channel: "+component);
                             channels.add(component);
                         }
                     }
@@ -403,9 +409,17 @@ public class CSPMTransformer {
                 for (Set<String> alphabet : vertex.getAlphabet()){
                     for (String channel : alphabet){
                         if(!channels.contains(channel)){
-                            System.out.println(channel);
+                            System.out.println("Adding alphabet channel:" +channel);
                             channels.add(channel);
                         }
+                    }
+                }
+            }
+            if (!vertex.getHidden().isEmpty()){
+                for (String channel: vertex.getHidden()){
+                    if (!channels.contains(channel)){
+                        System.out.println("Adding hidden channel: "+ channel);
+                        channels.add(channel);
                     }
                 }
             }
