@@ -110,6 +110,7 @@ public class FDROutput {
                 if (!fdrResult.isPassed() && fdrResult.getErrors()==null) {
                     for (FDRCounterexample counterexamples : fdrResult.getFdrCounterexamples()) {
                         counterexamples.convertTraceToProcesses(this.eventMapParsed);
+                        counterexamples.convertRevealedTraceToProcesses(this.eventMapParsed);
                     }
                 }
             }
