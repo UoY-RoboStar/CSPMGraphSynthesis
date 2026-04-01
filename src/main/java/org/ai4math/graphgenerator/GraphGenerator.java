@@ -1,6 +1,7 @@
 package org.ai4math.graphgenerator;
 
 
+import org.ai4math.cspm.Keywords;
 import org.ai4math.graphgenerator.utils.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jgrapht.Graphs;
@@ -56,7 +57,7 @@ public class GraphGenerator {
             CSPVertex initialProcess = new CSPVertex(processName, true, true);
             baseGraph.addVertex(initialProcess);
 
-            CSPVertex process = generateProcess(messages);
+            CSPVertex process = generateProcess(messages, false, false);
             baseGraph.addVertex(process);
             RelationshipEdge e = baseGraph.addEdge(initialProcess, process);
             e.setLabel(label);
@@ -86,7 +87,7 @@ public class GraphGenerator {
         process.setInitialVertex(true);
         graph.addVertex(process);
 
-        CSPVertex newProcess = generateProcess(messages);
+        CSPVertex newProcess = generateProcess(messages, false, limit == 1);
         graph.addVertex(newProcess);
         RelationshipEdge e = graph.addEdge(process, newProcess);
         e.setLabel(label);
@@ -101,11 +102,11 @@ public class GraphGenerator {
         return graph;
     }
 
-    private CSPVertex generateProcess(List<String> messages){
+    private CSPVertex generateProcess(List<String> messages, boolean nonTerminal, boolean terminate){
         Random r = new Random();
 
         CSPVertex process = new CSPVertex("temp");
-        int choice = r.nextInt(0,3);
+        int choice = r.nextInt(nonTerminal?1:0,terminate?2:3);
         if (choice == 0) {
             process.setName(STOP);
             process.setStopVertex(true);
@@ -116,21 +117,21 @@ public class GraphGenerator {
             process = generateNonTerminalProcess();
         }
 
-        int hidden = r.nextInt(0,20);
+        int hidden = r.nextInt(0,30);
         if (hidden == 7) {
-            Set<String> hiddenChannels = new HashSet<>(randomSubList(messages));
+            Set<String> hiddenChannels = new HashSet<>(randomSubList(messages, true));
             process.setHidden(hiddenChannels);
         }
-        /*int renaming = r.nextInt(0,20);
+        int renaming = r.nextInt(0,30);
         if (renaming == 18) {
-            List<String> renameChannels = randomSubList(messages);
-            List<String> renamedChannels = randomSubList(messages);
+            List<String> renameChannels = randomSubList(messages, true);
+            List<String> renamedChannels = randomSetSizeSubList(messages, renameChannels.size(), true);
             Map<String, String> renamings = new TreeMap<>();
-            for (int i = 0; i < renameChannels.size(); i++) {
+            for (int i = 0; i < renameChannels.size()-1; i++) {
                 renamings.put(renameChannels.get(i), renamedChannels.get(i));
             }
             process.setRenaming(renamings);
-        }*/
+        }
 
         return process;
     }
@@ -147,7 +148,7 @@ public class GraphGenerator {
         process.setInitialVertex(true);
         graph.addVertex(process);
 
-        CSPVertex newProcess = generateNonTerminalProcess();
+        CSPVertex newProcess = generateProcess(messages, true, false);
         graph.addVertex(newProcess);
         RelationshipEdge e = graph.addEdge(process, newProcess);
         e.setLabel(label);
@@ -185,7 +186,7 @@ public class GraphGenerator {
         Random r = new Random();
         int choice = r.nextInt(2);
         if (choice == 0) {
-            CSPVertex newProcess = generateProcess(messages);
+            CSPVertex newProcess = generateProcess(messages, false, limit == 1);
             endGraph.addVertex(newProcess);
             RelationshipEdge e = endGraph.addEdge(process, newProcess);
             e.setLabel(label);
@@ -255,18 +256,6 @@ public class GraphGenerator {
         graph.addVertex(combinationProcess);
 
         if (combinationProcess.isSeqCompositionVertex()) {
-            /*if (r.nextBoolean()) {
-                // add transition from source to seqcomp, then add tick transition to new graph from seqcomp
-                RelationshipEdge e = graph.addEdge(vertex, combinationProcess);
-                e.setLabel(TICK);
-                CSPGraph newGraph = generateGraph(combinationProcess, messages, 4);
-                Graphs.addGraph(graph, newGraph);
-                // define graph for seqcomp process
-                //generateGraph();
-            } else {*/
-                // add new graph, then add tick transition to seqcomp, then add sourcegraph
-
-                // define graph for seqcomp process
                 if (r.nextBoolean()) {
                     generateStarterGraph(messages, combinationProcess, graph, true);
                     RelationshipEdge f = graph.addEdge(combinationProcess, vertex);
@@ -287,20 +276,15 @@ public class GraphGenerator {
             // need at least two processes connected to the combinationProcess, either with or without messages
             // could add guards on these also
             // todo: currently restricted to two edges
-            //if (r.nextBoolean()) {
                 if (r.nextBoolean()) {
                     generateStarterGraph(messages, combinationProcess, graph, false);
                 }
                 RelationshipEdge e = graph.addEdge(combinationProcess, vertex);
                 e.setLabel(generateEdge(messages));
                 CSPGraph extraGraph = generateGraph(combinationProcess, messages, 4);
-                //CSPVertex extraVertex = extraGraph.getInitialVertex();
                 if (!extraGraph.vertexSet().isEmpty()) {
                     Graphs.addGraph(graph, extraGraph);
-                    //RelationshipEdge f = graph.addEdge(combinationProcess, extraVertex);
-                    //f.setLabel(generateEdge(messages));
                 }
-            //}
         }
     }
 
@@ -325,8 +309,6 @@ public class GraphGenerator {
             CSPGraph endGraph = generateEndGraph(graph, finalVertex, messages, 3);
             Graphs.addGraph(graph, endGraph);
         }
-
-        //return graph;
     }
 
     private CSPVertex generateCombinationProcess(List<String> messages){
@@ -354,17 +336,17 @@ public class GraphGenerator {
             process.setName(generateProcessName(this.nameVerifier));
             process.setProcessVertex(true);
             process.setGeneralisedParallel(true);
-            Set<String> alphA = new HashSet<>(randomSubList(messages));
-            List<Set<String>> alphabet = List.of(alphA);
+            Set<String> alphabetA = new HashSet<>(randomSubList(messages, true));
+            List<Set<String>> alphabet = List.of(alphabetA);
             process.setAlphabet(alphabet);
         } else if (choice == 4) {
             // alphabetised parallel
             process.setName(generateProcessName(this.nameVerifier));
             process.setProcessVertex(true);
             process.setAlphabetisedParallel(true);
-            Set<String> alphA = new HashSet<>(randomSubList(messages));
-            Set<String> alphB = new HashSet<>(randomSubList(messages));
-            List<Set<String>> alphabet = List.of(alphA, alphB);
+            Set<String> alphabetA = new HashSet<>(randomSubList(messages, true));
+            Set<String> alphabetB = new HashSet<>(randomSubList(messages, true));
+            List<Set<String>> alphabet = List.of(alphabetA, alphabetB);
             process.setAlphabet(alphabet);
         } else if (choice == 5) {
             // interleave
@@ -377,10 +359,11 @@ public class GraphGenerator {
     }
 
     private String generateEdge(List<String> messages){
-        //List<String> messagesTrimmed = messages. // remove empty strings from this
-        if (!messages.isEmpty()) {
+        List<String> messagesTrimmed = new ArrayList<>(messages);
+        messagesTrimmed.removeIf(n-> Objects.equals(n, "")); // remove empty strings from this
+        if (!messagesTrimmed.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            sb.append(String.join(" -> ", randomSubList(messages)));
+            sb.append(String.join(" -> ", randomSubList(messagesTrimmed, false)));
             return sb.toString();
         }
         return "";
@@ -393,7 +376,7 @@ public class GraphGenerator {
             if (edge.getLabel() != null){
                 String[] edgeComponents = edge.getLabel().split(" -> ");
                 for (String component : edgeComponents) {
-                    if (component.matches("[a-zA-Z]*")) {
+                    if (component.matches("[a-zA-Z]*([!?.][a-zA-Z0-9]*)?")) {
                         if(!messages.contains(component)){
                             messages.add(component);
                         }
@@ -405,128 +388,52 @@ public class GraphGenerator {
         return messages;
     }
 
-    public static <T> List<T> randomSubList(List<T> list) {
-        //list.remove("");
+    public static List<String> randomSubList(List<String> list, boolean alphabet) {
+        list.removeIf(n->Objects.equals(n,""));
         if (list.size()<2){return list;}
 
         Random r = new Random();
         int newSize = r.nextInt(1, list.size());
-        List<T> shuffleList = new ArrayList<>(list);
+        List<String> shuffleList = new ArrayList<>(list);
         Collections.shuffle(shuffleList);
-        return shuffleList.subList(0, newSize);
+        List<String> sublist = shuffleList.subList(0, newSize);
+        if (alphabet){
+            List<String> sublistCopy = new ArrayList<>();
+            for(String item: sublist){
+                String[] items = item.split("[!?$\\.]");
+                StringBuilder sb = new StringBuilder();
+                sb.append(items[0]);
+                if (items.length>1) {
+                    sb.append(items[1]).append(".").append(Keywords.TYPE_PLACEHOLDER);
+                }
+                sublistCopy.add(sb.toString());
+            }
+            sublist = sublistCopy;
+        }
+        return sublist;
     }
 
-    public static <T> List<T> randomSetSizeSubList(List<T> list, int size) {
-        //list.remove("");
+    public static List<String> randomSetSizeSubList(List<String> list, int size, boolean alphabet) {
+        list.removeIf(n->Objects.equals(n,""));
         if (list.size()<2){return list;}
 
-        List<T> shuffleList = new ArrayList<>(list);
+        List<String> shuffleList = new ArrayList<>(list);
         Collections.shuffle(shuffleList);
-        return shuffleList.subList(0, size);
-    }
-
-    public CSPGraph basicGraph() {
-        CSPGraph baseGraph = new CSPGraph();
-
-        CSPVertex initialProcess = new CSPVertex("BasicProcess", true, true);
-        CSPVertex stopProcess = new CSPVertex(STOP);
-        stopProcess.setStopVertex(true);
-
-
-        baseGraph.addVertex(initialProcess);
-        baseGraph.addVertex(stopProcess);
-        RelationshipEdge e = baseGraph.addEdge(initialProcess, stopProcess);
-        e.setLabel("secondTestingChannel -> testingChannel");
-
-        return baseGraph;
-    }
-
-    public CSPGraph compositionalGraph() {
-        CSPGraph baseGraph = new CSPGraph();
-
-        CSPVertex initialProcess = new CSPVertex("CompProcess", true, true);
-        CSPVertex skipProcess = new CSPVertex(SKIP);
-        skipProcess.setSkipVertex(true);
-
-        baseGraph.addVertex(initialProcess);
-        baseGraph.addVertex(skipProcess);
-        RelationshipEdge e = baseGraph.addEdge(initialProcess, skipProcess);
-        e.setLabel("secondTestingChannel -> testingChannel");
-
-        CSPVertex compVertex = new CSPVertex("comp");
-        compVertex.setSeqCompositionVertex(true);
-        baseGraph.addVertex(compVertex);
-
-        RelationshipEdge e2 = baseGraph.addEdge(skipProcess, compVertex);
-        e2.setLabel(TICK);
-
-        CSPVertex stopProcess = new CSPVertex(STOP);
-        stopProcess.setStopVertex(true);
-
-        baseGraph.addVertex(stopProcess);
-        RelationshipEdge e3 = baseGraph.addEdge(compVertex, stopProcess);
-        e3.setLabel("b -> d -> e");
-
-        return baseGraph;
-    }
-
-    public CSPGraph parallelGraph() {
-        CSPGraph baseGraph = new CSPGraph();
-
-        CSPVertex initialProcess = new CSPVertex("ParProcess", true, true);
-
-        initialProcess.setGeneralisedParallel(true);
-        Set<String> alp = Set.of("a", "e");
-        List<Set<String>> alphabet = List.of(alp);
-        initialProcess.setAlphabet(alphabet);
-
-        CSPVertex skipProcess = new CSPVertex(SKIP);
-        skipProcess.setSkipVertex(true);
-        CSPVertex stopProcess = new CSPVertex(STOP);
-        stopProcess.setStopVertex(true);
-
-        baseGraph.addVertex(initialProcess);
-        baseGraph.addVertex(stopProcess);
-        baseGraph.addVertex(skipProcess);
-
-        RelationshipEdge e = baseGraph.addEdge(initialProcess, skipProcess);
-        e.setLabel("a -> b");
-        RelationshipEdge b = baseGraph.addEdge(initialProcess, stopProcess);
-        b.setLabel("c -> e");
-
-        return baseGraph;
-    }
-
-    public CSPGraph loopGraph() {
-        CSPGraph baseGraph = new CSPGraph();
-        CSPGraph qGraph = new CSPGraph();
-
-        CSPVertex initialProcess = new CSPVertex("LoopProcess", true, true);
-        initialProcess.setSeqCompositionVertex(true);
-
-        CSPVertex qVertex = new CSPVertex("Q", true, true);
-
-        CSPVertex skipProcess = new CSPVertex(SKIP);
-        skipProcess.setSkipVertex(true);
-        CSPVertex stopProcess = new CSPVertex(STOP);
-        stopProcess.setStopVertex(true);
-
-        baseGraph.addVertex(initialProcess);
-        baseGraph.addVertex(stopProcess);
-        baseGraph.addVertex(skipProcess);
-        baseGraph.addVertex(qVertex);
-        qGraph.addVertex(qVertex);
-
-        RelationshipEdge q = qGraph.addEdge(qVertex, qVertex);
-        q.setLabel("d -> e");
-
-        RelationshipEdge e = baseGraph.addEdge(initialProcess, skipProcess);
-        e.setLabel("a -> b");
-        RelationshipEdge b = baseGraph.addEdge(initialProcess, qVertex);
-        b.setLabel("c -> e");
-        Graphs.addGraph(baseGraph, qGraph);
-
-        return baseGraph;
+        List<String> sublist = shuffleList.subList(0, size);
+        if (alphabet){
+            List<String> sublistCopy = new ArrayList<>();
+            for(String item: sublist){
+                String[] items = item.split("[!?$\\.]");
+                StringBuilder sb = new StringBuilder();
+                sb.append(items[0]);
+                if (items.length>1) {
+                    sb.append(items[1]).append(".").append(Keywords.TYPE_PLACEHOLDER);
+                }
+                sublistCopy.add(sb.toString());
+            }
+            sublist = sublistCopy;
+        }
+        return sublist;
     }
 
     public List<CSPGraph> getGraphs() {

@@ -19,6 +19,8 @@ public class StringConstants {
         return "channel name : type\n";
     }
 
+    public static String dataTypeDeclaration() { return "datatype name = typeVal\n"; }
+
     public static String variableDeclaration() {
         return "channel setVariableName : type\nchannel getVariableName : type\n";
     }

@@ -64,8 +64,12 @@ public class FDRResults {
             fdrCounterexample.setTrace(
                     new ObjectMapper()
                             .readerForListOf(String.class)
-                            .readValue(counterexamples.get("implementation_behaviour").get("trace"))
-            );
+                            .readValue(counterexamples.get("implementation_behaviour").get("trace")));
+            fdrCounterexample.setRevealedTrace(
+                    new ObjectMapper()
+                            .readerForListOf(String.class)
+                            .readValue(counterexamples.get("implementation_behaviour").get("revealed_trace")));
+
         } catch (IOException e){
             System.out.println("Error encountered converting the trace to a list: " + e.getMessage());
         }

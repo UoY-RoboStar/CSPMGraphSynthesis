@@ -127,4 +127,5 @@ public class Keywords {
     public static final String FAILURES_DIVERGENCES = "FD";
 
     // other keywords
+    public static final String TYPE_PLACEHOLDER = "Type_Placeholder";
 }
