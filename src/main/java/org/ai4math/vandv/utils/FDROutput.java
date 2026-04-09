@@ -21,29 +21,37 @@ public class FDROutput {
     }
 
     public void addResults(JsonNode results) {
-        if (this.results == null) {
+        if (this.results == null && results!=null) {
             this.results = new ArrayList<>(List.of(results));
         }
-        else {
+        else if (results != null) {
             this.results.add(results);
+        } else {
+            this.results = List.of();
         }
     }
 
     public void addWarnings(JsonNode warnings) {
-        if (this.warnings == null) {
+        if (this.warnings == null && warnings!=null) {
             this.warnings = new ArrayList<>(List.of(warnings));
         }
-        else {
+        else if (warnings != null) {
             this.warnings.add(warnings);
+        }
+        else {
+            this.warnings = List.of();
         }
     }
 
     public void addError(JsonNode errors) {
-        if (this.errors == null) {
+        if (this.errors == null && errors!=null) {
             this.errors = new ArrayList<>(List.of(errors));
         }
-        else {
+        else if (errors != null) {
             this.errors.add(errors);
+        }
+        else {
+            this.errors = List.of();
         }
     }
 
@@ -68,11 +76,13 @@ public class FDROutput {
     }
 
     public void addFdrResults(FDRResults fdrResults){
-        if (this.fdrResults == null) {
+        if (this.fdrResults == null && fdrResults!=null) {
             this.fdrResults = new ArrayList<>(List.of(fdrResults));
         }
-        else {
+        else if (fdrResults != null) {
             this.fdrResults.add(fdrResults);
+        } else {
+            this.fdrResults = List.of();
         }
     }
 
@@ -84,6 +94,10 @@ public class FDROutput {
         return eventMap;
     }
 
+    public Map<String, String> getEventMapParsed() {
+        return eventMapParsed;
+    }
+
     public void setPrintStatementResults(JsonNode printStatementResults) {
         this.printStatementResults = printStatementResults;
     }
@@ -92,7 +106,7 @@ public class FDROutput {
         this.eventMap = eventMap;
     }
 
-    private void parseEventMap(JsonNode eventMap){
+    public void parseEventMap(JsonNode eventMap){
         TypeReference<Map<String, String>> typeReferenceMap = new TypeReference<Map<String, String>>() {};
         if (eventMap != null) {
             try {

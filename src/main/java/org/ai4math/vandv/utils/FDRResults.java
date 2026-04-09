@@ -38,11 +38,14 @@ public class FDRResults {
     }
 
     public void addError(JsonNode errors) {
-        if (this.errors == null) {
+        if (this.errors == null && errors!=null) {
             this.errors = new ArrayList<>(List.of(errors));
         }
-        else {
+        else if (errors != null) {
             this.errors.add(errors);
+        }
+        else {
+            this.errors = List.of();
         }
     }
 
@@ -70,7 +73,7 @@ public class FDRResults {
                             .readerForListOf(String.class)
                             .readValue(counterexamples.get("implementation_behaviour").get("revealed_trace")));
 
-        } catch (IOException e){
+        } catch (IOException | IllegalArgumentException e){
             System.out.println("Error encountered converting the trace to a list: " + e.getMessage());
         }
 

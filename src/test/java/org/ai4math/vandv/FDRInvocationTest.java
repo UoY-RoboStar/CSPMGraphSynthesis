@@ -7,16 +7,23 @@ import org.ai4math.vandv.utils.FDRResults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.concurrent.TimeUnit;
 
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.parallel.ExecutionMode.SAME_THREAD;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
 
 @net.jcip.annotations.NotThreadSafe
 public class FDRInvocationTest {
@@ -125,6 +132,29 @@ public class FDRInvocationTest {
         List<JsonNode> errors = fdrResults.getFirst().getErrors();
         assertEquals(expectedError, errors.getFirst().asText(), "Unexpected error message");
     }
+
+    @Test
+    void givenInvalidFilePath_whenPerformVerificationInvoked_thenErrorAddedToOutput(){
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        FDRInvocation fdrInvocation = new FDRInvocation();
+        fdrInvocation.performVerification("InvalidCSPM.csp");
+
+        assertTrue(
+                outContent.toString()
+                        .endsWith("Error: <unknown location>: Could not open the file 'InvalidCSPM.csp'"
+                                +System.getProperty("line.separator")),
+                "Expected the stream to end with given message but was "+outContent.toString());
+
+        FDROutput fdrOutput = fdrInvocation.getFdrOutput();
+        assertEquals(1, fdrOutput.getErrors().size());
+        assertEquals("<unknown location>: Could not open the file 'InvalidCSPM.csp'",
+                fdrOutput.getErrors().getFirst().asText());
+
+        assertNull(fdrInvocation.getFdrOutput().getFdrResults());
+    }
+
 
     public String getResourcePath(String resourceName){
         ClassLoader classLoader = getClass().getClassLoader();
