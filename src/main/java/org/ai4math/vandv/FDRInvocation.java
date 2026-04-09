@@ -22,6 +22,8 @@ public class FDRInvocation {
 
     private FDROutput fdrOutput;
 
+    public FDRInvocation(){}
+
     public void performVerification(String filepath){
         System.out.println("Running FDR on " + filepath);
         ProcessBuilder PB = new ProcessBuilder(FDR_COMMAND, filepath, FORMAT, QUIET, TAUS);
@@ -42,6 +44,7 @@ public class FDRInvocation {
 
                 if (exitCode == 0) {
                     if (!stderr.isEmpty()) {
+                        // FDR does not output errors to an error stream
                         System.out.println("Log data was:");
                         System.out.println(stderr);
                         reportError(stderr);
@@ -62,11 +65,13 @@ public class FDRInvocation {
         } catch (IOException e) {
             System.err.println("IOException occurred: " + e.getMessage());
         } catch (InterruptedException e) {
-            System.out.println("Process interrupted.");
+            System.err.println("Process interrupted.");
             if (process != null) {
                 process.destroy(); // Equivalent to process.terminate()
             }
             Thread.currentThread().interrupt();
+        } catch (Exception e){
+            System.err.println("Unexpected error occurred: " + e.getClass().getName() + " : " + e.getMessage());
         }
     }
 
@@ -154,5 +159,3 @@ public class FDRInvocation {
         }
     }
 }
-
-// if doing hiding then have fdr display tau's or not

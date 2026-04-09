@@ -21,7 +21,8 @@ public class FDRCounterexample {
 
     public void addHidden() {
         Set<String> hiddenSet = new HashSet<>(Set.of());
-        if (this.processesTrace != null && this.revealedProcessesTrace != null) {
+        if (this.processesTrace != null && this.revealedProcessesTrace != null
+                && !this.processesTrace.isEmpty() && !this.revealedProcessesTrace.isEmpty()) {
             int[] indexes = IntStream.range(0, this.processesTrace.size())
                     .filter(i -> Objects.equals(this.processesTrace.get(i), Keywords.TAU)).toArray();
 
@@ -35,7 +36,10 @@ public class FDRCounterexample {
     public void convertTraceToProcesses(Map<String, String> eventMap){
         if (this.trace.isEmpty()){
             this.processesTrace = List.of();
-        } else {
+        }  else if (eventMap.isEmpty()){
+            this.processesTrace = List.of();
+            System.err.println("The eventMap provided was empty, unable to generate processes trace.");
+        }else {
             for (String entry : this.trace) {
                 String convertedEntry = eventMap.get(entry);
                 if (this.processesTrace == null) {
@@ -48,8 +52,11 @@ public class FDRCounterexample {
     }
 
     public void convertRevealedTraceToProcesses(Map<String, String> eventMap){
-        if (this.revealedTrace.isEmpty()){
+        if (this.revealedTrace.isEmpty()) {
             this.revealedProcessesTrace = List.of();
+        } else if (eventMap.isEmpty()){
+            this.revealedProcessesTrace = List.of();
+            System.err.println("The eventMap provided was empty, unable to generate processes trace.");
         } else {
             for (String entry : this.revealedTrace) {
                 String convertedEntry = eventMap.get(entry);
@@ -67,6 +74,10 @@ public class FDRCounterexample {
 
     public List<String> getProcessesTrace() {
         return processesTrace;
+    }
+
+    public void setProcessesTrace(List<String> trace){
+        this.processesTrace = trace;
     }
 
     public List<String> getTrace() {
@@ -106,8 +117,11 @@ public class FDRCounterexample {
     }
 
     public void setNoTauTrace() {
-        List<String> noTauTrace = new ArrayList<>(this.processesTrace);
-        noTauTrace.removeIf(n -> Objects.equals(n, Keywords.TAU));
+        List<String> noTauTrace = List.of();
+        if (this.processesTrace != null) {
+            noTauTrace = new ArrayList<>(this.processesTrace);
+            noTauTrace.removeIf(n -> Objects.equals(n, Keywords.TAU));
+        }
         this.noTauTrace = noTauTrace;
     }
 }
