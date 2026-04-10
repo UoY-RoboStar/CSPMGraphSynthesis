@@ -40,6 +40,8 @@ public class NameVerifier {
     public boolean isChannelNameAcceptable(String name){
         if (this.processNames.contains(name) || this.keywords.contains(name)){
             return false;
+        } else if (this.channelNames.contains(name)) {
+            return true;
         }
 
         List<String> channels = new ArrayList<String>(this.channelNames);

@@ -3,7 +3,6 @@ package org.ai4math.graphgenerator;
 
 import org.ai4math.cspm.Keywords;
 import org.ai4math.graphgenerator.utils.*;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.jgrapht.Graphs;
 
 import java.util.*;
@@ -16,10 +15,12 @@ import static org.ai4math.graphgenerator.utils.NameGenerator.generateProcessName
 public class GraphGenerator {
     public List<CSPGraph> graphs;
     public NameVerifier nameVerifier;
+    public Random random;
 
     public GraphGenerator(){
         this.graphs = List.of();
         this.nameVerifier = new NameVerifier();
+        this.random = new Random();
     }
 
     public List<CSPGraph> generateGraphSet(Integer baseGraphs, Integer combineGraphs) {
@@ -27,16 +28,8 @@ public class GraphGenerator {
         // side note: make a tool to parse the csp files to get data about representation in the dataset
         //              versus representation in existing examples
 
-        List<CSPGraph> graphs = new ArrayList<>();
-        /*graphs.add(BasicGraph());
-        graphs.add(CompositionalGraph());
-        graphs.add(ParallelGraph());
-        graphs.add(LoopGraph());*/
-
         generateBaseGraphs(baseGraphs);
         combineGraphs(combineGraphs);
-
-        // Add graph combination step
 
         return this.graphs;
     }
@@ -44,14 +37,13 @@ public class GraphGenerator {
     public void generateBaseGraphs(int count){
         List<CSPGraph> baseGraphs = new ArrayList<>(this.graphs);
         int i = 0;
-        Random r = new Random();
 
         while (i<count){
             CSPGraph baseGraph = new CSPGraph();
 
             String processName = generateProcessName(this.nameVerifier);
 
-            List<String> messages = generateMessages(r.nextInt(30), this.nameVerifier);
+            List<String> messages = generateMessages(this.random.nextInt(30), this.nameVerifier);
             String label = generateEdge(messages);
 
             CSPVertex initialProcess = new CSPVertex(processName, true, true);
@@ -103,10 +95,8 @@ public class GraphGenerator {
     }
 
     private CSPVertex generateProcess(List<String> messages, boolean nonTerminal, boolean terminate){
-        Random r = new Random();
-
         CSPVertex process = new CSPVertex("temp");
-        int choice = r.nextInt(nonTerminal?1:0,terminate?2:3);
+        int choice = this.random.nextInt(nonTerminal?1:0,terminate?2:3);
         if (choice == 0) {
             process.setName(STOP);
             process.setStopVertex(true);
@@ -117,12 +107,12 @@ public class GraphGenerator {
             process = generateNonTerminalProcess();
         }
 
-        int hidden = r.nextInt(0,30);
+        int hidden = this.random.nextInt(0,30);
         if (hidden == 7) {
             Set<String> hiddenChannels = new HashSet<>(randomSubList(messages, true));
             process.setHidden(hiddenChannels);
         }
-        int renaming = r.nextInt(0,30);
+        int renaming = this.random.nextInt(0,30);
         if (renaming == 18) {
             List<String> renameChannels = randomSubList(messages, true);
             List<String> renamedChannels = randomSetSizeSubList(messages, renameChannels.size(), true);
@@ -183,8 +173,7 @@ public class GraphGenerator {
 
         CSPVertex sourceVertex = getRandomVertex(graph);
 
-        Random r = new Random();
-        int choice = r.nextInt(2);
+        int choice = this.random.nextInt(2);
         if (choice == 0) {
             CSPVertex newProcess = generateProcess(messages, false, limit == 1);
             endGraph.addVertex(newProcess);
@@ -209,14 +198,13 @@ public class GraphGenerator {
     public void combineGraphs(int count){
         List<CSPGraph> baseGraphs = new ArrayList<>(this.graphs);
         List<CSPGraph> combinedGraphs = new ArrayList<>();
-        Random r = new Random();
         int i = 0;
 
         while (i<count){
-            CSPGraph sourceGraph = baseGraphs.get(r.nextInt(baseGraphs.size()));
+            CSPGraph sourceGraph = baseGraphs.get(this.random.nextInt(baseGraphs.size()));
             CSPGraph graph = new CSPGraph();
 
-            int j = r.nextInt(1,6);
+            int j = this.random.nextInt(1,6);
             for (int k = 0; k <= j; k++){
                 generateCombinedGraph(sourceGraph, graph);
             }
@@ -231,22 +219,19 @@ public class GraphGenerator {
     }
 
     private CSPVertex getRandomVertex(CSPGraph graph){
-        Random r = new Random();
-
         CSPVertex vertex = graph.vertexSet().stream().toList()
-                .get(r.nextInt(graph.vertexSet().size()));
+                .get(this.random.nextInt(graph.vertexSet().size()));
         while (vertex.isInterleave() || vertex.isAlphabetisedParallel() || vertex.isGeneralisedParallel() ||
                 vertex.isInternalChoice() || vertex.isExternalChoice() || vertex.isSeqCompositionVertex()){
             vertex = graph.vertexSet().stream().toList()
-                    .get(r.nextInt(graph.vertexSet().size()));
+                    .get(this.random.nextInt(graph.vertexSet().size()));
         }
 
         return vertex;
     }
 
     private void generateCombinedGraph(CSPGraph sourceGraph, CSPGraph graph) {
-        Random r = new Random();
-        List<String> messages = generateMessages(r.nextInt(30), this.nameVerifier);
+        List<String> messages = generateMessages(this.random.nextInt(30), this.nameVerifier);
         messages.addAll(getMessagesFromGraph(sourceGraph));
 
         CSPVertex vertex = getRandomVertex(graph.vertexSet().isEmpty()? sourceGraph:graph);
@@ -256,7 +241,7 @@ public class GraphGenerator {
         graph.addVertex(combinationProcess);
 
         if (combinationProcess.isSeqCompositionVertex()) {
-                if (r.nextBoolean()) {
+                if (this.random.nextBoolean()) {
                     generateStarterGraph(messages, combinationProcess, graph, true);
                     RelationshipEdge f = graph.addEdge(combinationProcess, vertex);
                     f.setLabel(generateEdge(messages));
@@ -276,7 +261,7 @@ public class GraphGenerator {
             // need at least two processes connected to the combinationProcess, either with or without messages
             // could add guards on these also
             // todo: currently restricted to two edges
-                if (r.nextBoolean()) {
+                if (this.random.nextBoolean()) {
                     generateStarterGraph(messages, combinationProcess, graph, false);
                 }
                 RelationshipEdge e = graph.addEdge(combinationProcess, vertex);
@@ -312,10 +297,8 @@ public class GraphGenerator {
     }
 
     private CSPVertex generateCombinationProcess(List<String> messages){
-        Random r = new Random();
-
         CSPVertex process = new CSPVertex("temp");
-        int choice = r.nextInt(0,6);
+        int choice = this.random.nextInt(0,6);
         if (choice == 0) {
             // sequential composition
             process.setName("Sequential Composition");
@@ -388,55 +371,69 @@ public class GraphGenerator {
         return messages;
     }
 
-    public static List<String> randomSubList(List<String> list, boolean alphabet) {
+    public List<String> randomSubList(List<String> list, boolean alphabet) {
         list.removeIf(n->Objects.equals(n,""));
-        if (list.size()<2){return list;}
-
-        Random r = new Random();
-        int newSize = r.nextInt(1, list.size());
-        List<String> shuffleList = new ArrayList<>(list);
-        Collections.shuffle(shuffleList);
-        List<String> sublist = shuffleList.subList(0, newSize);
-        if (alphabet){
-            List<String> sublistCopy = new ArrayList<>();
-            for(String item: sublist){
-                String[] items = item.split("[!?$\\.]");
-                StringBuilder sb = new StringBuilder();
-                sb.append(items[0]);
-                if (items.length>1) {
-                    sb.append(items[1]).append(".").append(Keywords.TYPE_PLACEHOLDER);
-                }
-                sublistCopy.add(sb.toString());
-            }
-            sublist = sublistCopy;
+        if (list.size()==1){
+            return alphabet?List.of(getUndecorated(list.getFirst())):list;
+        } else if (list.isEmpty()){
+            return list;
         }
-        return sublist;
+
+        int newSize = this.random.nextInt(1, list.size());
+        return getStrings(list, newSize, alphabet);
     }
 
     public static List<String> randomSetSizeSubList(List<String> list, int size, boolean alphabet) {
         list.removeIf(n->Objects.equals(n,""));
-        if (list.size()<2){return list;}
+        if (list.size()==1){
+            return alphabet?List.of(getUndecorated(list.getFirst())):list;
+        } else if (list.isEmpty()){
+            return list;
+        }
+        if (size > list.size()) {size = list.size();}
+        return getStrings(list, size, alphabet);
+    }
 
+    private static List<String> getStrings(List<String> list, int size, boolean alphabet) {
         List<String> shuffleList = new ArrayList<>(list);
         Collections.shuffle(shuffleList);
         List<String> sublist = shuffleList.subList(0, size);
         if (alphabet){
             List<String> sublistCopy = new ArrayList<>();
-            for(String item: sublist){
-                String[] items = item.split("[!?$\\.]");
-                StringBuilder sb = new StringBuilder();
-                sb.append(items[0]);
-                if (items.length>1) {
-                    sb.append(items[1]).append(".").append(Keywords.TYPE_PLACEHOLDER);
-                }
-                sublistCopy.add(sb.toString());
+            for(String item: sublist) {
+                sublistCopy.add(getUndecorated(item));
             }
             sublist = sublistCopy;
         }
         return sublist;
     }
 
+    private static String getUndecorated(String item){
+        String[] items = item.split("[!?$\\.]");
+        StringBuilder sb = new StringBuilder();
+        sb.append(items[0]);
+        if (items.length>1) {
+            sb.append(".").append(Keywords.TYPE_PLACEHOLDER);
+        }
+        return sb.toString();
+    }
+
     public List<CSPGraph> getGraphs() {
         return graphs;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    public void addGraph(CSPGraph graph){
+        if (this.graphs == null){
+            this.graphs = List.of(graph);
+        } else {
+            List<CSPGraph> graphs = new ArrayList<>(this.graphs);
+            graphs.add(graph);
+            this.graphs = graphs;
+        }
+
     }
 }
