@@ -21,10 +21,11 @@ public class Main {
     public static void main(String[] args) throws IOException {
         CommandLineOptions parsedArgs = parseCommandLine(args);
 
-        GraphGenerator graphGenerator = new GraphGenerator();
+        GraphGenerator graphGenerator = new GraphGenerator(parsedArgs.isDecorated());
         List<CSPGraph> graphs = graphGenerator.generateGraphSet(
                 parsedArgs.getBaseGraphs(),
-                parsedArgs.getCombinedGraphs());
+                parsedArgs.getCombinedGraphs()
+        );
 
         CSPMTransformer cspmTransformer = new CSPMTransformer();
         for (CSPGraph graph: graphs) {
@@ -38,7 +39,7 @@ public class Main {
             FDRInvocation fdrInvocation = new FDRInvocation();
             fdrInvocation.performVerification(file);
 
-            datasetGenerator.addEncodedCspEntryToDataSet(Files.readString(Path.of(file)),fdrInvocation.getFdrOutput());
+            datasetGenerator.addEntryToDataSet(Files.readString(Path.of(file)),fdrInvocation.getFdrOutput());
         }
 
     }
@@ -65,6 +66,11 @@ public class Main {
         regen.setRequired(false);
         options.addOption(regen);
 
+        Option decorations = new Option("d", "decorationsIncluded",
+                false, "Include decorations, with data passing, for channels");
+        decorations.setRequired(false);
+        options.addOption(decorations);
+
         HelpFormatter formatter = HelpFormatter.builder().get();
         String header = "Provide the required options to operate the synthesiser";
         String footer = "Please report issues to https://github.com/UoY-RoboStar/CSPMGraphSynthesis";
@@ -80,6 +86,7 @@ public class Main {
             String c = cmd.getOptionValue("c");
 
             commandLineOptions.setRegenerateDataset(cmd.hasOption(regen));
+            commandLineOptions.setDecorations(cmd.hasOption(decorations));
             commandLineOptions.setBaseGraphs(Integer.parseInt(b));
             commandLineOptions.setCombinedGraphs(Integer.parseInt(c));
             commandLineOptions.setFilePath(p);

@@ -5,25 +5,16 @@ import org.ai4math.vandv.utils.FDRCounterexample;
 import org.ai4math.vandv.utils.FDROutput;
 import org.ai4math.vandv.utils.FDRResults;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.parallel.ExecutionMode.SAME_THREAD;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.spy;
 
 @net.jcip.annotations.NotThreadSafe
 public class FDRInvocationTest {
@@ -44,7 +35,6 @@ public class FDRInvocationTest {
         }
 
     }
-
 
     @Test
     void givenValidDeadlockedCSP_whenPerformVerificationInvoked_thenOutputWithoutTraceFormed() {

@@ -16,11 +16,13 @@ public class GraphGenerator {
     public List<CSPGraph> graphs;
     public NameVerifier nameVerifier;
     public Random random;
+    public Boolean decorated;
 
-    public GraphGenerator(){
+    public GraphGenerator(boolean decorated){
         this.graphs = List.of();
         this.nameVerifier = new NameVerifier();
         this.random = new Random();
+        this.decorated = decorated;
     }
 
     public List<CSPGraph> generateGraphSet(Integer baseGraphs, Integer combineGraphs) {
@@ -43,7 +45,7 @@ public class GraphGenerator {
 
             String processName = generateProcessName(this.nameVerifier);
 
-            List<String> messages = generateMessages(this.random.nextInt(30), this.nameVerifier);
+            List<String> messages = generateMessages(this.random.nextInt(30), this.nameVerifier, this.decorated);
             String label = generateEdge(messages);
 
             CSPVertex initialProcess = new CSPVertex(processName, true, true);
@@ -231,7 +233,7 @@ public class GraphGenerator {
     }
 
     private void generateCombinedGraph(CSPGraph sourceGraph, CSPGraph graph) {
-        List<String> messages = generateMessages(this.random.nextInt(30), this.nameVerifier);
+        List<String> messages = generateMessages(this.random.nextInt(30), this.nameVerifier, this.decorated);
         messages.addAll(getMessagesFromGraph(sourceGraph));
 
         CSPVertex vertex = getRandomVertex(graph.vertexSet().isEmpty()? sourceGraph:graph);

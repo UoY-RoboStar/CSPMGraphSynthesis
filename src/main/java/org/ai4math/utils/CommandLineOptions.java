@@ -5,6 +5,7 @@ public class CommandLineOptions {
     private boolean regenerateDataset;
     private int baseGraphs;
     private int combinedGraphs;
+    private boolean decorations;
 
     public int getBaseGraphs() {
         return baseGraphs;
@@ -20,6 +21,12 @@ public class CommandLineOptions {
 
     public boolean isRegenerateDataset() {
         return regenerateDataset;
+    }
+
+    public boolean isDecorated() {return decorations;}
+
+    public void setDecorations(boolean decorations) {
+        this.decorations = decorations;
     }
 
     public void setFilePath(String filePath) {

@@ -16,7 +16,7 @@ public class NameGenerator {
         return name;
     }
 
-    public static List<String> generateMessages(int count, NameVerifier nameVerifier){
+    public static List<String> generateMessages(int count, NameVerifier nameVerifier, boolean decorated){
         List<String> messages = new ArrayList<>();
         int i = 0;
         Random r = new Random();
@@ -25,7 +25,7 @@ public class NameGenerator {
             int length = r.nextInt(1, 25);
             String message = RandomStringUtils.random(length, true, false);
             if (!message.isEmpty() && nameVerifier.isChannelNameAcceptable(message)) {
-                if (r.nextInt(0,10) == 5){
+                if (r.nextInt(0,10) == 5 && decorated){
                     message = generateMessageWithDecoration(message);
                 }
                 messages.add(message);

@@ -1,16 +1,12 @@
 package org.ai4math.utils;
 
-import com.opencsv.CSVReader;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,8 +30,6 @@ public class CSPFileUtils {
     }
 
     public String getResourcePath(String resourcePath, String resourceName) throws IOException{
-        //ClassLoader classLoader = getClass().getClassLoader();
-        //File file = new File(classLoader.getResource(resourceName).getFile());
         File file = new File(getDirectory(resourcePath), resourceName);
 
         return file.getAbsolutePath();
@@ -63,6 +57,7 @@ public class CSPFileUtils {
             files = paths
                     .filter(Files::isRegularFile)
                     .map(Path::toString)
+                    .filter(x -> x.contains(".csp"))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             System.out.println("Exception encountered when retrieving csp files: " + e.getMessage());
