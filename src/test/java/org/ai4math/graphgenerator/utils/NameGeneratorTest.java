@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,25 +33,79 @@ public class NameGeneratorTest {
     }
 
     @Test
-    public void givenNameIsAcceptable_whenGenerateMessages_thenReturnMessagesTest(){
+    public void givenNameIsAcceptableAndDecorated_whenGenerateMessages_thenReturnMessagesIncludesDecorationsTest(){
         NameVerifier nameVerifier = mock(NameVerifier.class);
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(true);
 
-        List<String> names = NameGenerator.generateMessages(5, nameVerifier);
+        List<String> names = NameGenerator.generateMessages(15, nameVerifier, true);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(5, names.size(), "Fewer names generated than expected");
+        assertEquals(15, names.size(), "Fewer names generated than expected");
+
+        boolean decorated = false;
+        for (String name: names){
+            if (name.contains("!") || name.contains("?") || name.contains(".")){
+                decorated = true;
+            }
+        }
+        assertTrue(decorated, "No messages have decorations: "+names);
     }
 
     @Test
-    public void givenNameIsNotInitiallyAcceptable_whenGenerateMessages_thenReturnMessagesTest(){
+    public void givenNameIsNotInitiallyAcceptableAndDecorated_whenGenerateMessages_thenReturnMessagesIncludesDecorationsTest(){
         NameVerifier nameVerifier = mock(NameVerifier.class);
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(false, false, true);
 
-        List<String> names = NameGenerator.generateMessages(5, nameVerifier);
+        List<String> names = NameGenerator.generateMessages(15, nameVerifier, true);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(5, names.size(), "Fewer names generated than expected");
+        assertEquals(15, names.size(), "Fewer names generated than expected");
+
+        boolean decorated = false;
+        for (String name: names){
+            if (name.contains("!") || name.contains("?") || name.contains(".")){
+                decorated = true;
+            }
+        }
+        assertTrue(decorated, "No messages have decorations: "+names);
+    }
+
+    @Test
+    public void givenNameIsAcceptableAndDecoratedIsFalse_whenGenerateMessages_thenReturnMessagesHaveNoDecorationsTest(){
+        NameVerifier nameVerifier = mock(NameVerifier.class);
+        when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(true);
+
+        List<String> names = NameGenerator.generateMessages(15, nameVerifier, false);
+
+        assertNotNull(names, "name returned was null");
+        assertEquals(15, names.size(), "Fewer names generated than expected");
+
+        boolean decorated = false;
+        for (String name: names){
+            if (name.contains("!") || name.contains("?") || name.contains(".")){
+                decorated = true;
+            }
+        }
+        assertFalse(decorated, "Messages have decorations: "+names);
+    }
+
+    @Test
+    public void givenNameIsNotInitiallyAcceptableAndDecoratedIsFalse_whenGenerateMessages_thenReturnMessagesHaveNoDecorationsTest(){
+        NameVerifier nameVerifier = mock(NameVerifier.class);
+        when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(false, false, true);
+
+        List<String> names = NameGenerator.generateMessages(15, nameVerifier, false);
+
+        assertNotNull(names, "name returned was null");
+        assertEquals(15, names.size(), "Fewer names generated than expected");
+
+        boolean decorated = false;
+        for (String name: names){
+            if (name.contains("!") || name.contains("?") || name.contains(".")){
+                decorated = true;
+            }
+        }
+        assertFalse(decorated, "Messages have decorations: "+names);
     }
 
 }
