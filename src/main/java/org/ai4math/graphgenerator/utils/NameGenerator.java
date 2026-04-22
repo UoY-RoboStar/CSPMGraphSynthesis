@@ -59,9 +59,18 @@ public class NameGenerator {
     }
 
     private static String generateParameter(Random r){
-        int length = r.nextInt(1, 10);
-        return RandomStringUtils.random(1, true, false) +
-                RandomStringUtils.random(length, true, true);
+        int choice = r.nextInt(0,3);
+        if (choice == 0){
+            return Boolean.toString(r.nextBoolean());
+        } else if (choice == 1){
+            return RandomStringUtils.random(1, true,false);
+        } else if (choice == 2){
+            return Integer.toString(r.nextInt(0,150));
+        } else {
+            int length = r.nextInt(1, 10);
+            return RandomStringUtils.random(1, true, false) +
+                    RandomStringUtils.random(length, true, true);
+        }
     }
 
     private static String generateExpression(){

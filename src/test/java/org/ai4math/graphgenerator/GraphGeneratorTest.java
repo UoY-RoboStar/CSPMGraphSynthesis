@@ -42,7 +42,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenCountOfOne_whenGenerateBaseGraphs_thenAValidGraphShouldBeDefined() throws IOException{
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.generateBaseGraphs(1);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
@@ -58,7 +58,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenCountOfTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.generateBaseGraphs(2);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
@@ -77,7 +77,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenCountGreaterThanTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.generateBaseGraphs(5);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
@@ -96,7 +96,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenCountOfOne_whenGenerateBaseGraphsThenCombinedGraph_thenAValidGraphShouldBeDefined() throws IOException{
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.generateBaseGraphs(1);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
@@ -127,7 +127,7 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(0);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -157,7 +157,7 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(1);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true, false);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -187,7 +187,7 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(2);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -217,7 +217,7 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(3);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -250,7 +250,7 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(4);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -284,7 +284,7 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(5);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -313,8 +313,9 @@ public class GraphGeneratorTest {
     void givenOneBaseGraph_whenGenerateBaseGraphWithHidden_thenGraphGeneratedWithHiddenVertex(){
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(5);
+        when(random.nextInt(0,30)).thenReturn(7);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -326,17 +327,17 @@ public class GraphGeneratorTest {
 
         CSPGraph graph = graphs.getFirst();
         Set<CSPVertex> vertices = graph.vertexSet();
-        boolean inter = false;
+        boolean hidden = false;
         for (CSPVertex vertex: vertices){
-            if (vertex.isInterleave()){
-                inter = true;
+            if (!vertex.getHidden().isEmpty()){
+                hidden = true;
             }
             if (graph.edgesOf(vertex).isEmpty()){
                 assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
             }
         }
 
-        assertTrue(inter, "Interleave vertex was not found in graph: "+graph.toString());
+        assertTrue(hidden, "A hidden set was not found in graph: "+graph.toString());
     }
 
 
@@ -344,8 +345,9 @@ public class GraphGeneratorTest {
     void givenOneBaseGraph_whenGenerateBaseGraphWithRenaming_thenGraphGeneratedWithRenamingVertex(){
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(5);
+        when(random.nextInt(0,30)).thenReturn(18);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,true);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -357,17 +359,48 @@ public class GraphGeneratorTest {
 
         CSPGraph graph = graphs.getFirst();
         Set<CSPVertex> vertices = graph.vertexSet();
-        boolean inter = false;
+        boolean renaming = false;
         for (CSPVertex vertex: vertices){
-            if (vertex.isInterleave()){
-                inter = true;
+            if (!vertex.getRenaming().isEmpty()){
+                renaming = true;
             }
             if (graph.edgesOf(vertex).isEmpty()){
                 assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
             }
         }
 
-        assertTrue(inter, "Interleave vertex was not found in graph: "+graph.toString());
+        assertTrue(renaming, "Renaming was not found in graph: "+graph.toString());
+    }
+
+
+    @Test
+    void givenOneBaseGraph_whenGenerateBaseGraphWithRenamingFlagFalse_thenGraphGeneratedWithoutRenamingVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,6)).thenReturn(5);
+
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(baseGraph);
+        graphGenerator.combineGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(baseGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        boolean renam = false;
+        for (CSPVertex vertex: vertices){
+            if (!vertex.getRenaming().isEmpty()){
+                renam = true;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertFalse(renam, "Renaming was found in graph: "+graph.toString());
     }
 
 
@@ -376,7 +409,7 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(1,5)).thenReturn(3);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.setRandom(random);
         List<String> messages = new ArrayList<>(List.of("random!true", "list?false", "of.4", "possible", "strings"));
         Map<String, List<String>> decorations = new HashMap<>();
@@ -402,7 +435,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenEmptyListOfStringsForNonAlphabet_whenRandomSubList_thenEmptyListOfMessagesIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         List<String> messages = new ArrayList<>();
 
         List<String> sublist = graphGenerator.randomSubList(messages, false);
@@ -415,7 +448,7 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(1,5)).thenReturn(3);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         graphGenerator.setRandom(random);
         List<String> messages = new ArrayList<>(List.of("random!true", "list?false", "of.4", "possible", "strings"));
         Map<String, List<String>> decorations = new HashMap<>();
@@ -441,7 +474,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenEmptyListOfStringsForAlphabet_whenRandomSubList_thenEmptyListIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         List<String> messages = new ArrayList<>();
 
         List<String> sublist = graphGenerator.randomSubList(messages, true);
@@ -451,7 +484,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenSingletonListOfDecoratedStringForAlphabet_whenRandomSubList_thenListOfSingleUndecoratedMessageIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         List<String> messages = new ArrayList<>(List.of("strings?4"));
 
         List<String> sublist = graphGenerator.randomSubList(messages, true);
@@ -466,7 +499,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenSingletonListOfUndecoratedStringForAlphabet_whenRandomSubList_thenListOfSingleUndecoratedMessageIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         List<String> messages = new ArrayList<>(List.of("strings"));
 
         List<String> sublist = graphGenerator.randomSubList(messages, true);
@@ -481,7 +514,7 @@ public class GraphGeneratorTest {
 
     @Test
     void givenEmptyStringsListForAlphabet_whenRandomSubList_thenListIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true);
+        GraphGenerator graphGenerator = new GraphGenerator(true,false);
         List<String> messages = new ArrayList<>(List.of("", ""));
 
         List<String> sublist = graphGenerator.randomSubList(messages, true);

@@ -17,12 +17,14 @@ public class GraphGenerator {
     public NameVerifier nameVerifier;
     public Random random;
     public Boolean decorated;
+    public Boolean renaming;
 
-    public GraphGenerator(boolean decorated){
+    public GraphGenerator(boolean decorated, boolean renaming){
         this.graphs = List.of();
         this.nameVerifier = new NameVerifier();
         this.random = new Random();
         this.decorated = decorated;
+        this.renaming = renaming;
     }
 
     public List<CSPGraph> generateGraphSet(Integer baseGraphs, Integer combineGraphs) {
@@ -114,15 +116,17 @@ public class GraphGenerator {
             Set<String> hiddenChannels = new HashSet<>(randomSubList(messages, true));
             process.setHidden(hiddenChannels);
         }
-        int renaming = this.random.nextInt(0,30);
-        if (renaming == 18) {
-            List<String> renameChannels = randomSubList(messages, true);
-            List<String> renamedChannels = randomSetSizeSubList(messages, renameChannels.size(), true);
-            Map<String, String> renamings = new TreeMap<>();
-            for (int i = 0; i < renameChannels.size()-1; i++) {
-                renamings.put(renameChannels.get(i), renamedChannels.get(i));
+        if (renaming) {
+            int renamingInt = this.random.nextInt(0, 30);
+            if (renamingInt == 18) {
+                List<String> renameChannels = randomSubList(messages, true);
+                List<String> renamedChannels = randomSetSizeSubList(messages, renameChannels.size(), true);
+                Map<String, String> renamings = new LinkedHashMap<>();
+                for (int i = 0; i < renameChannels.size() - 1; i++) {
+                    renamings.put(renameChannels.get(i), renamedChannels.get(i));
+                }
+                process.setRenaming(renamings);
             }
-            process.setRenaming(renamings);
         }
 
         return process;
