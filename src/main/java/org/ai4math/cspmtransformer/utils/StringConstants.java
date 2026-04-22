@@ -50,13 +50,4 @@ public class StringConstants {
     public static String deadlockAssertion(){
         return ":[deadlock free]";
     }
-
-    /// graph to CSP constants
-    public static  String sigmaEdge() {
-        return TICK+"(processName)";
-    }
-    public static  String lambdaEdge() {
-        return LAMBDA;
-    }
-
 }

@@ -37,14 +37,14 @@ public class NameGeneratorTest {
         NameVerifier nameVerifier = mock(NameVerifier.class);
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(true);
 
-        List<String> names = NameGenerator.generateMessages(15, nameVerifier, true);
+        List<String> names = NameGenerator.generateMessages(40, nameVerifier, true);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(15, names.size(), "Fewer names generated than expected");
+        assertEquals(40, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
-            if (name.contains("!") || name.contains("?") || name.contains(".")){
+            if (name.contains("!") || name.contains("?") || name.contains(".") || name.contains("$")){
                 decorated = true;
             }
         }
@@ -56,14 +56,14 @@ public class NameGeneratorTest {
         NameVerifier nameVerifier = mock(NameVerifier.class);
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(false, false, true);
 
-        List<String> names = NameGenerator.generateMessages(15, nameVerifier, true);
+        List<String> names = NameGenerator.generateMessages(40, nameVerifier, true);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(15, names.size(), "Fewer names generated than expected");
+        assertEquals(40, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
-            if (name.contains("!") || name.contains("?") || name.contains(".")){
+            if (name.contains("!") || name.contains("?") || name.contains(".") || name.contains("$")){
                 decorated = true;
             }
         }
@@ -75,14 +75,14 @@ public class NameGeneratorTest {
         NameVerifier nameVerifier = mock(NameVerifier.class);
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(true);
 
-        List<String> names = NameGenerator.generateMessages(15, nameVerifier, false);
+        List<String> names = NameGenerator.generateMessages(40, nameVerifier, false);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(15, names.size(), "Fewer names generated than expected");
+        assertEquals(40, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
-            if (name.contains("!") || name.contains("?") || name.contains(".")){
+            if (name.contains("!") || name.contains("?") || name.contains(".") || name.contains("$")){
                 decorated = true;
             }
         }
@@ -94,10 +94,10 @@ public class NameGeneratorTest {
         NameVerifier nameVerifier = mock(NameVerifier.class);
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(false, false, true);
 
-        List<String> names = NameGenerator.generateMessages(15, nameVerifier, false);
+        List<String> names = NameGenerator.generateMessages(40, nameVerifier, false);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(15, names.size(), "Fewer names generated than expected");
+        assertEquals(40, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
