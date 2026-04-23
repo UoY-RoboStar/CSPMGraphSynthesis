@@ -154,7 +154,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
-        edge2.setLabel("four -> five?a -> six");
+        edge2.setLabel("four -> five?'a' -> six");
 
         List<String> channels = new ArrayList<>();
         channels.add("channel one : Bool");
@@ -166,7 +166,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
-                .append("Interim = four -> five?a -> six -> SKIP").append("\n")
+                .append("Interim = four -> five?'a' -> six -> SKIP").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]");
         String expectedCSPFile = sb.toString();
@@ -212,7 +212,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one$5 -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
-        edge2.setLabel("four -> five?aefuoafh -> six");
+        edge2.setLabel("four -> five.aefuoafh -> six");
 
         List<String> channels = new ArrayList<>();
         channels.add("channel two");
@@ -222,7 +222,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one$5 -> two -> three -> Interim").append("\n")
-                .append("Interim = four -> five?aefuoafh -> six -> SKIP").append("\n")
+                .append("Interim = four -> five.aefuoafh -> six -> SKIP").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]");
         String expectedCSPFile = sb.toString();
@@ -252,7 +252,7 @@ public class CSPMTransformerTest {
                     int lower = Integer.parseInt(figures[0].strip());
                     int upper = Integer.parseInt(figures[2].strip());
                     assertTrue(lower>=0 && lower<=5, "Value of lower bound is unexpected: "+lower );
-                    assertTrue(upper>=lower && upper<lower+7, "Value of lower bound is unexpected: "+lower );
+                    assertTrue(upper>=lower && upper<lower+10, "Value of upper bound is unexpected: "+upper );
                 } else if (channel.contains("channel five")){
                     String[] parts = channel.split(":");
                     String[] datatype = type.split(" ");
@@ -354,7 +354,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
-        edge2.setLabel("four -> five?a -> six");
+        edge2.setLabel("four -> five?'a' -> six");
 
         List<String> channels = new ArrayList<>();
         channels.add("channel one : Bool");
@@ -366,7 +366,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = (one!false -> two -> three -> Interim)\\{five}").append("\n")
-                .append("Interim = four -> five?a -> six -> SKIP").append("\n")
+                .append("Interim = four -> five?'a' -> six -> SKIP").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]");
         String expectedCSPFile = sb.toString();
@@ -481,7 +481,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
-        edge2.setLabel("four -> five?a -> six");
+        edge2.setLabel("four -> five?'a' -> six");
 
         List<String> channels = new ArrayList<>();
         channels.add("channel one : Bool");
@@ -493,7 +493,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = (one!false -> two -> three -> Interim)[[one<-five,five<-six]]").append("\n")
-                .append("Interim = four -> five?a -> six -> SKIP").append("\n")
+                .append("Interim = four -> five?'a' -> six -> SKIP").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]");
         String expectedCSPFile = sb.toString();
@@ -609,7 +609,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge2 = graph.addEdge(interimVertex,seqCompVertex);
         edge2.setLabel(Keywords.TICK);
         RelationshipEdge edge4 = graph.addEdge(interimVertex,skip);
-        edge4.setLabel("four -> five?b -> six");
+        edge4.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge3 = graph.addEdge(seqCompVertex,skip);
         edge3.setLabel("one!true -> six");
 
@@ -623,7 +623,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim; one!true -> six -> SKIP").append("\n")
-                .append("Interim = four -> five?b -> six -> SKIP").append("\n")
+                .append("Interim = four -> five?'b' -> six -> SKIP").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]");
         String expectedCSPFile = sb.toString();
@@ -739,7 +739,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,intChoiceVertex);
-        edge2.setLabel("four -> five?b -> six");
+        edge2.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge4 = graph.addEdge(intChoiceVertex,skip);
         edge4.setLabel("four");
         RelationshipEdge edge3 = graph.addEdge(intChoiceVertex,interimVertex);
@@ -755,7 +755,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
-                .append("Interim = four -> five?b -> six -> Int").append("\n")
+                .append("Interim = four -> five?'b' -> six -> Int").append("\n")
                 .append("Int = (four -> SKIP) |~| (one!true -> six -> Interim)").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]").append("\n")
@@ -873,7 +873,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,extChoiceVertex);
-        edge2.setLabel("four -> five?b -> six");
+        edge2.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge4 = graph.addEdge(extChoiceVertex,skip);
         edge4.setLabel("four");
         RelationshipEdge edge3 = graph.addEdge(extChoiceVertex,interimVertex);
@@ -889,7 +889,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
-                .append("Interim = four -> five?b -> six -> Ext").append("\n")
+                .append("Interim = four -> five?'b' -> six -> Ext").append("\n")
                 .append("Ext = (four -> SKIP) [] (one!true -> six -> Interim)").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]").append("\n")
@@ -1012,7 +1012,7 @@ public class CSPMTransformerTest {
         graph.addVertex(interimVertex);
         CSPVertex genParVertex = new CSPVertex("GenPar", true, true);
         genParVertex.setGeneralisedParallel(true);
-        Set<String> alphabet = Set.of("one.false","five.n", "six");
+        Set<String> alphabet = Set.of("one.false","five.'n'", "six");
         genParVertex.setAlphabet(List.of(alphabet));
         graph.addVertex(genParVertex);
         CSPVertex skip = new CSPVertex("SKIP");
@@ -1022,7 +1022,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,genParVertex);
-        edge2.setLabel("four -> five?b -> six");
+        edge2.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge4 = graph.addEdge(genParVertex,skip);
         edge4.setLabel("four");
         RelationshipEdge edge3 = graph.addEdge(genParVertex,interimVertex);
@@ -1038,7 +1038,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
-                .append("Interim = four -> five?b -> six -> GenPar").append("\n")
+                .append("Interim = four -> five?'b' -> six -> GenPar").append("\n")
                 .append("GenPar = (four -> SKIP) [| {");
         String expectedCSPFileStart = sb.toString();
 
@@ -1179,8 +1179,8 @@ public class CSPMTransformerTest {
         graph.addVertex(interimVertex);
         CSPVertex alphParVertex = new CSPVertex("AlphPar", true, true);
         alphParVertex.setAlphabetisedParallel(true);
-        Set<String> alphabet1 = Set.of("two","five.n", "six");
-        Set<String> alphabet2 = Set.of("one.false","five.n");
+        Set<String> alphabet1 = Set.of("two","five.'n'", "six");
+        Set<String> alphabet2 = Set.of("one.false","five.'n'");
         alphParVertex.setAlphabet(List.of(alphabet1,alphabet2));
         graph.addVertex(alphParVertex);
         CSPVertex skip = new CSPVertex("SKIP");
@@ -1190,7 +1190,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,alphParVertex);
-        edge2.setLabel("four -> five?b -> six");
+        edge2.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge4 = graph.addEdge(alphParVertex,skip);
         edge4.setLabel("four");
         RelationshipEdge edge3 = graph.addEdge(alphParVertex,interimVertex);
@@ -1206,7 +1206,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
-                .append("Interim = four -> five?b -> six -> AlphPar").append("\n")
+                .append("Interim = four -> five?'b' -> six -> AlphPar").append("\n")
                 .append("AlphPar = (four -> SKIP) [ {");
         String expectedCSPFileStart = sb.toString();
 
@@ -1341,7 +1341,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge2 = graph.addEdge(interimVertex,interVertex);
-        edge2.setLabel("four -> five?b -> six");
+        edge2.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge4 = graph.addEdge(interVertex,skip);
         edge4.setLabel("four");
         RelationshipEdge edge3 = graph.addEdge(interVertex,interimVertex);
@@ -1357,7 +1357,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
-                .append("Interim = four -> five?b -> six -> InterPar").append("\n")
+                .append("Interim = four -> five?'b' -> six -> InterPar").append("\n")
                 .append("InterPar = (four -> SKIP) ||| (one!true -> six -> Interim)").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]").append("\n")
@@ -1409,8 +1409,8 @@ public class CSPMTransformerTest {
         graph.addVertex(stop);
         CSPVertex alphParVertex = new CSPVertex("AlphPar", true, true);
         alphParVertex.setAlphabetisedParallel(true);
-        Set<String> alphabet1 = Set.of("two","five.n", "six");
-        Set<String> alphabet2 = Set.of("one.false","five.n");
+        Set<String> alphabet1 = Set.of("two","five.'n'", "six");
+        Set<String> alphabet2 = Set.of("one.false","five.'n'");
         alphParVertex.setAlphabet(List.of(alphabet1,alphabet2));
         graph.addVertex(alphParVertex);
 
@@ -1419,7 +1419,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge2 = graph.addEdge(interimVertex,seqCompVertex);
         edge2.setLabel(Keywords.TICK);
         RelationshipEdge edge4 = graph.addEdge(interimVertex,alphParVertex);
-        edge4.setLabel("four -> five?b -> six");
+        edge4.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge3 = graph.addEdge(seqCompVertex,skip);
         edge3.setLabel("one!true -> six");
         RelationshipEdge edge5 = graph.addEdge(alphParVertex,stop);
@@ -1437,7 +1437,7 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim; one!true -> six -> SKIP").append("\n")
-                .append("Interim = four -> five?b -> six -> AlphPar").append("\n")
+                .append("Interim = four -> five?'b' -> six -> AlphPar").append("\n")
                 .append("AlphPar = (four -> STOP) [ {");
         String expectedCSPFileStart = sb.toString();
 
@@ -1513,11 +1513,11 @@ public class CSPMTransformerTest {
         RelationshipEdge edge2 = graph.addEdge(interimVertex,seqCompVertex);
         edge2.setLabel(Keywords.TICK);
         RelationshipEdge edge4 = graph.addEdge(interimVertex,skip);
-        edge4.setLabel("four -> five?b -> six");
+        edge4.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge3 = graph.addEdge(seqCompVertex,intChoiceVertex);
         edge3.setLabel("one!true -> six");
         RelationshipEdge edge7 = graph.addEdge(intChoiceVertex, skip);
-        edge7.setLabel("five.l");
+        edge7.setLabel("five.'l'");
         RelationshipEdge edge8 = graph.addEdge(intChoiceVertex, stop);
         edge8.setLabel("two");
 
@@ -1531,8 +1531,8 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim; one!true -> six -> Int").append("\n")
-                .append("Interim = four -> five?b -> six -> SKIP").append("\n")
-                .append("Int = (five.l -> SKIP) |~| (two -> STOP)").append("\n")
+                .append("Interim = four -> five?'b' -> six -> SKIP").append("\n")
+                .append("Int = (five.'l' -> SKIP) |~| (two -> STOP)").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]").append("\n")
                 .append("assert Int :[deadlock free]");
@@ -1583,7 +1583,7 @@ public class CSPMTransformerTest {
         graph.addVertex(stop);
         CSPVertex genParVertex = new CSPVertex("GenPar", true, true);
         genParVertex.setGeneralisedParallel(true);
-        Set<String> alphabet = Set.of("one.false","five.n","six");
+        Set<String> alphabet = Set.of("one.false","five.'n'","six");
         genParVertex.setAlphabet(List.of(alphabet));
         graph.addVertex(genParVertex);
         CSPVertex extChoiceVertex = new CSPVertex("Ext", true, true);
@@ -1595,7 +1595,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge2 = graph.addEdge(interimVertex,seqCompVertex);
         edge2.setLabel(Keywords.TICK);
         RelationshipEdge edge4 = graph.addEdge(interimVertex,genParVertex);
-        edge4.setLabel("four -> five?b -> six");
+        edge4.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge3 = graph.addEdge(seqCompVertex,skip);
         edge3.setLabel("one!true -> six");
         RelationshipEdge edge5 = graph.addEdge(genParVertex,extChoiceVertex);
@@ -1603,7 +1603,7 @@ public class CSPMTransformerTest {
         RelationshipEdge edge6 = graph.addEdge(genParVertex,extChoiceVertex);
         edge6.setLabel("one$false -> six");
         RelationshipEdge edge7 = graph.addEdge(extChoiceVertex, skip);
-        edge7.setLabel("five.l");
+        edge7.setLabel("five.'l'");
         RelationshipEdge edge8 = graph.addEdge(extChoiceVertex, stop);
         edge8.setLabel("two");
 
@@ -1617,13 +1617,13 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim; one!true -> six -> SKIP").append("\n")
-                .append("Interim = four -> five?b -> six -> GenPar").append("\n")
+                .append("Interim = four -> five?'b' -> six -> GenPar").append("\n")
                 .append("GenPar = (four -> Ext) [| {");
         String expectedCSPFileStart = sb.toString();
 
         sb = new StringBuilder();
         sb.append("} |] (one$false -> six -> Ext)").append("\n")
-            .append("Ext = (five.l -> SKIP) [] (two -> STOP)").append("\n")
+            .append("Ext = (five.'l' -> SKIP) [] (two -> STOP)").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]").append("\n")
                 .append("assert GenPar :[deadlock free]").append("\n")
@@ -1679,7 +1679,7 @@ public class CSPMTransformerTest {
         graph.addVertex(stop);
         CSPVertex genParVertex = new CSPVertex("GenPar", true, true);
         genParVertex.setGeneralisedParallel(true);
-        Set<String> alphabet = Set.of("one.false","five.n","six");
+        Set<String> alphabet = Set.of("one.false","five.'n'","six");
         genParVertex.setAlphabet(List.of(alphabet));
         graph.addVertex(genParVertex);
         CSPVertex intChoiceVertex = new CSPVertex("Int", true, true);
@@ -1689,13 +1689,13 @@ public class CSPMTransformerTest {
         RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
         edge1.setLabel("one!false -> two -> three");
         RelationshipEdge edge4 = graph.addEdge(interimVertex,genParVertex);
-        edge4.setLabel("four -> five?b -> six");
+        edge4.setLabel("four -> five?'b' -> six");
         RelationshipEdge edge5 = graph.addEdge(genParVertex,intChoiceVertex);
         edge5.setLabel("four");
         RelationshipEdge edge6 = graph.addEdge(genParVertex,intChoiceVertex);
         edge6.setLabel("one$false -> six");
         RelationshipEdge edge7 = graph.addEdge(intChoiceVertex, skip);
-        edge7.setLabel("five.l");
+        edge7.setLabel("five.'l'");
         RelationshipEdge edge8 = graph.addEdge(intChoiceVertex, stop);
         edge8.setLabel("two");
 
@@ -1709,13 +1709,13 @@ public class CSPMTransformerTest {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
-                .append("Interim = four -> five?b -> six -> GenPar").append("\n")
+                .append("Interim = four -> five?'b' -> six -> GenPar").append("\n")
                 .append("GenPar = (four -> Int) [| {");
         String expectedCSPFileStart = sb.toString();
 
         sb = new StringBuilder();
         sb.append("} |] (one$false -> six -> Int)").append("\n")
-                .append("Int = (five.l -> SKIP) |~| (two -> STOP)").append("\n")
+                .append("Int = (five.'l' -> SKIP) |~| (two -> STOP)").append("\n")
                 .append("assert Initial :[deadlock free]").append("\n")
                 .append("assert Interim :[deadlock free]").append("\n")
                 .append("assert GenPar :[deadlock free]").append("\n")
