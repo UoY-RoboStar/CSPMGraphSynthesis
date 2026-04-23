@@ -1,3 +1,33 @@
+## About
+This package synthesises, and verifies the deadlock-freedom of, CSP models via a graph-based approach. The outputs of operation are:
+- Database.csv: a dataset of entries including
+    - the CSP model,
+    - the refinement property checked,
+    - the outcome of the verification,
+    - the counterexample,
+    - a version of the counterexample with hidden events revealed,
+    - a version with hidden events removed, and
+    - the set of hidden events
+- Error.csv: detailing all the cases in which the refinement failed or the CSP file was not successfully parsed
+- CSP files: all CSP files generated are made available
+
+Verification is undertaken through use of the FDR model checker. 
+
+### CSP Operators 
+The following CSP operators are featured within generated models, either by default or through use of a command line flag (clf)
+- Rename (clf)
+- Dot (clf)
+- ?, !, $ (clf)
+- Prefix
+- Sequential Composition 
+- External Choice
+- Internal Choice
+- Generalised Parallel
+- Alphabetised Parallel
+- Interleave
+- Hide
+
+
 ## Installation Steps
 1. Download this git package
 2. Open java project in your chosen IDE
@@ -9,6 +39,7 @@ OR
 
 ## Requirements
 - Java 21
+- FDR model checker: [installation instructions can be found here](https://cocotec.io/fdr/manual/gui/getting_started.html#gui-installation)
   
 ## Dataset Generation
 ### Execution parameters
