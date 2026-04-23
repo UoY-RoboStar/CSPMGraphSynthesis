@@ -8,6 +8,9 @@ import java.util.List;
 
 import static org.ai4math.cspm.Keywords.*;
 
+/**
+ *
+ */
 public class NameVerifier {
 
     private List<String> processNames = new ArrayList<>();
@@ -24,6 +27,7 @@ public class NameVerifier {
             WBISIM, MTRANSCLOSE, RELATIONAL_IMAGE, RELATIONAL_INVERSE_IMAGE, TRANSPOSE,
             TICK, LAMBDA, TAU, ONESTEP, DEADLOCK, DIVERGENCE, DETERMINISTIC, HAS, FREE, FAILURES,
             TRACES, FAILURES_DIVERGENCES);
+
 
     public boolean isProcessNameAcceptable(String name){
         if (this.channelNames.contains(name) || this.processNames.contains(name)

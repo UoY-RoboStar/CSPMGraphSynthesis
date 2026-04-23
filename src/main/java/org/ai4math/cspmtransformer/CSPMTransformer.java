@@ -404,8 +404,8 @@ public class CSPMTransformer {
                 String[] edgeComponents = edge.getLabel().split(" -> ");
                 for (String component : edgeComponents) {
                     // "[a-zA-Z]*(;\\n)" would be a process, not a channel
-                    if (component.matches("[a-zA-Z]*([!?$.][a-zA-Z0-9]*)?")) {
-                        String[] comps = component.splitWithDelimiters("[!?$\\.]",0);
+                    if (component.matches("[a-zA-Z]*([!?$.]'?[a-zA-Z0-9]*'?)?")) {
+                        String[] comps = component.splitWithDelimiters("[!?$.]",0);
                         if (!channels.containsKey(comps[0]) && comps.length>1) {
                             String type = getTypes(comps, false);
                             System.out.println("Adding typed channel: "+component+ ":"+type);
@@ -426,7 +426,7 @@ public class CSPMTransformer {
             if (vertex.isAlphabetisedParallel() || vertex.isGeneralisedParallel()){
                 for (Set<String> alphabet : vertex.getAlphabet()){
                     for (String channel : alphabet){
-                        String[] comps = channel.splitWithDelimiters("[!?$\\.]",0);
+                        String[] comps = channel.splitWithDelimiters("[!?$.]",0);
                         if (!channels.containsKey(comps[0]) && comps.length>1) {
                             String type = getTypes(comps, true);
                             System.out.println("Adding typed alphabet channel: "+channel+ ":"+type);
@@ -509,14 +509,16 @@ public class CSPMTransformer {
         Random r = new Random();
         if (Objects.equals(value, "true") || Objects.equals(value, "false")) {
             return Keywords.BOOL;
-        } else if (value.length()==1 && Character.isAlphabetic(value.charAt(0))) {
+        } else if (value.length()==3 &&
+                Character.toString(value.charAt(0)).equals("'") &&
+                Character.isAlphabetic(value.charAt(1))) {
             return Keywords.CHAR;
         } else if (value.matches("-?\\d+(\\.\\d+)?")) {
             // This corresponds to Keywords.INT but the open integer range causes state explosion
             StringBuilder typeRange = new StringBuilder();
             int val = Integer.parseInt(value);
             int lowerBound = val>4?val - r.nextInt(6):val - r.nextInt(val+1);
-            int upperBound = r.nextInt(lowerBound, lowerBound+7);
+            int upperBound = r.nextInt(lowerBound, lowerBound+10);
             typeRange.append("{")
                     .append(lowerBound)
                     .append("..")

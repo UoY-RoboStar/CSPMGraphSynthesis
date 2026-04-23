@@ -63,7 +63,8 @@ public class NameGenerator {
         if (choice == 0){
             return Boolean.toString(r.nextBoolean());
         } else if (choice == 1){
-            return RandomStringUtils.random(1, true,false);
+            String character = RandomStringUtils.random(1, true,false);
+            return "'"+character+"'";
         } else if (choice == 2){
             return Integer.toString(r.nextInt(0,150));
         } else {
