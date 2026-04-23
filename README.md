@@ -1,12 +1,21 @@
 ## Installation Steps
+1. Download this git package
+2. Open java project in your chosen IDE
+3. Compile project
+
+OR
+
+1. Download the most recent release of the package for use within the command line
 
 ## Requirements
 - Java 21
+  
 ## Dataset Generation
 ### Execution parameters
 - r: [optional] (boolean) a flag used to indicate that a new dataset file should be made. If not present then the existing file will be extended
 - p: [optional] (String) the path to the location for creation of the dataset and csp file. If not present, this will be created ```System.getProperty("user.home")``` under the title "CSPMGraphSynthesis"
 - d: [optional] (boolean) a flag to indicate whether to include decorations in CSP channels. These are used to pass parameters along the channels
+- re: [optional] (boolean) a flag to indicate whether to include renaming of CSP channels
 - b: [required] (Integer) the number of basic graphs generate that form a basis of the complex CSP models
 - c: [required] (Integer) the number of complex graphs to create based on the basic graphs
 
