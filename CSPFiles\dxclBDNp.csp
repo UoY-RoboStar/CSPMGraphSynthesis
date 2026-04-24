@@ -1,8 +1,0 @@
-channel BNf
-channel YS
-channel AIbLlzbSUBh
-channel pjdFgNqo
-channel HsOApavgvxY
-channel FxLajxRHuWCY
-dxclBDNp = BNf -> YS -> AIbLlzbSUBh -> pjdFgNqo -> HsOApavgvxY -> FxLajxRHuWCY -> STOP
-assert dxclBDNp :[deadlock free]
