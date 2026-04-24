@@ -1,4 +1,5 @@
-## About
+# CSPMGraphSynthesis
+
 This package synthesises, and verifies the deadlock-freedom of, CSP models via a graph-based approach. The outputs of operation are:
 - Database.csv: a dataset of entries including
     - the CSP model,
@@ -26,6 +27,11 @@ The following CSP operators are featured within generated models, either by defa
 - Alphabetised Parallel
 - Interleave
 - Hide
+
+## Team
+[Holly Hendry](https://www.cs.york.ac.uk/people/?username=hrh): University of York  
+[Pedro Ribeiro](https://www.cs.york.ac.uk/people/?username=pfr): University of York  
+[Frank Soboczenski](https://www.cs.york.ac.uk/people/feynman): University of York  
 
 
 ## Installation Steps
@@ -71,4 +77,8 @@ Of the ~3680 CSP files generated, ~295 of these had passing assertions; indicati
 To guarantee enough examples to create a balanced dataset of 1000 entries (500 passing:500 failing), approximately 50000 assertions would need creating.  
 This is achievable through parameters:   
 ``` -b 300 -c 4000 ```
+
+
+## Acknowledgements
+This project is an outcome of the AI4Math fund, a program of Renaissance Philanthropy.
      
