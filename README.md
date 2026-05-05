@@ -29,9 +29,9 @@ The following CSP operators are featured within generated models, either by defa
 - Hide
 
 ## Team
-[Holly Hendry](https://www.cs.york.ac.uk/people/?username=hrh): University of York  
+<!--[Holly Hendry](https://www.cs.york.ac.uk/people/?username=hrh): University of York  
 [Pedro Ribeiro](https://www.cs.york.ac.uk/people/?username=pfr): University of York  
-[Frank Soboczenski](https://www.cs.york.ac.uk/people/feynman): University of York  
+[Frank Soboczenski](https://www.cs.york.ac.uk/people/feynman): University of York  -->
 
 
 ## Installation Steps
