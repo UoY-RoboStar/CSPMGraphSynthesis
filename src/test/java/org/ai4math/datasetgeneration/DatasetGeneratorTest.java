@@ -33,10 +33,12 @@ public class DatasetGeneratorTest {
     public static FDROutput fdrLargeErrorOutput;
     public static FDROutput fdrVerErrorOutput;
     public static FDROutput fdrFailureOutput;
+    public static FDROutput fdrTauOutput;
     public static String largeError;
     public static String type = "testAssert :[deadlock free]";
     private static String processesTraceString;
     private static String revealedProcessesTraceString;
+    private static String revealedTauProcessesTraceString;
     private static String noTauTraceString;
     private static String hiddenString;
     private static String headerText;
@@ -61,6 +63,9 @@ public class DatasetGeneratorTest {
         Set<String> hidden = Set.of("Trace");
         hiddenString = "{Trace}";
 
+        List<String> revealedTauProcessesTrace = List.of("τ", "Value", "Key", "Trace", "Trace");
+        revealedTauProcessesTraceString = "<τ, Value, Key, Trace, Trace>";
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
         node.put("error", "trace");
@@ -77,6 +82,12 @@ public class DatasetGeneratorTest {
         fdrCounterexample.setProcessesTrace(processesTrace);
         when(fdrCounterexample.getNoTauTrace()).thenReturn(noTauTrace);
         when(fdrCounterexample.getHidden()).thenReturn(hidden);
+
+        FDRCounterexample fdrTauCounterexample = spy(FDRCounterexample.class);
+        fdrTauCounterexample.setRevealedProcessesTrace(revealedTauProcessesTrace);
+        fdrTauCounterexample.setProcessesTrace(processesTrace);
+        when(fdrTauCounterexample.getNoTauTrace()).thenReturn(noTauTrace);
+        when(fdrTauCounterexample.getHidden()).thenReturn(hidden);
 
         FDRCounterexample fdrEmptyCounterexample = spy(FDRCounterexample.class);
         fdrEmptyCounterexample.setRevealedProcessesTrace(List.of());
@@ -99,8 +110,15 @@ public class DatasetGeneratorTest {
         when(fdrResults.isPassed()).thenReturn(true);
         when(fdrResults.getAssertionString()).thenReturn(type);
 
+        FDRResults fdrTauResults = spy(FDRResults.class);
+        when(fdrTauResults.getFdrCounterexamples()).thenReturn(List.of(fdrTauCounterexample));
+        when(fdrTauResults.isPassed()).thenReturn(false);
+        when(fdrTauResults.getAssertionString()).thenReturn(type);
+
         fdrOutput = new FDROutput();
         fdrOutput.addFdrResults(fdrResults);
+        fdrTauOutput = new FDROutput();
+        fdrTauOutput.addFdrResults(fdrTauResults);
         fdrVerErrorOutput = new FDROutput();
         fdrVerErrorOutput.addFdrResults(fdrErrorResults);
         fdrFailureOutput = new FDROutput();
@@ -258,6 +276,39 @@ public class DatasetGeneratorTest {
 
         assertEquals(0, errorFile.length(), "Error file has content");
     }
+
+    @Test
+    public void givenValidCSPAndFailingOutputWithTau_whenAddEntryToDataset_thenDataFilePopulatedWithoutTauInHidden() throws IOException{
+        @SuppressWarnings("unchecked")
+        DatasetGenerator datasetGenerator = new DatasetGenerator(resourcePath, datasetPath);
+
+        String csp = "failingCSP";
+        StringBuilder firstEntryText = new StringBuilder();
+        firstEntryText.append("\"").append(csp).append("\"").append(",")
+                .append("\"").append(type).append("\"").append(",")
+                .append("\"").append(false).append("\"").append(",")
+                .append("\"").append(processesTraceString).append("\"").append(",")
+                .append("\"").append(revealedTauProcessesTraceString).append("\"").append(",")
+                .append("\"").append(noTauTraceString).append("\"").append(",")
+                .append("\"").append(hiddenString).append("\"");
+
+        datasetGenerator.addEntryToDataSet(csp, fdrTauOutput);
+
+        File dataFile = new File(filePath);
+        File errorFile = new File(errorFilePath);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(dataFile))) {
+            String header = br.readLine();
+            assertEquals(headerText, header, "Header is unexpected: "+header);
+            String entry = br.readLine();
+            assertEquals(firstEntryText.toString(), entry, "Entry is unexpected: "+entry);
+            String nextLine = br.readLine();
+            assertNull(nextLine, "File still has content: "+nextLine);
+        }
+
+        assertEquals(0, errorFile.length(), "Error file has content");
+    }
+
 
     @Test
     public void givenInvalidCSPAndErrorOutput_whenAddEntryToDataset_thenErrorFilePopulated() throws IOException{

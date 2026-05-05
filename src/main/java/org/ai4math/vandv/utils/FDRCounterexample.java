@@ -29,6 +29,8 @@ public class FDRCounterexample {
             for (int index : indexes) {
                 hiddenSet.add(this.revealedProcessesTrace.get(index));
             }
+
+            hiddenSet.remove(Keywords.TAU);
         }
         this.hidden = hiddenSet;
     }
