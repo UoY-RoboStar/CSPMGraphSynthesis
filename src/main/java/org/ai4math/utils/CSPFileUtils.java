@@ -1,5 +1,7 @@
 package org.ai4math.utils;
 
+import org.apache.commons.io.build.AbstractOrigin;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +38,15 @@ public class CSPFileUtils {
     }
 
     public String createCSPFile(String path, String resourceName, String csp) throws IOException{
-        File cspFile = new File(getDirectory(path), resourceName);
+        File filepath = getDirectory(path);
+        String filename = resourceName.split("\\.")[0];
+        Integer counter = 0;
+        while (Files.exists(Path.of(filepath.toString(),filename+".csp"))) {
+            filename = filename+counter;
+            counter+=1;
+        }
+        File cspFile = new File(filepath, filename+".csp");
+
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(cspFile));
             writer.write(csp);

@@ -16,17 +16,19 @@ public class NameGenerator {
         return name;
     }
 
-    public static List<String> generateMessages(int count, NameVerifier nameVerifier, boolean decorated){
+    public static List<String> generateMessages(Random r, int count, NameVerifier nameVerifier, boolean decorated){
         List<String> messages = new ArrayList<>();
         int i = 0;
-        Random r = new Random();
 
         while (i<count) {
             int length = r.nextInt(1, 25);
             String message = RandomStringUtils.random(length, true, false);
             if (!message.isEmpty() && nameVerifier.isChannelNameAcceptable(message)) {
-                if (r.nextInt(0,10) == 5 && decorated){
+                if (r.nextInt(0,10) == 5 && decorated && nameVerifier.isChannelNameTyped(message)){
                     message = generateMessageWithDecoration(message);
+                    nameVerifier.setChannelNameTyped(message,true);
+                } else {
+                    nameVerifier.setChannelNameTyped(message,false);
                 }
                 messages.add(message);
                 i++;
@@ -72,6 +74,43 @@ public class NameGenerator {
             return RandomStringUtils.random(1, true, false) +
                     RandomStringUtils.random(length, true, true);
         }
+    }
+
+    public static String generateGuard(Random r, NameVerifier nameVerifier, List<String> messages){
+        List<String> decoratedMessages = messages.stream()
+               .filter(s -> s.matches("[a-zA-Z]*[!?$.]'?[a-zA-Z0-9]*'?"))
+               .toList();
+
+        List<String> parameters = new ArrayList<>();
+        List<String> channels = new ArrayList<>();
+        for (String message : decoratedMessages) {
+            String[] components = message.split("[!?$.]");
+            if (components.length > 1) {
+                parameters.add(components[1]);
+                channels.add(components[0]);
+            }
+        }
+
+        if (parameters.size() > 0){
+            int choice = r.nextInt(0,parameters.size());
+            String parameter = parameters.get(choice);
+            int length = r.nextInt(1, 10);
+            String constantName = RandomStringUtils.random(1, true, false) +
+                    RandomStringUtils.random(length, true, true);
+
+            while (!nameVerifier.isConstantNameAcceptable(constantName, channels.get(choice))){
+                constantName = RandomStringUtils.random(1, true, false) +
+                        RandomStringUtils.random(length, true, true);
+            }
+
+            if (parameter.equals("true")||parameter.equals("false")){
+                return constantName;
+            } else {
+                return constantName+"=="+parameter;
+            }
+        }
+
+        return null;
     }
 
     private static String generateExpression(){

@@ -12,7 +12,9 @@ public class CommandLineOptions {
     private int combinedGraphs;
     private boolean decorations;
     private boolean renaming;
-
+    private boolean guards;
+    private int version;
+    private GraphGenerationOptions graphGenerationOptions;
 
     public static CommandLineOptions parseCommandLine(String[] args) throws IOException, ParseException {
         Options options = new Options();
@@ -46,6 +48,15 @@ public class CommandLineOptions {
         renaming.setRequired(false);
         options.addOption(renaming);
 
+        /*Option guards = new Option("g", "guardsIncluded",
+                false, "Include guarding of channels and processes");
+        guards.setRequired(false);
+        options.addOption(guards);*/
+
+        Option version = new Option("v", "version",
+                true, "Version of the tool to employ (default 1)");
+        version.setRequired(false);
+        options.addOption(version);
 
         HelpFormatter formatter = HelpFormatter.builder().get();
         String header = "Provide the required options to operate the synthesiser";
@@ -60,13 +71,16 @@ public class CommandLineOptions {
             String p = cmd.getOptionValue("p");
             String b = cmd.getOptionValue("b");
             String c = cmd.getOptionValue("c");
+            String v = cmd.getOptionValue("v");
 
             commandLineOptions.setRegenerateDataset(cmd.hasOption(regen));
             commandLineOptions.setDecorations(cmd.hasOption(decorations));
             commandLineOptions.setRenaming(cmd.hasOption(renaming));
             commandLineOptions.setBaseGraphs(Integer.parseInt(b));
             commandLineOptions.setCombinedGraphs(Integer.parseInt(c));
+            commandLineOptions.setVersion(v != null ? Integer.parseInt(v) : 1);
             commandLineOptions.setFilePath(p);
+            commandLineOptions.setGraphGenerationOptions();
 
             return commandLineOptions;
         } catch (ParseException | NumberFormatException e) {
@@ -77,12 +91,38 @@ public class CommandLineOptions {
         }
     }
 
+    public GraphGenerationOptions getGraphGenerationOptions(){
+        return graphGenerationOptions;
+    }
+
+    public void setGraphGenerationOptions(){
+        GraphGenerationOptions ggo = new GraphGenerationOptions();
+        ggo.setOptions(decorations, renaming, version);
+        graphGenerationOptions = ggo;
+    }
+
+    public boolean isGuards() {
+        return guards;
+    }
+
+    public void setGuards(boolean guards) {
+        this.guards = guards;
+    }
+
     public int getBaseGraphs() {
         return baseGraphs;
     }
 
     public int getCombinedGraphs() {
         return combinedGraphs;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getFilePath() {

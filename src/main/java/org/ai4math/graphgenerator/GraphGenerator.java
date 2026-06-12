@@ -3,14 +3,14 @@ package org.ai4math.graphgenerator;
 
 import org.ai4math.cspm.Keywords;
 import org.ai4math.graphgenerator.utils.*;
+import org.ai4math.utils.GraphGenerationOptions;
 import org.jgrapht.Graphs;
 
 import java.util.*;
 
 import static java.util.Map.entry;
 import static org.ai4math.cspm.Keywords.*;
-import static org.ai4math.graphgenerator.utils.NameGenerator.generateMessages;
-import static org.ai4math.graphgenerator.utils.NameGenerator.generateProcessName;
+import static org.ai4math.graphgenerator.utils.NameGenerator.*;
 
 public class GraphGenerator {
     public List<CSPGraph> graphs;
@@ -18,13 +18,15 @@ public class GraphGenerator {
     public Random random;
     public Boolean decorated;
     public Boolean renaming;
+    public Boolean ver2;
 
-    public GraphGenerator(boolean decorated, boolean renaming){
+    public GraphGenerator(GraphGenerationOptions ggo){
         this.graphs = List.of();
         this.nameVerifier = new NameVerifier();
         this.random = new Random();
-        this.decorated = decorated;
-        this.renaming = renaming;
+        this.decorated = ggo.isDecorations();
+        this.renaming = ggo.isRenaming();
+        this.ver2 = ggo.isVersion2();
     }
 
     public List<CSPGraph> generateGraphSet(Integer baseGraphs, Integer combineGraphs) {
@@ -47,7 +49,8 @@ public class GraphGenerator {
 
             String processName = generateProcessName(this.nameVerifier);
 
-            List<String> messages = generateMessages(this.random.nextInt(30), this.nameVerifier, this.decorated);
+            List<String> messages = generateMessages(this.random, this.random.nextInt(30),
+                    this.nameVerifier, this.decorated);
             String label = generateEdge(messages);
 
             CSPVertex initialProcess = new CSPVertex(processName, true, true);
@@ -72,13 +75,17 @@ public class GraphGenerator {
     }
 
     private CSPGraph generateGraph(CSPVertex process, List<String> messages, int limit){
+        return generateGraph(process,messages,limit,"");
+    }
+
+    private CSPGraph generateGraph(CSPVertex process, List<String> messages, int limit, String edgeLabel){
         CSPGraph graph = new CSPGraph();
 
         if (limit == 0){
             return graph;
         }
 
-        String label = generateEdge(messages);
+        String label = edgeLabel.isEmpty()?generateEdge(messages):edgeLabel;
 
         process.setInitialVertex(true);
         graph.addVertex(process);
@@ -100,13 +107,14 @@ public class GraphGenerator {
 
     private CSPVertex generateProcess(List<String> messages, boolean nonTerminal, boolean terminate){
         CSPVertex process = new CSPVertex("temp");
-        int choice = this.random.nextInt(nonTerminal?1:0,terminate?2:3);
+        //int choice = this.random.nextInt(nonTerminal?1:0,terminate?2:3);
+        int choice = this.random.nextInt(nonTerminal?2:0,terminate?2:3);
         if (choice == 0) {
             process.setName(STOP);
             process.setStopVertex(true);
         } else if (choice == 1) {
             process.setName(SKIP);
-            process.setStopVertex(true);
+            process.setSkipVertex(true);
         } else if (choice == 2) {
             process = generateNonTerminalProcess();
         }
@@ -119,11 +127,19 @@ public class GraphGenerator {
         if (renaming) {
             int renamingInt = this.random.nextInt(0, 30);
             if (renamingInt == 18) {
-                List<String> renameChannels = randomSubList(messages, true);
-                List<String> renamedChannels = randomSetSizeSubList(messages, renameChannels.size(), true);
                 Map<String, String> renamings = new LinkedHashMap<>();
-                for (int i = 0; i < renameChannels.size() - 1; i++) {
-                    renamings.put(renameChannels.get(i), renamedChannels.get(i));
+                int counter = 0;
+                while (renamings.isEmpty() && counter < 50) {
+                    List<String> renameChannels = randomSubList(messages, false);
+                    List<String> renamedChannels = randomSetSizeSubList(messages, renameChannels.size(), false);
+
+                    for (int i = 0; i < renameChannels.size() - 1; i++) {
+                        if (typeOf(renameChannels.get(i)) == (typeOf(renamedChannels.get(i)))) {
+                            renamings.put(getDotted(renameChannels.get(i)),
+                                    getDotted(renamedChannels.get(i)));
+                        }
+                    }
+                    counter++;
                 }
                 process.setRenaming(renamings);
             }
@@ -237,7 +253,8 @@ public class GraphGenerator {
     }
 
     private void generateCombinedGraph(CSPGraph sourceGraph, CSPGraph graph) {
-        List<String> messages = generateMessages(this.random.nextInt(30), this.nameVerifier, this.decorated);
+        List<String> messages = generateMessages(this.random,this.random.nextInt(30),
+                this.nameVerifier, this.decorated);
         messages.addAll(getMessagesFromGraph(sourceGraph));
 
         CSPVertex vertex = getRandomVertex(graph.vertexSet().isEmpty()? sourceGraph:graph);
@@ -261,18 +278,21 @@ public class GraphGenerator {
                     CSPGraph newGraph = generateGraph(newProcess, messages, 4);
                     Graphs.addGraph(graph, newGraph);
                 }
-            //}
-        } else if (combinationProcess.isInternalChoice() || combinationProcess.isExternalChoice() || combinationProcess.isInterleave()
-                || combinationProcess.isAlphabetisedParallel() || combinationProcess.isGeneralisedParallel()) {
+        } else if (combinationProcess.isInternalChoice() || combinationProcess.isExternalChoice()
+                || combinationProcess.isInterleave() || combinationProcess.isAlphabetisedParallel()
+                || combinationProcess.isGeneralisedParallel() || combinationProcess.isTimeout()
+                || combinationProcess.isException() || combinationProcess.isInterrupt() ) {
             // need at least two processes connected to the combinationProcess, either with or without messages
-            // could add guards on these also
             // todo: currently restricted to two edges
                 if (this.random.nextBoolean()) {
                     generateStarterGraph(messages, combinationProcess, graph, false);
                 }
                 RelationshipEdge e = graph.addEdge(combinationProcess, vertex);
-                e.setLabel(generateEdge(messages));
-                CSPGraph extraGraph = generateGraph(combinationProcess, messages, 4);
+                Boolean guarded = false; //this.random.nextInt(7,9)==8 &&
+                        //combinationProcess.isExternalChoice();
+                e.setLabel(generateEdge(messages,guarded));
+                CSPGraph extraGraph = generateGraph(combinationProcess, messages, 4,
+                        guarded?generateEdge(messages,true):"");
                 if (!extraGraph.vertexSet().isEmpty()) {
                     Graphs.addGraph(graph, extraGraph);
                 }
@@ -286,7 +306,6 @@ public class GraphGenerator {
                 new CSPVertex(generateProcessName(this.nameVerifier),
                         true, true);
         Map<CSPGraph, CSPVertex> ntGraph = generateNonTerminalGraph(newInitProcess, messages, 4);
-        // todo: need a new function that allows a SKIP for seq comp
         Map.Entry<CSPGraph, CSPVertex> ntEntry = ntGraph.entrySet().iterator().next();
         CSPGraph newGraph = ntEntry.getKey();
         CSPVertex finalVertex = ntEntry.getValue();
@@ -304,7 +323,8 @@ public class GraphGenerator {
 
     private CSPVertex generateCombinationProcess(List<String> messages){
         CSPVertex process = new CSPVertex("temp");
-        int choice = this.random.nextInt(0,6);
+        int upperbound = this.ver2?9:6;
+        int choice = this.random.nextInt(0,upperbound);
         if (choice == 0) {
             // sequential composition
             process.setName("Sequential Composition");
@@ -342,21 +362,53 @@ public class GraphGenerator {
             process.setName(generateProcessName(this.nameVerifier));
             process.setProcessVertex(true);
             process.setInterleave(true);
+        } else if (choice == 6) {
+            // interrupt
+            process.setName(generateProcessName(this.nameVerifier));
+            process.setProcessVertex(true);
+            process.setInterrupt(true);
+        } else if (choice == 7) {
+            // exception
+            process.setName(generateProcessName(this.nameVerifier));
+            process.setProcessVertex(true);
+            process.setException(true);
+            Set<String> alphabetA = new HashSet<>(randomSubList(messages, true));
+            List<Set<String>> alphabet = List.of(alphabetA);
+            process.setAlphabet(alphabet);
+        } else if (choice == 8) {
+            // timeout
+            process.setName(generateProcessName(this.nameVerifier));
+            process.setProcessVertex(true);
+            process.setTimeout(true);
         }
 
         return process;
     }
 
     private String generateEdge(List<String> messages){
+        return generateEdge(messages, false);
+    }
+
+    private String generateEdge(List<String> messages, Boolean guarded){
         List<String> messagesTrimmed = new ArrayList<>(messages);
         messagesTrimmed.removeIf(n-> Objects.equals(n, "")); // remove empty strings from this
         if (!messagesTrimmed.isEmpty()) {
             StringBuilder sb = new StringBuilder();
+            if (guarded && this.ver2){
+                String guard = generateGuard(random, nameVerifier, messages);
+                // todo: add null check
+                sb.append(guard).append("&(");
+            }
             sb.append(String.join(" -> ", randomSubList(messagesTrimmed, false)));
+            if (guarded && this.ver2){
+                sb.append(")");
+            }
             return sb.toString();
         }
         return "";
     }
+
+    //private List<> get
 
     private List<String> getMessagesFromGraph(CSPGraph graph){
         List<String> messages = new ArrayList<>();
@@ -365,7 +417,7 @@ public class GraphGenerator {
             if (edge.getLabel() != null){
                 String[] edgeComponents = edge.getLabel().split(" -> ");
                 for (String component : edgeComponents) {
-                    if (component.matches("[a-zA-Z]*([!?.][a-zA-Z0-9]*)?")) {
+                    if (component.matches("[a-zA-Z]*([!?.]'?[a-zA-Z0-9]*'?)?")) {
                         if(!messages.contains(component)){
                             messages.add(component);
                         }
@@ -380,7 +432,7 @@ public class GraphGenerator {
     public List<String> randomSubList(List<String> list, boolean alphabet) {
         list.removeIf(n->Objects.equals(n,""));
         if (list.size()==1){
-            return alphabet?List.of(getUndecorated(list.getFirst())):list;
+            return alphabet?List.of(getDotted(list.getFirst())):list;
         } else if (list.isEmpty()){
             return list;
         }
@@ -392,7 +444,7 @@ public class GraphGenerator {
     public static List<String> randomSetSizeSubList(List<String> list, int size, boolean alphabet) {
         list.removeIf(n->Objects.equals(n,""));
         if (list.size()==1){
-            return alphabet?List.of(getUndecorated(list.getFirst())):list;
+            return alphabet?List.of(getDotted(list.getFirst())):list;
         } else if (list.isEmpty()){
             return list;
         }
@@ -407,7 +459,7 @@ public class GraphGenerator {
         if (alphabet){
             List<String> sublistCopy = new ArrayList<>();
             for(String item: sublist) {
-                sublistCopy.add(getUndecorated(item));
+                sublistCopy.add(getDotted(item));
             }
             sublist = sublistCopy;
         }
@@ -422,6 +474,34 @@ public class GraphGenerator {
             sb.append(".").append(Keywords.TYPE_PLACEHOLDER);
         }
         return sb.toString();
+    }
+
+    private static String getDotted(String item){
+        String[] items = item.split("[!?$.]");
+        StringBuilder sb = new StringBuilder();
+        sb.append(items[0]);
+        if (items.length>1) {
+            sb.append(".").append(items[1]);
+        }
+        return sb.toString();
+    }
+
+    private static String typeOf(String message){
+        String[] comps = message.split("[!?$.]",0);
+        if (comps.length>1) {
+            String value = comps[1];
+            if (Objects.equals(value, "true") || Objects.equals(value, "false")) {
+                return Keywords.BOOL;
+            } else if (value.length() == 3 &&
+                    Character.toString(value.charAt(0)).equals("'") &&
+                    Character.isAlphabetic(value.charAt(1))) {
+                return Keywords.CHAR;
+            } else if (value.matches("-?\\d+(\\.\\d+)?")) {
+                return message;
+            }
+        }
+
+        return null;
     }
 
     public List<CSPGraph> getGraphs() {

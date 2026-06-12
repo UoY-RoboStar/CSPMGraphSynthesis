@@ -3,6 +3,7 @@ package org.ai4math.cspmtransformer;
 import org.ai4math.cspm.Keywords;
 import org.ai4math.graphgenerator.utils.CSPGraph;
 import org.ai4math.graphgenerator.utils.CSPVertex;
+import org.ai4math.graphgenerator.utils.NameVerifier;
 import org.ai4math.graphgenerator.utils.RelationshipEdge;
 import org.ai4math.utils.CSPFileUtils;
 
@@ -111,6 +112,9 @@ public class CSPMTransformer {
         if (!vertex.getRenaming().isEmpty() && initial) {
             processDefinition.append("(");
         }
+        if (!vertex.getProjected().isEmpty() && initial) {
+            processDefinition.append("(");
+        }
         if (!vertex.getHidden().isEmpty() && initial) {
             processDefinition.append("(");
         }
@@ -121,7 +125,15 @@ public class CSPMTransformer {
             addTraversedVertex(vertex);
             return "";
         }
-        else if (vertex.isExternalChoice()) {
+        else if (vertex.isSeqCompositionVertex()){
+            return sequentialComposition(
+                    processDefinition,
+                    vertex,
+                    vertexEdges,
+                    graph)
+                    .toString();
+        }
+        else if (vertex.isTimeout()){
             return choiceOrParallel(
                     processDefinition,
                     vertex,
@@ -131,7 +143,7 @@ public class CSPMTransformer {
                     0)
                     .toString();
         }
-        else if (vertex.isInternalChoice()){
+        else if (vertex.isInterrupt()){
             return choiceOrParallel(
                     processDefinition,
                     vertex,
@@ -141,7 +153,7 @@ public class CSPMTransformer {
                     1)
                     .toString();
         }
-        else if (vertex.isAlphabetisedParallel()){
+        else if (vertex.isExternalChoice()) {
             return choiceOrParallel(
                     processDefinition,
                     vertex,
@@ -151,7 +163,7 @@ public class CSPMTransformer {
                     2)
                     .toString();
         }
-        else if (vertex.isGeneralisedParallel()){
+        else if (vertex.isInternalChoice()){
             return choiceOrParallel(
                     processDefinition,
                     vertex,
@@ -161,7 +173,7 @@ public class CSPMTransformer {
                     3)
                     .toString();
         }
-        else if (vertex.isInterleave()){
+        else if (vertex.isException()){
             return choiceOrParallel(
                     processDefinition,
                     vertex,
@@ -171,12 +183,34 @@ public class CSPMTransformer {
                     4)
                     .toString();
         }
-        else if (vertex.isSeqCompositionVertex()){
-            return sequentialComposition(
+        else if (vertex.isGeneralisedParallel()){
+            return choiceOrParallel(
                     processDefinition,
                     vertex,
+                    graph,
                     vertexEdges,
-                    graph)
+                    initial,
+                    5)
+                    .toString();
+        }
+        else if (vertex.isAlphabetisedParallel()){
+            return choiceOrParallel(
+                    processDefinition,
+                    vertex,
+                    graph,
+                    vertexEdges,
+                    initial,
+                    6)
+                    .toString();
+        }
+        else if (vertex.isInterleave()){
+            return choiceOrParallel(
+                    processDefinition,
+                    vertex,
+                    graph,
+                    vertexEdges,
+                    initial,
+                    7)
                     .toString();
         }
         else {
@@ -200,10 +234,13 @@ public class CSPMTransformer {
             }
         }
         if(!vertex.getHidden().isEmpty() && initial){
-            return hidden(processDefinition, vertex).toString();
+            hidden(processDefinition, vertex).toString();
+        }
+        if(!vertex.getProjected().isEmpty() && initial){
+            projected(processDefinition, vertex).toString();
         }
         if(!vertex.getRenaming().isEmpty() && initial){
-            return renaming(processDefinition, vertex).toString();
+            renaming(processDefinition, vertex).toString();
         }
 
         return processDefinition.toString();
@@ -213,6 +250,12 @@ public class CSPMTransformer {
         return processDefinition.append(")")
                 .append("\\")
                 .append(formatSet(vertex.getHidden()));
+    }
+
+    private StringBuilder projected(StringBuilder processDefinition, CSPVertex vertex){
+        return processDefinition.append(")")
+                .append("|\\")
+                .append(formatSet(vertex.getProjected()));
     }
 
     private StringBuilder renaming(StringBuilder processDefinition, CSPVertex vertex){
@@ -247,6 +290,36 @@ public class CSPMTransformer {
                 .append(addEdgeDefinition(vertexEdge, targetVertex))
                 .append(addProcessDefinition(targetVertex, graph, false))
                 .append(") ||| ");
+
+    }
+
+    private StringBuilder interrupt(StringBuilder processDefinition, RelationshipEdge vertexEdge,
+                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
+        // todo: add check for guards
+        return processDefinition.append("(")
+                .append(addEdgeDefinition(vertexEdge, targetVertex))
+                .append(addProcessDefinition(targetVertex, graph, false))
+                .append(") /\\ ");
+
+    }
+
+    private StringBuilder exception(StringBuilder processDefinition, RelationshipEdge vertexEdge,
+                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
+        // todo: add check for guards
+        return processDefinition.append("(")
+                .append(addEdgeDefinition(vertexEdge, targetVertex))
+                .append(addProcessDefinition(targetVertex, graph, false))
+                .append(") [| ").append(formatSet(vertex.getAlphabet().getFirst()))
+                .append(" |> ");
+    }
+
+    private StringBuilder timeout(StringBuilder processDefinition, RelationshipEdge vertexEdge,
+                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
+        // todo: add check for guards
+        return processDefinition.append("(")
+                .append(addEdgeDefinition(vertexEdge, targetVertex))
+                .append(addProcessDefinition(targetVertex, graph, false))
+                .append(") [> ");
 
     }
 
@@ -296,19 +369,34 @@ public class CSPMTransformer {
         Iterator<RelationshipEdge> edges = vertexEdges.iterator();
         boolean incomplete = true;
         boolean seq = false;
-        CSPVertex seqVertex = vertex;
-        while(incomplete){
-            RelationshipEdge vertexEdge = edges.next();
-            CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
-            if (targetVertex.isSeqCompositionVertex()){
-                seq = true;
-                seqVertex = targetVertex;
+        for (RelationshipEdge edge: vertexEdges){
+            if (edge.getLabel().equals(Keywords.TICK)) {
+                processDefinition.append("(");
             }
-            if (edges.hasNext() && !targetVertex.isSeqCompositionVertex()) {
+        }
+
+        CSPVertex seqVertex = vertex;
+        RelationshipEdge nextEdge = edges.next();
+        CSPVertex nextVertex = graph.getEdgeTarget(nextEdge);
+
+        while(incomplete){
+            CSPVertex targetVertex = nextVertex;
+            RelationshipEdge vertexEdge = nextEdge;
+            boolean hasNext = false;
+            if (edges.hasNext()) {
+                hasNext = true;
+                nextEdge = edges.next();
+                nextVertex = graph.getEdgeTarget(nextEdge);
+            }
+            if (nextVertex.isSeqCompositionVertex()){
+                seq = true;
+                seqVertex = nextVertex;
+            }
+            if (hasNext && !targetVertex.isSeqCompositionVertex() && !nextVertex.isSeqCompositionVertex()) {
                 // todo: add check for guards
                 if (operator == 0){
                     processDefinition =
-                            externalChoice(
+                            timeout(
                                     processDefinition,
                                     vertexEdge,
                                     targetVertex,
@@ -317,7 +405,7 @@ public class CSPMTransformer {
                 }
                 if (operator == 1){
                     processDefinition =
-                            internalChoice(
+                            interrupt(
                                     processDefinition,
                                     vertexEdge,
                                     targetVertex,
@@ -326,7 +414,7 @@ public class CSPMTransformer {
                 }
                 if (operator == 2){
                     processDefinition =
-                            alphabetisedParallel(
+                            externalChoice(
                                     processDefinition,
                                     vertexEdge,
                                     targetVertex,
@@ -335,7 +423,7 @@ public class CSPMTransformer {
                 }
                 if (operator == 3){
                     processDefinition =
-                            generalisedParallel(
+                            internalChoice(
                                     processDefinition,
                                     vertexEdge,
                                     targetVertex,
@@ -343,6 +431,33 @@ public class CSPMTransformer {
                                     graph);
                 }
                 else if (operator == 4){
+                    processDefinition =
+                            exception(
+                                    processDefinition,
+                                    vertexEdge,
+                                    targetVertex,
+                                    vertex,
+                                    graph);
+                }
+                else if (operator == 5){
+                    processDefinition =
+                            generalisedParallel(
+                                    processDefinition,
+                                    vertexEdge,
+                                    targetVertex,
+                                    vertex,
+                                    graph);
+                }
+                else if (operator == 6){
+                    processDefinition =
+                            alphabetisedParallel(
+                                    processDefinition,
+                                    vertexEdge,
+                                    targetVertex,
+                                    vertex,
+                                    graph);
+                }
+                else if (operator == 7){
                     processDefinition =
                             interleave(
                                     processDefinition,
@@ -352,7 +467,7 @@ public class CSPMTransformer {
                                     graph);
                 }
             }
-            else if (!edges.hasNext() && !targetVertex.isSeqCompositionVertex()){
+            else if (nextVertex.isSeqCompositionVertex() || (!hasNext && !targetVertex.isSeqCompositionVertex())){
                 // todo: add check for guards
                 processDefinition.append("(")
                         .append(addEdgeDefinition(vertexEdge, targetVertex))
@@ -360,14 +475,14 @@ public class CSPMTransformer {
                         .append(")");
                 incomplete = false;
             }
-            else if (!edges.hasNext() && targetVertex.isSeqCompositionVertex()){
+            /*else if (!hasNext && targetVertex.isSeqCompositionVertex()){
                 // todo: add check for guards
                 processDefinition.append(")");
                 incomplete = false;
-            }
+            }*/
         }
         if (seq){
-            processDefinition.append(addProcessDefinition(seqVertex, graph, false));
+            processDefinition.append(")").append(addProcessDefinition(seqVertex, graph, false));
         }
 
         return processDefinition;
@@ -397,6 +512,7 @@ public class CSPMTransformer {
 
     private Map<String, String> getChannels(CSPGraph graph){
         Map<String, String> channels = new HashMap<>();
+        Set<String> placeholderChannels = new HashSet<>();
 
         for (RelationshipEdge edge: graph.edgeSet()) {
             if (edge.getLabel() != null){
@@ -406,10 +522,20 @@ public class CSPMTransformer {
                     // "[a-zA-Z]*(;\\n)" would be a process, not a channel
                     if (component.matches("[a-zA-Z]*([!?$.]'?[a-zA-Z0-9]*'?)?")) {
                         String[] comps = component.splitWithDelimiters("[!?$.]",0);
-                        if (!channels.containsKey(comps[0]) && comps.length>1) {
-                            String type = getTypes(comps, false);
-                            System.out.println("Adding typed channel: "+component+ ":"+type);
-                            channels.put(comps[0], type);
+                        if (comps.length>1){
+                            if (channels.containsKey(comps[0]) && channels.get(comps[0])!=null
+                                    && !channels.get(comps[0]).equals(comps[2])) {
+                                String type = updateType(comps);
+                                System.out.println("Updating typed channel: " + component + ":" + type);
+                                channels.put(comps[0], type);
+                            } else if (!channels.containsKey(comps[0])) {
+                                String type = getTypes(comps);
+                                if (type == null) placeholderChannels.add(comps[0]);
+                                else {
+                                    System.out.println("Adding typed channel: " + component + ":" + type);
+                                    channels.put(comps[0], type);
+                                }
+                            }
                         }
                         else if(!channels.containsKey(comps[0])){
                             System.out.println("Adding channel: "+component);
@@ -423,14 +549,24 @@ public class CSPMTransformer {
         }
 
         for (CSPVertex vertex: graph.vertexSet()){
-            if (vertex.isAlphabetisedParallel() || vertex.isGeneralisedParallel()){
+            if (vertex.isAlphabetisedParallel() || vertex.isGeneralisedParallel() || vertex.isException()){
                 for (Set<String> alphabet : vertex.getAlphabet()){
                     for (String channel : alphabet){
                         String[] comps = channel.splitWithDelimiters("[!?$.]",0);
-                        if (!channels.containsKey(comps[0]) && comps.length>1) {
-                            String type = getTypes(comps, true);
-                            System.out.println("Adding typed alphabet channel: "+channel+ ":"+type);
-                            channels.put(comps[0], type);
+                        if (comps.length>1) {
+                            if (channels.containsKey(comps[0]) && channels.get(comps[0])!=null
+                                    && !channels.get(comps[0]).equals(comps[2])) {
+                                String type = updateType(comps);
+                                System.out.println("Updating typed alphabet channel: " + channel + ":" + type);
+                                channels.put(comps[0], type);
+                            } else if (!channels.containsKey(comps[0])) {
+                                String type = getTypes(comps);
+                                if (type == null) placeholderChannels.add(comps[0]);
+                                else {
+                                    System.out.println("Adding typed alphabet channel: " + channel + ":" + type);
+                                    channels.put(comps[0], type);
+                                }
+                            }
                         }
                         else if(!channels.containsKey(comps[0])){
                             System.out.println("Adding alphabet channel: "+channel);
@@ -439,18 +575,43 @@ public class CSPMTransformer {
                     }
                 }
             }
-            if (!vertex.getHidden().isEmpty()){
-                for (String channel: vertex.getHidden()){
-                    /*String[] comps = channel.splitWithDelimiters("[!?$\\.]",0);
-                    if (!channels.containsKey(comps[0]) && comps.length>1) {
-                        String type = getTypes(comps, true);
-                        System.out.println("Adding typed hidden channel: "+channel+ ":"+type);
-                        channels.put(comps[0], type);
+
+            Set<String> additionalChannels = new HashSet<>();
+            additionalChannels.addAll(vertex.getHidden());
+            additionalChannels.addAll(vertex.getProjected());
+            additionalChannels.addAll(vertex.getRenaming().keySet());
+            additionalChannels.addAll(vertex.getRenaming().values());
+
+            if (!additionalChannels.isEmpty()){
+                for (String channel: additionalChannels){
+                    String[] comps = channel.splitWithDelimiters("[!?$.]",0);
+                    if (comps.length>1) {
+                        if (channels.containsKey(comps[0]) && channels.get(comps[0])!=null
+                                && !channels.get(comps[0]).equals(comps[2])) {
+                            String type = updateType(comps);
+                            System.out.println("Updating additional typed channel: " + channel + ":" + type);
+                            channels.put(comps[0], type);
+                        } else if (!channels.containsKey(comps[0])) {
+                            String type = getTypes(comps);
+                            if (type == null) placeholderChannels.add(comps[0]);
+                            else {
+                                System.out.println("Adding additional typed channel: " + channel + ":" + type);
+                                channels.put(comps[0], type);
+                            }
+                        }
                     }
-                    else*/
-                    if(!channels.containsKey(channel)){
-                        System.out.println("Adding hidden channel: "+channel);
+                    else if(!channels.containsKey(comps[0])){
+                        System.out.println("Adding additional channel: "+channel);
                         channels.put(channel, null);
+                    }
+                }
+            }
+
+            if (!placeholderChannels.isEmpty()){
+                for (String channel: placeholderChannels) {
+                    if (!channels.containsKey(channel)) {
+                        System.out.println("Adding additional channel: " + channel);
+                        channels.put(channel, getRandomType(channel));
                     }
                 }
             }
@@ -459,16 +620,28 @@ public class CSPMTransformer {
         return channels;
     }
 
-    private String getTypes(String[] components, boolean alphabet){
+    private String getTypes(String[] components){
         String channel = components[0];
-        String decoration = components[1];
         String parameter = components[2];
-        Map<String, String> types = new HashMap<>(this.types);
-        Random r = new Random();
 
-        if (this.types.containsKey(channel)){
-            return types.get(channel);
+        if (parameter.equals(Keywords.TYPE_PLACEHOLDER)){
+            return null;
         }
+
+        if (this.types.containsKey(channel)) {
+            return updateType(components);
+        }
+        return getType(parameter, channel);
+    }
+
+
+    private String getRandomType(String channel) {
+        return getType(null, channel);
+    }
+
+    private String getType(String parameter, String channel){
+        Random r = new Random();
+        Map<String, String> types = new HashMap<>(this.types);
 
         String type = randomType(parameter);
         if (type!=null) {
@@ -485,40 +658,63 @@ public class CSPMTransformer {
                     .replace("typeVal", typeVal);
 
         }
-
-        /*if (Objects.equals(decoration, "!") || Objects.equals(decoration, ".")){
-            String value = randomValue(type);
-
-            if (value != null){
-                this.currentCSPFile += StringConstants.constantDeclaration()
-                    .replace("name", alphabet?RandomStringUtils.random(r.nextInt(12), true, false):parameter)
-                    .replace("value", value);
-            }
-        }*/
-
         this.types = types;
 
         Map<String,String> typePlaceholders = new HashMap<>(this.typePlaceholders);
-        typePlaceholders.put(components[0]+"."+Keywords.TYPE_PLACEHOLDER, components[0]+"."+randomValue(type));
+        typePlaceholders.put(channel+"."+Keywords.TYPE_PLACEHOLDER, channel+"."+randomValue(type));
         this.typePlaceholders = typePlaceholders;
 
         return type;
     }
 
+    private String updateType(String[] components){
+        String channel = components[0];
+        String parameter = components[2];
+        Map<String, String> types = new HashMap<>(this.types);
+
+        if (this.types.get(channel)!= null && datatypeIsNonStandard(this.types.get(channel))
+                && !parameter.equals(Keywords.TYPE_PLACEHOLDER)) {
+            StringBuilder sb = new StringBuilder();
+            String type = this.types.get(channel);
+            String cspDatatype = getDataType(type);
+            if (!cspDatatype.contains(parameter)) {
+                this.currentCSPFile = this.currentCSPFile.replace(cspDatatype,
+                        sb.append(cspDatatype).append("|").append(parameter).toString());
+            }
+        }
+
+        return types.get(channel);
+    }
+
+    private String getDataType(String type){
+        List<String> lines = this.currentCSPFile.lines()
+                .filter(l -> l.startsWith("datatype " + type)).toList();
+        return lines.getFirst();
+    }
+
+    private boolean datatypeIsNonStandard(String type){
+        return !Objects.equals(type, Keywords.BOOL) && !Objects.equals(type, Keywords.CHAR)
+                && !type.contains("{");
+    }
+
     private String randomType(String value) {
         Random r = new Random();
-        if (Objects.equals(value, "true") || Objects.equals(value, "false")) {
+        int choice = 0;
+        if (value == null){
+            choice = r.nextInt(1,5);
+        }
+        if (Objects.equals(value, "true") || Objects.equals(value, "false") || choice == 1) {
             return Keywords.BOOL;
-        } else if (value.length()==3 &&
+        } else if ((value != null && value.length()==3 &&
                 Character.toString(value.charAt(0)).equals("'") &&
-                Character.isAlphabetic(value.charAt(1))) {
+                Character.isAlphabetic(value.charAt(1))) || choice == 2) {
             return Keywords.CHAR;
-        } else if (value.matches("-?\\d+(\\.\\d+)?")) {
+        } else if ((value != null && value.matches("-?\\d+(\\.\\d+)?")) || choice == 3) {
             // This corresponds to Keywords.INT but the open integer range causes state explosion
             StringBuilder typeRange = new StringBuilder();
-            int val = Integer.parseInt(value);
+            int val = value!=null?Integer.parseInt(value):r.nextInt(0,50);
             int lowerBound = val>4?val - r.nextInt(6):val - r.nextInt(val+1);
-            int upperBound = r.nextInt(lowerBound, lowerBound+10);
+            int upperBound = r.nextInt(val, lowerBound+6);
             typeRange.append("{")
                     .append(lowerBound)
                     .append("..")
@@ -534,10 +730,14 @@ public class CSPMTransformer {
         Random r = new Random();
         List<String> types = new ArrayList<>();
         int typeCount = r.nextInt(1,10);
+        NameVerifier nv = new NameVerifier();
         for (int i = 0; i<typeCount; i++) {
-            types.add(RandomStringUtils.random(r.nextInt(2, 15), true, false));
+            String enumVal = RandomStringUtils.random(r.nextInt(2, 15), true, false);
+            if (!this.currentCSPFile.contains(enumVal) && !nv.getKeywords().contains(enumVal)){
+                types.add(enumVal);
+            }
         }
-        types.add(value);
+        if (value!=null) types.add(value);
         StringBuilder sb = new StringBuilder();
         return sb.append(String.join("|", types)).toString();
     }
@@ -559,8 +759,9 @@ public class CSPMTransformer {
             int upperBound = Integer.parseInt(parts.get(1));
             return String.valueOf(r.nextInt(lowerBound, upperBound+1));
         } else {
-            List<String> parts = new ArrayList<>(Arrays.stream(type.split("|")).toList());
-            return parts.get(r.nextInt(0, parts.size()));
+            String[] data = getDataType(type).split("=");
+            List<String> parts = new ArrayList<>(Arrays.stream(data[1].split("[|]")).toList());
+            return parts.get(r.nextInt(0, parts.size())).strip();
         }
     }
 

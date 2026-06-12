@@ -111,7 +111,7 @@ public class CSPVertexTest {
 
         CSPVertex vertex = g.vertexSet().iterator().next();
 
-        assertTrue(vertex.isInternalChoice(), "vertex not marked as a internal choice process");
+        assertTrue(vertex.isInternalChoice(), "vertex not marked as an internal choice process");
     }
 
     @Test
@@ -124,7 +124,46 @@ public class CSPVertexTest {
 
         CSPVertex vertex = g.vertexSet().iterator().next();
 
-        assertTrue(vertex.isInterleave(), "vertex not marked as a interleave process");
+        assertTrue(vertex.isInterleave(), "vertex not marked as an interleave process");
+    }
+
+    @Test
+    void givenVertexAdded_whenSetExceptionProcess_thenIsExceptionProcessReturnTrue() {
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1", true, true);
+        x1.setException(true);
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertTrue(vertex.isException(), "vertex not marked as an exception process");
+    }
+
+    @Test
+    void givenVertexAdded_whenSetTimeoutProcess_thenIsTimeoutProcessReturnTrue() {
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1", true, true);
+        x1.setTimeout(true);
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertTrue(vertex.isTimeout(), "vertex not marked as a timeout process");
+    }
+
+    @Test
+    void givenVertexAdded_whenSetInterruptProcess_thenIsInterruptProcessReturnTrue() {
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1", true, true);
+        x1.setInterrupt(true);
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertTrue(vertex.isInterrupt(), "vertex not marked as an interrupt process");
     }
 
     @Test
@@ -141,6 +180,22 @@ public class CSPVertexTest {
 
         assertEquals(hidden, vertex.getHidden(), "hidden channels of vertex are unexpected");
     }
+
+    @Test
+    void givenVertexAdded_whenSetProject_thenGetProjectReturnsChannels() {
+        Set<String> project = new HashSet<>(Set.of("testingchannel", "secondchannel"));
+
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1", true, true);
+        x1.setProjected(project);
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertEquals(project, vertex.getProjected(), "projected channels of vertex are unexpected");
+    }
+
 
 
     @Test
@@ -197,6 +252,36 @@ public class CSPVertexTest {
         CSPVertex vertex = g.vertexSet().iterator().next();
 
         assertEquals("TestName", vertex.getName(), "vertex name is unexpected");
+    }
+
+
+    @Test
+    void givenVertexAdded_whenSetParameter_thenParameterReturnedThroughGetParameter() {
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1");
+        x1.setParameter("TestName");
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertEquals("TestName", vertex.getParameter(), "parameter name is unexpected");
+    }
+
+
+    @Test
+    void givenVertexAdded_whenSetScopedVars_thenScopedVarsReturnedThroughGetScopedVars() {
+        Map<String, String> vars = new TreeMap<>(Map.of("testingProcess1", "int",
+                "testingProcess2", "bool"));
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1", true, true);
+        x1.setScopedVars(vars);
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertEquals(vars, vertex.getScopedVars(), "scoped variables are unexpected");
     }
 
     @Test
