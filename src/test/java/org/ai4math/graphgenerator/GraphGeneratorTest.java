@@ -704,7 +704,7 @@ public class GraphGeneratorTest {
     }
 
     @Test
-    void givenNonEmptyListOfDecoratedStringsForAlphabet_whenRandomSubList_thenListOfUndecoratedMessagesReturned(){
+    void givenNonEmptyListOfDecoratedStringsForAlphabet_whenRandomSubList_thenListOfDottedMessagesReturned(){
         Random random = spy(Random.class);
         when(random.nextInt(1,5)).thenReturn(3);
 
@@ -724,12 +724,13 @@ public class GraphGeneratorTest {
         assertEquals(3, sublist.size());
 
         for (String message: sublist){
+            assertFalse(message.contains("!"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("?"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("$"), "Message "+message+" contains an unexpected decoration");
             String[] comps = message.splitWithDelimiters("[!?$\\.]",0);
             if (comps.length>1){
-                assertTrue(decorations.containsKey(comps[0]), "Random message generated"+comps[0]);
                 assertEquals(".", comps[1]);
-                assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
-            }
+           }
         }
     }
 
@@ -755,9 +756,13 @@ public class GraphGeneratorTest {
         assertFalse(sublist.isEmpty(), "Messages list is empty");
         assertEquals(1, sublist.size());
 
+        assertFalse(sublist.getFirst().contains("!"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
+        assertFalse(sublist.getFirst().contains("?"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
+        assertFalse(sublist.getFirst().contains("$"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
         String[] comps = sublist.getFirst().splitWithDelimiters("[!?$\\.]",0);
-        assertEquals(".", comps[1]);
-        assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
+        if (comps.length>1){
+            assertEquals(".", comps[1]);
+        }
     }
 
     @Test
@@ -850,11 +855,12 @@ public class GraphGeneratorTest {
         assertEquals(5, sublist.size());
 
         for (String message: sublist){
+            assertFalse(message.contains("!"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("?"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("$"), "Message "+message+" contains an unexpected decoration");
             String[] comps = message.splitWithDelimiters("[!?$\\.]",0);
             if (comps.length>1){
-                assertTrue(decorations.containsKey(comps[0]), "Random message generated"+comps[0]);
                 assertEquals(".", comps[1]);
-                assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
             }
         }
     }
@@ -869,7 +875,7 @@ public class GraphGeneratorTest {
     }
 
     @Test
-    void givenSingletonListOfDecoratedStringForAlphabet_whenRandomSetSizeSubList_thenListOfSingleUndecoratedMessageIsReturned(){
+    void givenSingletonListOfDecoratedStringForAlphabet_whenRandomSetSizeSubList_thenListOfSingleDottedMessageIsReturned(){
         List<String> messages = new ArrayList<>(List.of("strings?4"));
 
         List<String> sublist = GraphGenerator.randomSetSizeSubList(messages, 2,true);
@@ -877,9 +883,13 @@ public class GraphGeneratorTest {
         assertFalse(sublist.isEmpty(), "Messages list is empty");
         assertEquals(1, sublist.size());
 
+        assertFalse(sublist.getFirst().contains("!"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
+        assertFalse(sublist.getFirst().contains("?"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
+        assertFalse(sublist.getFirst().contains("$"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
         String[] comps = sublist.getFirst().splitWithDelimiters("[!?$\\.]",0);
-        assertEquals(".", comps[1]);
-        assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
+        if (comps.length>1){
+            assertEquals(".", comps[1]);
+        }
     }
 
     @Test
@@ -920,11 +930,12 @@ public class GraphGeneratorTest {
         assertEquals(4, sublist.size());
 
         for (String message: sublist){
+            assertFalse(message.contains("!"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("?"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("$"), "Message "+message+" contains an unexpected decoration");
             String[] comps = message.splitWithDelimiters("[!?$\\.]",0);
             if (comps.length>1){
-                assertTrue(decorations.containsKey(comps[0]), "Random message generated"+comps[0]);
                 assertEquals(".", comps[1]);
-                assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
             }
         }
     }

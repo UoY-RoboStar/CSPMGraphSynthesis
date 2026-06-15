@@ -5,6 +5,7 @@ import org.ai4math.cspm.Keywords;
 import org.ai4math.graphgenerator.utils.CSPGraph;
 import org.ai4math.graphgenerator.utils.CSPVertex;
 import org.ai4math.graphgenerator.utils.RelationshipEdge;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +18,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.ai4math.testutils.Utils.typeOf;
 
 @NotThreadSafe
 public class CSPMTransformerTest {
@@ -32,6 +33,25 @@ public class CSPMTransformerTest {
         resourcePath = System.getProperty("user.home");
         dir = Paths.get(resourcePath, "test", "cspmtransformer");
         resourcePath = dir.toAbsolutePath().toString();
+    }
+
+    @AfterEach
+    public void After(){
+        List<String> files = List.of();
+
+        try (Stream<Path> paths = Files.walk(Paths.get(resourcePath))) {
+            files = paths
+                    .filter(Files::isRegularFile)
+                    .map(Path::toString)
+                    .toList();
+        } catch (IOException e) {
+            System.out.println("Exception encountered when retrieving files: " + e.getMessage());
+        }
+
+        for (String file : files) {
+            File filepath = new File(file);
+            filepath.delete();
+        }
     }
 
     @Test
@@ -606,7 +626,6 @@ public class CSPMTransformerTest {
                     assertFalse(parts[1].substring(parts[1].indexOf("aefuoafh")+8).contains("aefuoafh"),
                             "Datatype does contains duplicate aefuoafh within: "+channel);
                     assertTrue(parts[1].contains("nimo"), "Datatype does not include nimo within: "+channel);
-                    assertFalse(parts[1].contains(Keywords.TYPE_PLACEHOLDER), "Datatype contains the typeplaceholder within: "+channel);
                 }
             }
             String[] initial = br.readLine().split("\\\\");
@@ -621,233 +640,6 @@ public class CSPMTransformerTest {
 
             String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
             assertEquals(expectedCSPFile, content, "File contents is unexpected: " + content);
-        }
-
-        file.delete();
-    }
-
-    @Test
-    public void givenDecoratedGraphWithHidingWithPlaceholderChannels_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
-        CSPGraph graph = new CSPGraph();
-        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
-        Set<String> hidden = Set.of("five.nimo", "seven.Type_Placeholder");
-        initialVertex.setHidden(hidden);
-        graph.addVertex(initialVertex);
-
-        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
-        graph.addVertex(interimVertex);
-        CSPVertex skip = new CSPVertex("SKIP");
-        skip.setSkipVertex(true);
-        graph.addVertex(skip);
-
-        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
-        edge1.setLabel("one!false -> two -> three -> seven.true");
-        RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
-        edge2.setLabel("four -> five.aefuoafh -> six");
-
-        List<String> channels = new ArrayList<>();
-        channels.add("channel one : Bool");
-        channels.add("channel two");
-        channels.add("channel three");
-        channels.add("channel four");
-        channels.add("channel six");
-        channels.add("channel seven : Bool");
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Interim = four -> five.aefuoafh -> six -> SKIP").append("\n")
-                .append("assert Initial :[deadlock free]").append("\n")
-                .append("assert Interim :[deadlock free]");
-        String expectedCSPFile = sb.toString();
-
-        CSPMTransformer cspmTransformer = new CSPMTransformer();
-        String fileName = "BasicTest";
-        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
-        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
-
-        List<String> cspFiles = cspmTransformer.getCspFiles(false);
-
-        assertEquals(1,cspFiles.size(), "File not included in list.");
-        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
-
-        File file = new File(filePath);
-        assertTrue(file.exists(), "File was not created");
-
-        String type = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            for (int i = 0; i<8;i++){
-                String channel = br.readLine();
-                if (channel.contains("channel five")){
-                    String[] parts = channel.split(":");
-                    String[] datatype = type.split(" ");
-                    assertEquals(datatype[1],parts[1].strip(), "Data types do not match");
-                } else if (channel.contains("channel")){
-                    assertTrue(channels.contains(channel), "Channel " + channel + " was not expected");
-                } else {
-                    type = channel;
-                    String[] parts = channel.split("=");
-                    String[] datatype = parts[0].split(" ");
-                    assertEquals(Keywords.DATATYPE, datatype[0], "Datatype incorrectly defined: "+channel);
-                    assertTrue(parts[1].contains("aefuoafh"), "Datatype does not include aefuoafh within: "+channel);
-                    assertFalse(parts[1].substring(parts[1].indexOf("aefuoafh")+8).contains("aefuoafh"),
-                            "Datatype does contains duplicate aefuoafh within: "+channel);
-                    assertTrue(parts[1].contains("nimo"), "Datatype does not include nimo within: "+channel);
-                    assertFalse(parts[1].contains(Keywords.TYPE_PLACEHOLDER), "Datatype contains the typeplaceholder within: "+channel);
-                }
-            }
-            String[] initial = br.readLine().split("\\\\");
-            String initialString = "Initial = (one!false -> two -> three -> seven.true -> Interim)";
-            String[] hiddenParts = initial[1].replace("{","").replace("}","").split(",");
-            assertEquals(2, hiddenParts.length, "The number of hidden channels is unexpected");
-
-            assertEquals(initialString, initial[0], "File contents is unexpected: " + initial[0]);
-
-            for (String alph : hiddenParts){
-                if (alph.contains("seven")){
-                    assertFalse(alph.contains(Keywords.TYPE_PLACEHOLDER),
-                            "Placeholder has not been replaced.");
-                    assertEquals(Keywords.BOOL, typeOf(alph), "Type of seven is not Bool");
-                } else
-                    assertEquals("five.nimo", alph,
-                            "Five is missing from the hidden channels");
-            }
-
-            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
-            assertEquals(expectedCSPFile, content, "File contents is unexpected: " + content);
-        }
-
-        file.delete();
-    }
-
-    @Test
-    public void givenDecoratedHidingGraphWithExtraPlaceholderChannels_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
-        CSPGraph graph = new CSPGraph();
-        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
-        graph.addVertex(initialVertex);
-        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
-        graph.addVertex(interimVertex);
-        CSPVertex hiddenVertex = new CSPVertex("Hidden", true, true);
-        Set<String> alphabet = Set.of("one.false","five.nimo", "six.Type_Placeholder", "seven", "eight.true");
-        hiddenVertex.setHidden(alphabet);
-        graph.addVertex(hiddenVertex);
-        CSPVertex skip = new CSPVertex("SKIP");
-        skip.setSkipVertex(true);
-        graph.addVertex(skip);
-
-        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
-        edge1.setLabel("one!false -> two -> three");
-        RelationshipEdge edge2 = graph.addEdge(interimVertex,hiddenVertex);
-        edge2.setLabel("four -> five.aefuoafh");
-        RelationshipEdge edge4 = graph.addEdge(hiddenVertex,skip);
-        edge4.setLabel("four");
-        RelationshipEdge edge3 = graph.addEdge(hiddenVertex,interimVertex);
-        edge3.setLabel("one!true");
-
-        List<String> channels = new ArrayList<>();
-        channels.add("channel one : Bool");
-        channels.add("channel two");
-        channels.add("channel three");
-        channels.add("channel four");
-        channels.add("channel seven");
-        channels.add("channel eight : Bool");
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Interim = four -> five.aefuoafh -> Hidden").append("\n")
-                .append("Hidden = (four -> SKIP)\\{");
-        String expectedCSPFileInterim = sb.toString();
-        String expectedCSPFileStart = "Initial = one!false -> two -> three -> Interim";
-
-        sb = new StringBuilder();
-        sb.append("}").append("\n")
-                .append("assert Initial :[deadlock free]").append("\n")
-                .append("assert Interim :[deadlock free]").append("\n")
-                .append("assert Hidden :[deadlock free]");
-        String expectedCSPFileEnd = sb.toString();
-
-        CSPMTransformer cspmTransformer = new CSPMTransformer();
-        String fileName = "BasicTest";
-        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
-        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
-
-        List<String> cspFiles = cspmTransformer.getCspFiles(false);
-
-        assertEquals(1,cspFiles.size(), "File not included in list.");
-        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
-
-        File file = new File(filePath);
-        assertTrue(file.exists(), "File was not created");
-
-        String type = "";
-        String sixType = "";
-        String sixValue = "";
-        Boolean cont = true;
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            while (cont){
-                String line = br.readLine();
-                Boolean dt = line.startsWith(Keywords.DATATYPE);
-                System.out.println(line);
-                if (line.contains("channel five")){
-                    String[] parts = line.split(":");
-                    assertEquals(type,parts[1].strip(), "Data types for channel five do not match");
-                } else if (line.contains("channel six")){
-                    String[] parts = line.split(":");
-                    if (parts[1].equals(sixType)) {
-                        assertEquals(sixType, parts[1].strip(), "Data types for channel six do not match");
-
-                    } else sixType = parts[1];
-                } else if (line.contains("channel")){
-                    assertTrue(channels.contains(line), "Channel " + line + " was not expected");
-                } else if (dt){
-                    String[] dataParts = line.split("=");
-                    String[] datatype = dataParts[0].split(" ");
-                    assertEquals(Keywords.DATATYPE, datatype[0], "Datatype incorrectly defined: " + line);
-                    if (dataParts[1].contains("aefuoafh")) {
-                        type = datatype[1];
-                        assertTrue(dataParts[1].contains("aefuoafh"),
-                                "Datatype does not include aefuoafh within: " + line);
-                        assertFalse(
-                                dataParts[1].substring(dataParts[1].indexOf("aefuoafh") + 8).contains("aefuoafh"),
-                                "Datatype does contains duplicate aefuoafh within: " + line);
-                        assertTrue(dataParts[1].contains("nimo"),
-                                "Datatype does not include nimo within: " + line);
-                        assertFalse(dataParts[1].contains(Keywords.TYPE_PLACEHOLDER),
-                                "Datatype contains the typeplaceholder within: " + line);
-                    } else {
-                        sixType = datatype[1].strip();
-                        sixValue = datatype.length>2?datatype[3].strip():"";
-                    }
-                } else {
-                    assertEquals(expectedCSPFileStart, line, "File contents is unexpected: " + line);
-                    String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
-                    System.out.println(content);
-                    assertTrue(content.startsWith(expectedCSPFileInterim), "File contents is unexpected: " + content);
-                    assertTrue(content.endsWith(expectedCSPFileEnd), "File contents is unexpected: " + content);
-                    String set = content.substring(expectedCSPFileInterim.length(), content.length()-expectedCSPFileEnd.length());
-                    List<String> alpha = Arrays.stream(set.split(",")).toList();
-                    assertEquals(5, alpha.size(), "The length of the alphabet is unexpected");
-                    for (String alph : alpha){
-                        if (alph.contains("six")){
-                            assertFalse(alph.contains(Keywords.TYPE_PLACEHOLDER),
-                                    "Placeholder has not been replaced.");
-                            if (typeOf(alph)!=null) {
-                                if (sixType.contains("{")) {
-                                    String[] six = alph.split("[.]");
-                                    String[] t = sixType.replace("{", "").replace("}","").split("[.]");
-                                    assertTrue(Integer.parseInt(six[1].strip()) >= Integer.parseInt(t[0].strip()),
-                                            "Value of six: "+six[1]+" is greater than accepted: "+t[0]);
-                                    assertTrue(Integer.parseInt(six[1].strip()) <= Integer.parseInt(t[2].strip()),
-                                            "Value of six: "+six[1]+" is less than accepted: "+t[2]);
-                                } else {
-                                    assertEquals(sixType.strip(), typeOf(alph), "Type of six does not match");
-                                }
-                            } else {
-                                String[] six = alph.split("[.]");
-                                assertTrue(alph.contains(six[1].strip()), "The value of: "+alph+" isn't contained in: "+sixValue);
-                            }
-                        } else assertTrue(alphabet.contains(alph), "Alphabet is missing a channel: "+alph);
-                    }
-                    cont = false;
-                }
-            }
         }
 
         file.delete();
@@ -1115,83 +907,6 @@ public class CSPMTransformerTest {
 
             String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
             assertEquals(expectedCSPFile, content, "File contents is unexpected: " + content);
-        }
-
-        file.delete();
-    }
-
-    @Test
-    public void givenDecoratedGraphWithProjectWithPlaceholderChannels_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
-        CSPGraph graph = new CSPGraph();
-        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
-        Set<String> projected = Set.of("five.Type_Placeholder", "seven");
-        initialVertex.setProjected(projected);
-        graph.addVertex(initialVertex);
-
-        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
-        graph.addVertex(interimVertex);
-        CSPVertex skip = new CSPVertex("SKIP");
-        skip.setSkipVertex(true);
-        graph.addVertex(skip);
-
-        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
-        edge1.setLabel("one!false -> two -> three");
-        RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
-        edge2.setLabel("four -> five?'a' -> six");
-
-        List<String> channels = new ArrayList<>();
-        channels.add("channel one : Bool");
-        channels.add("channel two");
-        channels.add("channel three");
-        channels.add("channel four");
-        channels.add("channel five : Char");
-        channels.add("channel six");
-        channels.add("channel seven");
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Interim = four -> five?'a' -> six -> SKIP").append("\n")
-                .append("assert Initial :[deadlock free]").append("\n")
-                .append("assert Interim :[deadlock free]");
-        String expectedCSPFile = sb.toString();
-
-        CSPMTransformer cspmTransformer = new CSPMTransformer();
-        String fileName = "BasicTest";
-        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
-        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
-
-        List<String> cspFiles = cspmTransformer.getCspFiles(false);
-
-        assertEquals(1,cspFiles.size(), "File not included in list.");
-        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
-
-        File file = new File(filePath);
-        assertTrue(file.exists(), "File was not created");
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            for (int i = 0; i<7;i++){
-                String channel = br.readLine();
-                assertTrue(channels.contains(channel), "Channel "+channel+" was not expected");
-            }
-            String[] initial = br.readLine().split("\\|\\\\");
-            String initialString = "Initial = (one!false -> two -> three -> Interim)";
-            String[] projectedParts = initial[1].replace("{","").replace("}","").split(",");
-            assertEquals(2, projectedParts.length, "The number of projected channels is unexpected");
-
-            assertEquals(initialString, initial[0], "File contents is unexpected: " + initial[0]);
-
-            for (String alph : projectedParts){
-                if (alph.contains("five")){
-                    assertFalse(alph.contains(Keywords.TYPE_PLACEHOLDER),
-                            "Placeholder has not been replaced.");
-                    assertEquals(Keywords.CHAR, typeOf(alph), "Type of five is not Char");
-                } else
-                    assertEquals("seven", alph,
-                            "Seven is missing from the projected channels");
-            }
-
-            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
-            assertEquals(expectedCSPFile, content, "File contents is unexpected: " + content);
-
         }
 
         file.delete();
@@ -2183,7 +1898,6 @@ public class CSPMTransformerTest {
                     assertFalse(parts[1].substring(parts[1].indexOf("aefuoafh")+8).contains("aefuoafh"),
                             "Datatype does contains duplicate aefuoafh within: "+channel);
                     assertTrue(parts[1].contains("nimo"), "Datatype does not include nimo within: "+channel);
-                    assertFalse(parts[1].contains(Keywords.TYPE_PLACEHOLDER), "Datatype contains the typeplaceholder within: "+channel);
                 }
             }
 
@@ -2195,248 +1909,6 @@ public class CSPMTransformerTest {
             assertEquals(5, alpha.size(), "The length of the alphabet is unexpected");
             for (String alph : alphabet){
                 assertTrue(alpha.contains(alph), "Alphabet is missing a channel: "+alph);
-            }
-        }
-
-        file.delete();
-    }
-
-    @Test
-    public void givenDecoratedGenParGraphWithExtraPlaceholderChannels_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
-        CSPGraph graph = new CSPGraph();
-        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
-        graph.addVertex(initialVertex);
-        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
-        graph.addVertex(interimVertex);
-        CSPVertex genParVertex = new CSPVertex("GenPar", true, true);
-        genParVertex.setGeneralisedParallel(true);
-        Set<String> alphabet = Set.of("one.false","five.nimo", "six.Type_Placeholder", "seven", "eight.true");
-        genParVertex.setAlphabet(List.of(alphabet));
-        graph.addVertex(genParVertex);
-        CSPVertex skip = new CSPVertex("SKIP");
-        skip.setSkipVertex(true);
-        graph.addVertex(skip);
-
-        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
-        edge1.setLabel("one!false -> two -> three");
-        RelationshipEdge edge2 = graph.addEdge(interimVertex,genParVertex);
-        edge2.setLabel("four -> five.aefuoafh");
-        RelationshipEdge edge4 = graph.addEdge(genParVertex,skip);
-        edge4.setLabel("four");
-        RelationshipEdge edge3 = graph.addEdge(genParVertex,interimVertex);
-        edge3.setLabel("one!true");
-
-        List<String> channels = new ArrayList<>();
-        channels.add("channel one : Bool");
-        channels.add("channel two");
-        channels.add("channel three");
-        channels.add("channel four");
-        channels.add("channel seven");
-        channels.add("channel eight : Bool");
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Interim = four -> five.aefuoafh -> GenPar").append("\n")
-                .append("GenPar = (four -> SKIP) [| {");
-        String expectedCSPFileInterim = sb.toString();
-        String expectedCSPFileStart = "Initial = one!false -> two -> three -> Interim";
-
-        sb = new StringBuilder();
-        sb.append("} |] (one!true -> Interim)").append("\n")
-                .append("assert Initial :[deadlock free]").append("\n")
-                .append("assert Interim :[deadlock free]").append("\n")
-                .append("assert GenPar :[deadlock free]");
-        String expectedCSPFileEnd = sb.toString();
-
-        CSPMTransformer cspmTransformer = new CSPMTransformer();
-        String fileName = "BasicTest";
-        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
-        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
-
-        List<String> cspFiles = cspmTransformer.getCspFiles(false);
-
-        assertEquals(1,cspFiles.size(), "File not included in list.");
-        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
-
-        File file = new File(filePath);
-        assertTrue(file.exists(), "File was not created");
-
-        String type = "";
-        String sixType = "";
-        String sixValue = "";
-        Boolean cont = true;
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            while (cont){
-                String line = br.readLine();
-                Boolean dt = line.startsWith(Keywords.DATATYPE);
-                System.out.println(line);
-                if (line.contains("channel five")){
-                    String[] parts = line.split(":");
-                    assertEquals(type,parts[1].strip(), "Data types for channel five do not match");
-                } else if (line.contains("channel six")){
-                    String[] parts = line.split(":");
-                    if (parts[1].equals(sixType)) {
-                        assertEquals(sixType, parts[1].strip(), "Data types for channel six do not match");
-
-                    } else sixType = parts[1];
-                } else if (line.contains("channel")){
-                    assertTrue(channels.contains(line), "Channel " + line + " was not expected");
-                } else if (dt){
-                    String[] dataParts = line.split("=");
-                    String[] datatype = dataParts[0].split(" ");
-                    assertEquals(Keywords.DATATYPE, datatype[0], "Datatype incorrectly defined: " + line);
-                    if (dataParts[1].contains("aefuoafh")) {
-                        type = datatype[1];
-                        assertTrue(dataParts[1].contains("aefuoafh"),
-                                "Datatype does not include aefuoafh within: " + line);
-                        assertFalse(
-                                dataParts[1].substring(dataParts[1].indexOf("aefuoafh") + 8).contains("aefuoafh"),
-                                "Datatype does contains duplicate aefuoafh within: " + line);
-                        assertTrue(dataParts[1].contains("nimo"),
-                                "Datatype does not include nimo within: " + line);
-                        assertFalse(dataParts[1].contains(Keywords.TYPE_PLACEHOLDER),
-                                "Datatype contains the typeplaceholder within: " + line);
-                    } else {
-                        sixType = datatype[1].strip();
-                        sixValue = datatype.length>2?datatype[3].strip():"";
-                    }
-                } else {
-                    assertEquals(expectedCSPFileStart, line, "File contents is unexpected: " + line);
-                    String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
-                    System.out.println(content);
-                    assertTrue(content.startsWith(expectedCSPFileInterim), "File contents is unexpected: " + content);
-                    assertTrue(content.endsWith(expectedCSPFileEnd), "File contents is unexpected: " + content);
-                    String set = content.substring(expectedCSPFileInterim.length(), content.length()-expectedCSPFileEnd.length());
-                    List<String> alpha = Arrays.stream(set.split(",")).toList();
-                    assertEquals(5, alpha.size(), "The length of the alphabet is unexpected");
-                    for (String alph : alpha){
-                        if (alph.contains("six")){
-                            assertFalse(alph.contains(Keywords.TYPE_PLACEHOLDER),
-                                    "Placeholder has not been replaced.");
-                            if (typeOf(alph)!=null) {
-                                if (sixType.contains("{")) {
-                                    String[] six = alph.split("[.]");
-                                    String[] t = sixType.replace("{", "").replace("}","").split("[.]");
-                                    assertTrue(Integer.parseInt(six[1].strip()) >= Integer.parseInt(t[0].strip()),
-                                            "Value of six: "+six[1]+" is greater than accepted: "+t[0]);
-                                    assertTrue(Integer.parseInt(six[1].strip()) <= Integer.parseInt(t[2].strip()),
-                                            "Value of six: "+six[1]+" is less than accepted: "+t[2]);
-                                } else {
-                                    assertEquals(sixType.strip(), typeOf(alph), "Type of six does not match");
-                                }
-                            } else {
-                                String[] six = alph.split("[.]");
-                                assertTrue(alph.contains(six[1].strip()), "The value of: "+alph+" isn't contained in: "+sixValue);
-                            }
-                        } else assertTrue(alphabet.contains(alph), "Alphabet is missing a channel: "+alph);
-                    }
-                    cont = false;
-                }
-            }
-        }
-
-        file.delete();
-    }
-
-    @Test
-    public void givenDecoratedGenParGraphWithPlaceholderChannels_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
-        CSPGraph graph = new CSPGraph();
-        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
-        graph.addVertex(initialVertex);
-        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
-        graph.addVertex(interimVertex);
-        CSPVertex genParVertex = new CSPVertex("GenPar", true, true);
-        genParVertex.setGeneralisedParallel(true);
-        Set<String> alphabet = Set.of("one.false","five.nimo", "six.Type_Placeholder", "seven", "eight.true");
-        genParVertex.setAlphabet(List.of(alphabet));
-        graph.addVertex(genParVertex);
-        CSPVertex skip = new CSPVertex("SKIP");
-        skip.setSkipVertex(true);
-        graph.addVertex(skip);
-
-        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
-        edge1.setLabel("one!false -> two -> three -> six?'a'");
-        RelationshipEdge edge2 = graph.addEdge(interimVertex,genParVertex);
-        edge2.setLabel("four -> five.aefuoafh");
-        RelationshipEdge edge4 = graph.addEdge(genParVertex,skip);
-        edge4.setLabel("four");
-        RelationshipEdge edge3 = graph.addEdge(genParVertex,interimVertex);
-        edge3.setLabel("one!true");
-
-        List<String> channels = new ArrayList<>();
-        channels.add("channel one : Bool");
-        channels.add("channel two");
-        channels.add("channel three");
-        channels.add("channel four");
-        channels.add("channel six : Char");
-        channels.add("channel seven");
-        channels.add("channel eight : Bool");
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Initial = one!false -> two -> three -> six?'a' -> Interim").append("\n")
-                .append("Interim = four -> five.aefuoafh -> GenPar").append("\n")
-                .append("GenPar = (four -> SKIP) [| {");
-        String expectedCSPFileStart = sb.toString();
-
-        sb = new StringBuilder();
-        sb.append("} |] (one!true -> Interim)").append("\n")
-                .append("assert Initial :[deadlock free]").append("\n")
-                .append("assert Interim :[deadlock free]").append("\n")
-                .append("assert GenPar :[deadlock free]");
-        String expectedCSPFileEnd = sb.toString();
-
-        CSPMTransformer cspmTransformer = new CSPMTransformer();
-        String fileName = "BasicTest";
-        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
-        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
-
-        List<String> cspFiles = cspmTransformer.getCspFiles(false);
-
-        assertEquals(1,cspFiles.size(), "File not included in list.");
-        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
-
-        File file = new File(filePath);
-        assertTrue(file.exists(), "File was not created");
-
-        String type = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            for (int i = 0; i<9; i++){
-                String line = br.readLine();
-                if (line.contains("channel five")) {
-                    String[] parts = line.split(":");
-                    assertEquals(type, parts[1].strip(), "Data types for channel five do not match");
-                } else if (line.contains("channel")) {
-                    assertTrue(channels.contains(line), "Channel " + line + " was not expected");
-                } else {
-                    String[] dataParts = line.split("=");
-                    String[] datatype = dataParts[0].split(" ");
-                    assertEquals(Keywords.DATATYPE, datatype[0], "Datatype incorrectly defined: " + line);
-                    if (dataParts[1].contains("aefuoafh")) {
-                        type = datatype[1];
-                        assertTrue(dataParts[1].contains("aefuoafh"),
-                                "Datatype does not include aefuoafh within: " + line);
-                        assertFalse(
-                                dataParts[1].substring(dataParts[1].indexOf("aefuoafh") + 8).contains("aefuoafh"),
-                                "Datatype does contains duplicate aefuoafh within: " + line);
-                        assertTrue(dataParts[1].contains("nimo"),
-                                "Datatype does not include nimo within: " + line);
-                        assertFalse(dataParts[1].contains(Keywords.TYPE_PLACEHOLDER),
-                                "Datatype contains the typeplaceholder within: " + line);
-                    }
-                }
-            }
-            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
-            System.out.println(content);
-            assertTrue(content.startsWith(expectedCSPFileStart), "File contents is unexpected: " + content);
-            assertTrue(content.endsWith(expectedCSPFileEnd), "File contents is unexpected: " + content);
-            String set = content.substring(expectedCSPFileStart.length(), content.length()-expectedCSPFileEnd.length());
-            List<String> alpha = Arrays.stream(set.split(",")).toList();
-            assertEquals(5, alpha.size(), "The length of the alphabet is unexpected");
-            for (String alph : alpha){
-                if (alph.contains("six")){
-                    assertFalse(alph.contains(Keywords.TYPE_PLACEHOLDER),
-                            "Placeholder has not been replaced.");
-                    assertEquals(Keywords.CHAR, typeOf(alph), "Type of six is not Char");
-                } else assertTrue(alpha.contains(alph), "Alphabet is missing a channel: "+alph);
             }
         }
 
@@ -2676,112 +2148,6 @@ public class CSPMTransformerTest {
             assertEquals(5, alpha.size(), "The length of the alphabet is unexpected");
             for (String alph : alphabet){
                 assertTrue(alpha.contains(alph), "Alphabet is missing a channel: "+alph);
-            }
-        }
-
-        file.delete();
-    }
-
-    @Test
-    public void givenDecoratedExcepGraphWithPlaceholderChannels_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
-        CSPGraph graph = new CSPGraph();
-        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
-        graph.addVertex(initialVertex);
-        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
-        graph.addVertex(interimVertex);
-        CSPVertex excepVertex = new CSPVertex("Excep", true, true);
-        excepVertex.setException(true);
-        Set<String> alphabet = Set.of("one.false","five.nimo", "six.Type_Placeholder", "seven", "eight.true");
-        excepVertex.setAlphabet(List.of(alphabet));
-        graph.addVertex(excepVertex);
-        CSPVertex skip = new CSPVertex("SKIP");
-        skip.setSkipVertex(true);
-        graph.addVertex(skip);
-
-        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
-        edge1.setLabel("one!false -> two -> three -> six?'a'");
-        RelationshipEdge edge2 = graph.addEdge(interimVertex,excepVertex);
-        edge2.setLabel("four -> five.aefuoafh");
-        RelationshipEdge edge4 = graph.addEdge(excepVertex,skip);
-        edge4.setLabel("four");
-        RelationshipEdge edge3 = graph.addEdge(excepVertex,interimVertex);
-        edge3.setLabel("one!true");
-
-        List<String> channels = new ArrayList<>();
-        channels.add("channel one : Bool");
-        channels.add("channel two");
-        channels.add("channel three");
-        channels.add("channel four");
-        channels.add("channel six : Char");
-        channels.add("channel seven");
-        channels.add("channel eight : Bool");
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Initial = one!false -> two -> three -> six?'a' -> Interim").append("\n")
-                .append("Interim = four -> five.aefuoafh -> Excep").append("\n")
-                .append("Excep = (four -> SKIP) [| {");
-        String expectedCSPFileStart = sb.toString();
-
-        sb = new StringBuilder();
-        sb.append("} |> (one!true -> Interim)").append("\n")
-                .append("assert Initial :[deadlock free]").append("\n")
-                .append("assert Interim :[deadlock free]").append("\n")
-                .append("assert Excep :[deadlock free]");
-        String expectedCSPFileEnd = sb.toString();
-
-        CSPMTransformer cspmTransformer = new CSPMTransformer();
-        String fileName = "BasicTest";
-        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
-        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
-
-        List<String> cspFiles = cspmTransformer.getCspFiles(false);
-
-        assertEquals(1,cspFiles.size(), "File not included in list.");
-        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
-
-        File file = new File(filePath);
-        assertTrue(file.exists(), "File was not created");
-
-        String type = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            for (int i = 0; i<9; i++){
-                String line = br.readLine();
-                if (line.contains("channel five")) {
-                    String[] parts = line.split(":");
-                    assertEquals(type, parts[1].strip(), "Data types for channel five do not match");
-                } else if (line.contains("channel")) {
-                    assertTrue(channels.contains(line), "Channel " + line + " was not expected");
-                } else {
-                    String[] dataParts = line.split("=");
-                    String[] datatype = dataParts[0].split(" ");
-                    assertEquals(Keywords.DATATYPE, datatype[0], "Datatype incorrectly defined: " + line);
-                    if (dataParts[1].contains("aefuoafh")) {
-                        type = datatype[1];
-                        assertTrue(dataParts[1].contains("aefuoafh"),
-                                "Datatype does not include aefuoafh within: " + line);
-                        assertFalse(
-                                dataParts[1].substring(dataParts[1].indexOf("aefuoafh") + 8).contains("aefuoafh"),
-                                "Datatype does contains duplicate aefuoafh within: " + line);
-                        assertTrue(dataParts[1].contains("nimo"),
-                                "Datatype does not include nimo within: " + line);
-                        assertFalse(dataParts[1].contains(Keywords.TYPE_PLACEHOLDER),
-                                "Datatype contains the typeplaceholder within: " + line);
-                    }
-                }
-            }
-            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
-            System.out.println(content);
-            assertTrue(content.startsWith(expectedCSPFileStart), "File contents is unexpected: " + content);
-            assertTrue(content.endsWith(expectedCSPFileEnd), "File contents is unexpected: " + content);
-            String set = content.substring(expectedCSPFileStart.length(), content.length()-expectedCSPFileEnd.length());
-            List<String> alpha = Arrays.stream(set.split(",")).toList();
-            assertEquals(5, alpha.size(), "The length of the alphabet is unexpected");
-            for (String alph : alpha){
-                if (alph.contains("six")){
-                    assertFalse(alph.contains(Keywords.TYPE_PLACEHOLDER),
-                            "Placeholder has not been replaced.");
-                    assertEquals(Keywords.CHAR, typeOf(alph), "Type of six is not Char");
-                } else assertTrue(alpha.contains(alph), "Alphabet is missing a channel: "+alph);
             }
         }
 

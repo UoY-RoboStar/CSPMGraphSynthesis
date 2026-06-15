@@ -466,16 +466,6 @@ public class GraphGenerator {
         return sublist;
     }
 
-    private static String getUndecorated(String item){
-        String[] items = item.split("[!?$.]");
-        StringBuilder sb = new StringBuilder();
-        sb.append(items[0]);
-        if (items.length>1) {
-            sb.append(".").append(Keywords.TYPE_PLACEHOLDER);
-        }
-        return sb.toString();
-    }
-
     private static String getDotted(String item){
         String[] items = item.split("[!?$.]");
         StringBuilder sb = new StringBuilder();

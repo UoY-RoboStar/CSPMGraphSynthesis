@@ -25,8 +25,8 @@ public class NameGenerator {
             String message = RandomStringUtils.random(length, true, false);
             if (!message.isEmpty() && nameVerifier.isChannelNameAcceptable(message)) {
                 if (r.nextInt(0,10) == 5 && decorated && nameVerifier.isChannelNameTyped(message)){
-                    message = generateMessageWithDecoration(message);
                     nameVerifier.setChannelNameTyped(message,true);
+                    message = generateMessageWithDecoration(message);
                 } else {
                     nameVerifier.setChannelNameTyped(message,false);
                 }
