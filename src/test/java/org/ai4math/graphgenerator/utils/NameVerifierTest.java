@@ -125,84 +125,176 @@ public class NameVerifierTest {
     }
 
     @Test
-    public void givenAcceptableName_whenIsConstantNameAcceptable_thenReturnTrue(){
-        String constantName = "constantName";
-        String channelName = "channelName";
+    public void givenAcceptableName_whenIsTypeNameAcceptable_thenReturnTrue(){
+        String typeName = "typeName";
         NameVerifier nameVerifier = new NameVerifier();
-        Map<String,String> constantNames = nameVerifier.getConstantNames();
-        assertTrue(constantNames.isEmpty());
-        boolean acceptable = nameVerifier.isConstantNameAcceptable(constantName,channelName);
+        List<String> typeNames = nameVerifier.getTypeNames();
+        assertTrue(typeNames.isEmpty());
+        boolean acceptable = nameVerifier.isTypeNameAcceptable(typeName);
 
-        constantNames = nameVerifier.getConstantNames();
+        typeNames = nameVerifier.getTypeNames();
         assertTrue(acceptable, "Name not acceptable");
-        assertTrue(constantNames.containsKey(constantName), "Constant do not contains constantName");
-        assertEquals(channelName, constantNames.get(constantName),
-                "The channel name and constant name are not matched.");
-        assertEquals(1, nameVerifier.getConstantNames().size(), "More constant names than correct");
+        assertTrue(typeNames.contains(typeName), "Type do not contains typeName");
+        assertEquals(1, nameVerifier.getTypeNames().size(), "More Type names than correct");
 
     }
 
     @Test
-    public void givenExistingChannelName_whenIsConstantNameAcceptable_thenReturnTrue(){
-        String constantName = "constantName";
-        String channelName = "channelName";
+    public void givenExistingTypeName_whenIsTypeNameAcceptable_thenReturnTrue(){
+        String typeName = "typeName";
         NameVerifier nameVerifier = new NameVerifier();
-        Map<String,String> constantNames = nameVerifier.getConstantNames();
-        assertTrue(constantNames.isEmpty());
-        nameVerifier.setConstantNames(Map.of(constantName,channelName));
-        boolean acceptable = nameVerifier.isConstantNameAcceptable(constantName,channelName);
+        List<String> typeNames = nameVerifier.getTypeNames();
+        assertTrue(typeNames.isEmpty());
+        nameVerifier.setTypeNames(List.of(typeName));
+        boolean acceptable = nameVerifier.isTypeNameAcceptable(typeName);
 
-        constantNames = nameVerifier.getConstantNames();
+        typeNames = nameVerifier.getTypeNames();
         assertTrue(acceptable, "Name not acceptable");
-        assertTrue(constantNames.containsKey(constantName), "Constants do not contain constantName");
-        assertEquals(channelName, constantNames.get(constantName),
-                "The channel name and constant name are not matched.");
-        assertEquals(1, nameVerifier.getConstantNames().size(), "More constant names than correct");
+        assertTrue(typeNames.contains(typeName), "Type do not contain typeName");
+        assertEquals(1, nameVerifier.getTypeNames().size(), "More Type names than correct");
 
     }
 
     @Test
-    public void givenKeywordName_whenIsConstantNameAcceptable_thenReturnFalse(){
-        String constantName = "STOP";
-        String channelName = "channelName";
+    public void givenKeywordName_whenIsTypeNameAcceptable_thenReturnFalse(){
+        String typeName = "STOP";
         NameVerifier nameVerifier = new NameVerifier();
-        boolean acceptable = nameVerifier.isConstantNameAcceptable(constantName,channelName);
-        Map<String,String> constantNames = nameVerifier.getConstantNames();
+        boolean acceptable = nameVerifier.isTypeNameAcceptable(typeName);
+        List<String> typeNames = nameVerifier.getTypeNames();
 
         assertFalse(acceptable, "Name not acceptable");
-        assertFalse(constantNames.containsKey(constantName), "Constants contains processName");
-        assertEquals(0, nameVerifier.getConstantNames().size(), "More constant names than correct");
+        assertFalse(typeNames.contains(typeName), "Type contains processName");
+        assertEquals(0, nameVerifier.getTypeNames().size(), "More Type names than correct");
 
     }
 
     @Test
-    public void givenProcessName_whenIsConstantNameAcceptable_thenReturnFalse(){
-        String processName = "processName";
-        String channelName = "channelName";
+    public void givenProcessName_whenIsTypeNameAcceptable_thenReturnFalse(){
+        String typeName = "processName";
         NameVerifier nameVerifier = new NameVerifier();
-        nameVerifier.setProcessNames(List.of(processName));
+        nameVerifier.setProcessNames(List.of(typeName));
 
-        boolean acceptable = nameVerifier.isConstantNameAcceptable(processName,channelName);
-        Map<String,String> constantNames = nameVerifier.getConstantNames();
+        boolean acceptable = nameVerifier.isTypeNameAcceptable(typeName);
+        List<String> typeNames = nameVerifier.getTypeNames();
 
         assertFalse(acceptable, "Name not acceptable");
-        assertFalse(constantNames.containsKey(processName), "Constants contains processName");
-        assertEquals(0, nameVerifier.getConstantNames().size(), "More constant names than correct");
+        assertFalse(typeNames.contains(typeName), "Type contains processName");
+        assertEquals(0, nameVerifier.getTypeNames().size(), "More Type names than correct");
     }
 
     @Test
-    public void givenChannelName_whenIsConstantNameAcceptable_thenReturnFalse(){
-        String channelConstantName = "channelConstantName";
-        String channelName = "channelName";
+    public void givenChannelName_whenIsTypeNameAcceptable_thenReturnFalse(){
+        String typeName = "channelConstantName";
         NameVerifier nameVerifier = new NameVerifier();
-        nameVerifier.setChannelNames(List.of(channelConstantName));
+        nameVerifier.setChannelNames(List.of(typeName));
 
-        boolean acceptable = nameVerifier.isConstantNameAcceptable(channelConstantName,channelName);
-        Map<String,String> constantNames = nameVerifier.getConstantNames();
+        boolean acceptable = nameVerifier.isTypeNameAcceptable(typeName);
+        List<String> typeNames = nameVerifier.getTypeNames();
 
         assertFalse(acceptable, "Name not acceptable");
-        assertFalse(constantNames.containsKey(channelConstantName), "Constants contains processName");
-        assertEquals(0, nameVerifier.getConstantNames().size(), "More constant names than correct");
+        assertFalse(typeNames.contains(typeName), "Type contains processName");
+        assertEquals(0, nameVerifier.getTypeNames().size(), "More Type names than correct");
+    }
+
+    @Test
+    public void givenParameterName_whenIsTypeNameAcceptable_thenReturnFalse(){
+        String typeName = "parameterName";
+        NameVerifier nameVerifier = new NameVerifier();
+        nameVerifier.setParameterNames(List.of(typeName));
+
+        boolean acceptable = nameVerifier.isTypeNameAcceptable(typeName);
+        List<String> typeNames = nameVerifier.getTypeNames();
+
+        assertFalse(acceptable, "Name not acceptable");
+        assertFalse(typeNames.contains(typeName), "Types contains processName");
+        assertEquals(0, nameVerifier.getTypeNames().size(), "More type names than correct");
+    }
+
+
+    @Test
+    public void givenAcceptableName_whenIsParameterNameAcceptable_thenReturnTrue(){
+        String parameterName = "parameterName";
+        NameVerifier nameVerifier = new NameVerifier();
+        List<String> parameterNames = nameVerifier.getParameterNames();
+        assertTrue(parameterNames.isEmpty());
+        boolean acceptable = nameVerifier.isParameterNameAcceptable(parameterName);
+
+        parameterNames = nameVerifier.getParameterNames();
+        assertTrue(acceptable, "Name not acceptable");
+        assertTrue(parameterNames.contains(parameterName), "Parameters do not contains parameterName");
+        assertEquals(1, nameVerifier.getParameterNames().size(), "More Parameters names than correct");
+
+    }
+
+    @Test
+    public void givenExistingParameterName_whenIsParameterNameAcceptable_thenReturnTrue(){
+        String parameterName = "parameterName";
+        NameVerifier nameVerifier = new NameVerifier();
+        List<String> parameterNames = nameVerifier.getParameterNames();
+        assertTrue(parameterNames.isEmpty());
+        nameVerifier.setParameterNames(List.of(parameterName));
+        boolean acceptable = nameVerifier.isParameterNameAcceptable(parameterName);
+
+        parameterNames = nameVerifier.getParameterNames();
+        assertTrue(acceptable, "Name not acceptable");
+        assertTrue(parameterNames.contains(parameterName), "Parameters do not contain parameterName");
+        assertEquals(1, nameVerifier.getParameterNames().size(), "More Parameters names than correct");
+
+    }
+
+    @Test
+    public void givenKeywordName_whenIsParameterNameAcceptable_thenReturnFalse(){
+        String parameterName = "STOP";
+        NameVerifier nameVerifier = new NameVerifier();
+        boolean acceptable = nameVerifier.isParameterNameAcceptable(parameterName);
+        List<String> parameterNames = nameVerifier.getParameterNames();
+
+        assertFalse(acceptable, "Name not acceptable");
+        assertFalse(parameterNames.contains(parameterName), "Parameters contains processName");
+        assertEquals(0, nameVerifier.getParameterNames().size(), "More Parameters names than correct");
+
+    }
+
+    @Test
+    public void givenProcessName_whenIsParameterNameAcceptable_thenReturnFalse(){
+        String parameterName = "processName";
+        NameVerifier nameVerifier = new NameVerifier();
+        nameVerifier.setProcessNames(List.of(parameterName));
+
+        boolean acceptable = nameVerifier.isParameterNameAcceptable(parameterName);
+        List<String> parameterNames = nameVerifier.getParameterNames();
+
+        assertFalse(acceptable, "Name not acceptable");
+        assertFalse(parameterNames.contains(parameterName), "Parameters contains processName");
+        assertEquals(0, nameVerifier.getParameterNames().size(), "More Parameters names than correct");
+    }
+
+    @Test
+    public void givenChannelName_whenIsParameterNameAcceptable_thenReturnFalse(){
+        String parameterName = "channelConstantName";
+        NameVerifier nameVerifier = new NameVerifier();
+        nameVerifier.setChannelNames(List.of(parameterName));
+
+        boolean acceptable = nameVerifier.isParameterNameAcceptable(parameterName);
+        List<String> parameterNames = nameVerifier.getParameterNames();
+
+        assertFalse(acceptable, "Name not acceptable");
+        assertFalse(parameterNames.contains(parameterName), "Parameters contains processName");
+        assertEquals(0, nameVerifier.getParameterNames().size(), "More Parameters names than correct");
+    }
+
+    @Test
+    public void givenTypeName_whenIsParameterNameAcceptable_thenReturnFalse(){
+        String parameterName = "parameterName";
+        NameVerifier nameVerifier = new NameVerifier();
+        nameVerifier.setTypeNames(List.of(parameterName));
+
+        boolean acceptable = nameVerifier.isParameterNameAcceptable(parameterName);
+        List<String> parameterNames = nameVerifier.getParameterNames();
+
+        assertFalse(acceptable, "Name not acceptable");
+        assertFalse(parameterNames.contains(parameterName), "Parameters contains processName");
+        assertEquals(0, nameVerifier.getParameterNames().size(), "More Parameters names than correct");
     }
 
     @Test

@@ -1,19 +1,58 @@
 package org.ai4math.graphgenerator.utils;
 
+import org.ai4math.cspm.Keywords;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class NameGenerator {
 
     public static String generateProcessName(NameVerifier nameVerifier){
-        String name = RandomStringUtils.randomAlphabetic(1, 12);
-        while (!nameVerifier.isProcessNameAcceptable(name)){
+        String name;
+        do {
             name = RandomStringUtils.randomAlphabetic(1, 12);
-        }
+        } while (!nameVerifier.isProcessNameAcceptable(name));
         return name;
+    }
+
+    public static Pair<String, Pair<String,String>> generateTypedProcessName(
+            Random r, NameVerifier nameVerifier){
+        Pair<String, Pair<String,String>> typedProcess;
+        String name = generateProcessName(nameVerifier);
+
+        String type;
+        int choice = r.nextInt(0,4);
+        if (choice == 0){
+            type = Keywords.BOOL;
+        } else if (choice == 1){
+            type = Keywords.CHAR;
+        } else if (choice == 2){
+            type = Keywords.INT;
+        } else {
+            type = generateEnum(r, nameVerifier);;
+        }
+
+        String paramName;
+        do {
+            paramName = RandomStringUtils.randomAlphabetic(1, 12);
+        } while (!nameVerifier.isParameterNameAcceptable(paramName));
+
+        Pair<String,String> parameter = Pair.of(paramName,type);
+        typedProcess = Pair.of(name,parameter);
+
+        return typedProcess;
+    }
+
+    private static String generateEnum(Random r, NameVerifier nameVerifier) {
+        int length = r.nextInt(1, 10);
+        String constant;
+        do {
+            constant = RandomStringUtils.random(1, true, false) +
+                    RandomStringUtils.random(length, true, true);
+        } while (!nameVerifier.isTypeNameAcceptable(constant));
+
+        return constant;
     }
 
     public static List<String> generateMessages(Random r, int count, NameVerifier nameVerifier, boolean decorated){
@@ -26,7 +65,7 @@ public class NameGenerator {
             if (!message.isEmpty() && nameVerifier.isChannelNameAcceptable(message)) {
                 if (r.nextInt(0,10) == 5 && decorated && nameVerifier.isChannelNameTyped(message)){
                     nameVerifier.setChannelNameTyped(message,true);
-                    message = generateMessageWithDecoration(message);
+                    message = generateMessageWithDecoration(nameVerifier, message);
                 } else {
                     nameVerifier.setChannelNameTyped(message,false);
                 }
@@ -38,79 +77,92 @@ public class NameGenerator {
         return messages;
     }
 
-    private static String generateMessageWithDecoration(String message){
+    private static String generateMessageWithDecoration(NameVerifier nameVerifier, String message){
         Random r = new Random();
         int choice = r.nextInt(0,4);
         if (choice==0){
             message += "!";
-            message += generateParameter(r);
+            message += generateParameter(nameVerifier, r);
             //message+= generateExpression();
         } else if (choice==1){
             message+="?";
-            message += generateParameter(r);
+            message += generateParameter(nameVerifier, r);
         } else if (choice==2){
             message+=".";
-            message += generateParameter(r);
+            message += generateParameter(nameVerifier, r);
             //message += r.nextBoolean()?generateParameter(r):generateExpression();
         } else if (choice==3){
             message+="$";
-            message += generateParameter(r);
+            message += generateParameter(nameVerifier, r);
         }
 
         return message;
     }
 
-    private static String generateParameter(Random r){
-        int choice = r.nextInt(0,3);
+    private static String generateParameter(NameVerifier nameVerifier, Random r){
+        int choice = r.nextInt(0,4);
+        return generateParameter(nameVerifier, choice, r);
+    }
+
+    private static String generateParameter(NameVerifier nameVerifier, Integer choice, Random r){
         if (choice == 0){
-            return Boolean.toString(r.nextBoolean());
+            return r.nextBoolean()?Keywords.TRUE:Keywords.FALSE;
         } else if (choice == 1){
             String character = RandomStringUtils.random(1, true,false);
             return "'"+character+"'";
         } else if (choice == 2){
             return Integer.toString(r.nextInt(0,150));
         } else {
-            int length = r.nextInt(1, 10);
-            return RandomStringUtils.random(1, true, false) +
-                    RandomStringUtils.random(length, true, true);
+            return generateEnum(r, nameVerifier);
         }
     }
 
-    public static String generateGuard(Random r, NameVerifier nameVerifier, List<String> messages){
-        List<String> decoratedMessages = messages.stream()
-               .filter(s -> s.matches("[a-zA-Z]*[!?$.]'?[a-zA-Z0-9]*'?"))
-               .toList();
+    public static List<String> generateGuardPair(NameVerifier nameVerifier, Random r, String parameter, String type){
+        List<String> guardPair = new ArrayList<>();
+        String value, value2 = null, comparison1, comparison2;
+        List<String> mathComparison = new ArrayList<>(List.of("==","!=","<","<=",">",">="));
+        List<String> comparisons = new ArrayList<>(List.of("==","!="));
 
-        List<String> parameters = new ArrayList<>();
-        List<String> channels = new ArrayList<>();
-        for (String message : decoratedMessages) {
-            String[] components = message.split("[!?$.]");
-            if (components.length > 1) {
-                parameters.add(components[1]);
-                channels.add(components[0]);
-            }
+        if (Objects.equals(type, Keywords.INT)){
+            value = generateParameter(nameVerifier, 2, r);
+            comparison1 = mathComparison.get(r.nextInt(0,mathComparison.size()));
+            mathComparison.remove(comparison1);
+            comparison2 = mathComparison.get(r.nextInt(0,mathComparison.size()));
+        } else if (Objects.equals(type, Keywords.BOOL)){
+            value = generateParameter(nameVerifier, 0, r);
+            value2 = Objects.equals(value, Keywords.TRUE) ?Keywords.FALSE:Keywords.TRUE;
+            comparison1 = comparisons.get(r.nextInt(0,2));
+            comparisons.remove(comparison1);
+            comparison2 = comparisons.getFirst();
+        } else if (Objects.equals(type, Keywords.CHAR)){
+            value = generateParameter(nameVerifier, 1, r);
+            do {
+                value2 = generateParameter(nameVerifier, 1, r);
+            } while (Objects.equals(value2, value));
+            comparison1 = comparisons.get(r.nextInt(0,2));
+            comparisons.remove(comparison1);
+            comparison2 = comparisons.get(0);
+        } else {
+            value = generateParameter(nameVerifier, 3, r);
+            value2 = generateParameter(nameVerifier, 3, r);
+            comparison1 = comparisons.get(r.nextInt(0,2));
+            comparisons.remove(comparison1);
+            comparison2 = comparisons.get(0);
         }
 
-        if (parameters.size() > 0){
-            int choice = r.nextInt(0,parameters.size());
-            String parameter = parameters.get(choice);
-            int length = r.nextInt(1, 10);
-            String constantName = RandomStringUtils.random(1, true, false) +
-                    RandomStringUtils.random(length, true, true);
+        StringBuilder sb = new StringBuilder();
+        sb.append("(").append(parameter).append(comparison1).append(value).append(")");
+        guardPair.add(sb.toString());
 
-            while (!nameVerifier.isConstantNameAcceptable(constantName, channels.get(choice))){
-                constantName = RandomStringUtils.random(1, true, false) +
-                        RandomStringUtils.random(length, true, true);
-            }
-
-            if (parameter.equals("true")||parameter.equals("false")){
-                return constantName;
-            } else {
-                return constantName+"=="+parameter;
-            }
+        sb = new StringBuilder();
+        if (value2!=null) {
+            sb.append("(").append(parameter).append(comparison1).append(value2).append(")");
+        } else {
+            sb.append("(").append(parameter).append(comparison2).append(value).append(")");
         }
+        guardPair.add(sb.toString());
 
-        return null;
+        return guardPair;
     }
 
     private static String generateExpression(){

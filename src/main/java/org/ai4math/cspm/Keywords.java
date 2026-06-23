@@ -38,8 +38,8 @@ public class Keywords {
 
 
     // constants
-    public static final String TRUE = "True";
-    public static final String FALSE = "False";
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
     public static final String BOOL = "Bool";
     public static final String CHAR = "Char";
     public static final String EVENTS = "Events";

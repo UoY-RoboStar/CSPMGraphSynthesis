@@ -1,5 +1,6 @@
 package org.ai4math.graphgenerator.utils;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -260,12 +261,14 @@ public class CSPVertexTest {
         CSPGraph g = new CSPGraph();
 
         CSPVertex x1 = new CSPVertex("x1");
-        x1.setParameter("TestName");
+        Pair<String,String> parameter = Pair.of("TestName", "Boolean");
+        x1.setParameter(parameter);
         g.addVertex(x1);
 
         CSPVertex vertex = g.vertexSet().iterator().next();
 
-        assertEquals("TestName", vertex.getParameter(), "parameter name is unexpected");
+        assertEquals("TestName", vertex.getParameter().getKey(), "parameter name is unexpected");
+        assertEquals("Boolean", vertex.getParameter().getValue(), "parameter name is unexpected");
     }
 
 

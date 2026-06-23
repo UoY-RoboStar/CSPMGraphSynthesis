@@ -14,7 +14,8 @@ public class NameVerifier {
     private List<String> processNames = new ArrayList<>();
     private List<String> channelNames = new ArrayList<>();
     private Map<String, Boolean> channelTyped = new HashMap<>();
-    private Map<String,String> constantNames = new HashMap<>();
+    private List<String> typeNames = new ArrayList<>();
+    private List<String> parameterNames = new ArrayList<>();
     private final List<String> keywords = Arrays.asList(CHAOS, SKIP, STOP, DIV, LOOP, RUN, WAIT, MODULE,
             END_MODULE, EXTERNAL, EXPORTS, TRANSPARENT, INCLUDE, CHANNEL, DATATYPE, NAMETYPE, PRINT,
             ASSERT, NOT, AND, OR, IF, THEN, ELSE, LET, WITHIN, INSTANCE, TIMED, TYPE, LITTLE_FALSE,
@@ -31,7 +32,8 @@ public class NameVerifier {
 
     public boolean isProcessNameAcceptable(String name) {
         if (this.channelNames.contains(name) || this.processNames.contains(name)
-                || this.keywords.contains(name)){
+                || this.keywords.contains(name) || this.typeNames.contains(name)
+                || this.parameterNames.contains(name)){
             return false;
         }
 
@@ -42,7 +44,8 @@ public class NameVerifier {
     }
 
     public boolean isChannelNameAcceptable(String name) {
-        if (this.processNames.contains(name) || this.keywords.contains(name)){
+        if (this.processNames.contains(name) || this.keywords.contains(name)
+                || this.typeNames.contains(name) || this.parameterNames.contains(name)){
             return false;
         } else if (this.channelNames.contains(name)) {
             return true;
@@ -54,17 +57,31 @@ public class NameVerifier {
         return true;
     }
 
-    public boolean isConstantNameAcceptable(String name, String channel) {
-        if (this.processNames.contains(name) || this.keywords.contains(name) || this.channelNames.contains(name)){
+    public boolean isTypeNameAcceptable(String name) {
+        if (this.processNames.contains(name) || this.keywords.contains(name)
+                || this.parameterNames.contains(name) || this.channelNames.contains(name)){
             return false;
-        } else if (this.constantNames.containsKey(name)
-                &&this.constantNames.get(name).equals(channel)){
+        } else if (this.typeNames.contains(name)) {
             return true;
         }
 
-        Map<String,String> constants = new HashMap<>(this.constantNames);
-        constants.put(name,channel);
-        this.constantNames = constants;
+        List<String> constants = new ArrayList<>(this.typeNames);
+        constants.add(name);
+        this.typeNames = constants;
+        return true;
+    }
+
+    public boolean isParameterNameAcceptable(String name) {
+        if (this.processNames.contains(name) || this.keywords.contains(name)
+                || this.typeNames.contains(name) || this.channelNames.contains(name)){
+            return false;
+        } else if ( this.parameterNames.contains(name)) {
+            return true;
+        }
+
+        List<String> constants = new ArrayList<>(this.parameterNames);
+        constants.add(name);
+        this.parameterNames = constants;
         return true;
     }
 
@@ -101,12 +118,20 @@ public class NameVerifier {
         this.processNames = processNames;
     }
 
-    public Map<String,String> getConstantNames() {
-        return constantNames;
+    public List<String> getTypeNames() {
+        return typeNames;
     }
 
-    public void setConstantNames(Map<String,String> constantNames) {
-        this.constantNames = constantNames;
+    public void setTypeNames(List<String> typeNames) {
+        this.typeNames = typeNames;
+    }
+
+    public List<String> getParameterNames() {
+        return parameterNames;
+    }
+
+    public void setParameterNames(List<String> parameterNames) {
+        this.parameterNames = parameterNames;
     }
 
     public List<String> getKeywords() {

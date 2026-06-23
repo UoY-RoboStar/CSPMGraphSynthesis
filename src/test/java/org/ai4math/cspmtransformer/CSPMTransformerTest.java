@@ -5,6 +5,7 @@ import org.ai4math.cspm.Keywords;
 import org.ai4math.graphgenerator.utils.CSPGraph;
 import org.ai4math.graphgenerator.utils.CSPVertex;
 import org.ai4math.graphgenerator.utils.RelationshipEdge;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -1575,6 +1576,86 @@ public class CSPMTransformerTest {
 
             String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
             assertEquals(expectedCSPFile, content, "File contents is unexpected: " + content);
+        }
+
+        file.delete();
+    }
+
+    @Test
+    public void givenGuardedDecoratedExternalChoiceGraph_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
+        CSPGraph graph = new CSPGraph();
+        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
+        graph.addVertex(initialVertex);
+        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
+        graph.addVertex(interimVertex);
+        CSPVertex extChoiceVertex = new CSPVertex("Ext", true, true);
+        extChoiceVertex.setExternalChoice(true);
+        Pair<String,String> param = Pair.of("param",Keywords.BOOL);
+        extChoiceVertex.setParameter(param);
+        graph.addVertex(extChoiceVertex);
+        CSPVertex skip = new CSPVertex("SKIP");
+        skip.setSkipVertex(true);
+        graph.addVertex(skip);
+
+        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
+        edge1.setLabel("one!false -> two -> three");
+        RelationshipEdge edge2 = graph.addEdge(interimVertex,extChoiceVertex);
+        edge2.setLabel("four -> five?'b' -> six");
+        RelationshipEdge edge4 = graph.addEdge(extChoiceVertex,skip);
+        edge4.setLabel("param==true&(four)");
+        RelationshipEdge edge3 = graph.addEdge(extChoiceVertex,interimVertex);
+        edge3.setLabel("param==false&(one!true -> six)");
+
+        List<String> channels = new ArrayList<>();
+        channels.add("channel one : Bool");
+        channels.add("channel two");
+        channels.add("channel three");
+        channels.add("channel four");
+        channels.add("channel five : Char");
+        channels.add("channel six");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
+                .append("Interim = four -> five?'b' -> six -> Ext(");
+        String expectedCSPFile = sb.toString();
+        sb = new StringBuilder();
+        sb.append(")").append("\n")
+                .append("Ext(param) = (param==true&(four -> SKIP)) [] (param==false&(one!true -> six -> Interim))").append("\n")
+                .append("assert Initial :[deadlock free]").append("\n")
+                .append("assert Interim :[deadlock free]").append("\n")
+                .append("assert Ext :[deadlock free]");
+        String expectedCSPFileEnd = sb.toString();
+
+        CSPMTransformer cspmTransformer = new CSPMTransformer();
+        String fileName = "BasicTest";
+        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
+        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
+
+        List<String> cspFiles = cspmTransformer.getCspFiles(false);
+
+        assertEquals(1,cspFiles.size(), "File not included in list.");
+        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
+
+        File file = new File(filePath);
+        assertTrue(file.exists(), "File was not created");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            for (int i = 0; i<6;i++){
+                String channel = br.readLine();
+                assertTrue(channels.contains(channel), "Channel "+channel+" was not expected");
+            }
+
+            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
+            assertTrue(content.startsWith(expectedCSPFile),
+                    "File contents is unexpected: " + content);
+            assertTrue(content.endsWith(expectedCSPFileEnd),
+                    "File contents ending is unexpected: "+content);
+
+            String parameter = content.substring(expectedCSPFile.length(),
+                    content.length()-expectedCSPFileEnd.length());
+
+            assertTrue((parameter.equals(Keywords.TRUE) || parameter.equals(Keywords.FALSE)),
+                    "Parameter passed was unexpected: "+parameter);
         }
 
         file.delete();

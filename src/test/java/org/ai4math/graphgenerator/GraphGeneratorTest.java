@@ -251,7 +251,8 @@ public class GraphGeneratorTest {
     void givenOneBaseGraph_whenGenerateCombinedGraphSetToExternalChoiceGuardedRandom_thenGraphGeneratedWithExternalChoiceVertex(){
         Random random = spy(Random.class);
         when(random.nextInt(0,9)).thenReturn(2);
-        when(random.nextInt(7,9)).thenReturn(7);
+        when(random.nextInt(7,9)).thenReturn(8);
+        when(random.nextBoolean()).thenReturn(true);
 
         GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
         GraphGenerator graphGenerator = new GraphGenerator(ggo);
@@ -259,6 +260,7 @@ public class GraphGeneratorTest {
 
         graphGenerator.addGraph(baseGraph);
         graphGenerator.combineGraphs(1);
+
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
         assertEquals(2, graphs.size());
@@ -277,48 +279,11 @@ public class GraphGeneratorTest {
         }
 
         assertNotNull(extVertex, "External choice vertex was not found in graph: "+graph.toString());
-        for(RelationshipEdge edge : graph.edgesOf(extVertex)){
-            assertFalse(edge.getLabel().contains("&"),
+        for(RelationshipEdge edge : graph.outgoingEdgesOf(extVertex)){
+            assertTrue(edge.getLabel().contains("&"),
                     "Guards are present on the branches of the choice: "+edge.getLabel());
         }
     }
-
-    /*@Test
-    void givenOneBaseGraph_whenGenerateCombinedGraphSetToExternalChoiceGuarded_thenGraphGeneratedWithExternalChoiceVertex(){
-        Random random = spy(Random.class);
-        when(random.nextInt(0,9)).thenReturn(2);
-        when(random.nextInt(7,9)).thenReturn(8);
-
-        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
-        GraphGenerator graphGenerator = new GraphGenerator(ggo);
-        graphGenerator.setRandom(random);
-
-        graphGenerator.addGraph(baseGraph);
-        graphGenerator.combineGraphs(1);
-
-        List<CSPGraph> graphs = graphGenerator.getGraphs();
-        assertEquals(2, graphs.size());
-        graphs.remove(baseGraph);
-
-        CSPGraph graph = graphs.getFirst();
-        Set<CSPVertex> vertices = graph.vertexSet();
-        CSPVertex extVertex = null;
-        for (CSPVertex vertex: vertices){
-            if (vertex.isExternalChoice()){
-                extVertex = vertex;
-            }
-            if (graph.edgesOf(vertex).isEmpty()){
-                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
-            }
-        }
-
-        assertNotNull(extVertex, "External choice vertex was not found in graph: "+graph.toString());
-        for(RelationshipEdge edge : graph.edgesOf(extVertex)){
-            assertTrue(edge.getLabel().contains("&"),
-                    "Guards are not present on the branch: "+edge.getLabel()+
-                            " of the choice within: "+graph.toString());
-        }
-    }*/
 
     @Test
     void givenOneBaseGraph_whenGenerateCombinedGraphSetToGeneralisedParallel_thenGraphGeneratedWithGeneralisedParallelVertex(){

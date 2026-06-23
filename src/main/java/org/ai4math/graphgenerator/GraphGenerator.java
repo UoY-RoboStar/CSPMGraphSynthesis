@@ -4,6 +4,7 @@ package org.ai4math.graphgenerator;
 import org.ai4math.cspm.Keywords;
 import org.ai4math.graphgenerator.utils.*;
 import org.ai4math.utils.GraphGenerationOptions;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graphs;
 
 import java.util.*;
@@ -288,11 +289,15 @@ public class GraphGenerator {
                     generateStarterGraph(messages, combinationProcess, graph, false);
                 }
                 RelationshipEdge e = graph.addEdge(combinationProcess, vertex);
-                Boolean guarded = false; //this.random.nextInt(7,9)==8 &&
-                        //combinationProcess.isExternalChoice();
-                e.setLabel(generateEdge(messages,guarded));
+                Boolean guarded = this.random.nextInt(7,9)==8 &&
+                        combinationProcess.isExternalChoice();
+                List<String> edges = List.of();
+                if (guarded && this.ver2 && combinationProcess.getParameter() != null){
+                    edges = generateGuardedEdges(messages,combinationProcess.getParameter());
+                }
+                e.setLabel(edges.isEmpty()?generateEdge(messages):edges.get(0));
                 CSPGraph extraGraph = generateGraph(combinationProcess, messages, 4,
-                        guarded?generateEdge(messages,true):"");
+                        edges.isEmpty()?"":edges.get(1));
                 if (!extraGraph.vertexSet().isEmpty()) {
                     Graphs.addGraph(graph, extraGraph);
                 }
@@ -337,7 +342,13 @@ public class GraphGenerator {
             process.setInternalChoice(true);
         } else if (choice == 2) {
             // external choice
-            process.setName(generateProcessName(this.nameVerifier));
+            if(this.random.nextBoolean()){
+                Pair<String, Pair<String,String>> parameterProcess = generateTypedProcessName(this.random,this.nameVerifier);
+                process.setName(parameterProcess.getKey());
+                process.setParameter(parameterProcess.getValue());
+            } else {
+                process.setName(generateProcessName(this.nameVerifier));
+            }
             process.setProcessVertex(true);
             process.setExternalChoice(true);
         } else if (choice == 3) {
@@ -386,29 +397,32 @@ public class GraphGenerator {
     }
 
     private String generateEdge(List<String> messages){
-        return generateEdge(messages, false);
-    }
-
-    private String generateEdge(List<String> messages, Boolean guarded){
         List<String> messagesTrimmed = new ArrayList<>(messages);
         messagesTrimmed.removeIf(n-> Objects.equals(n, "")); // remove empty strings from this
         if (!messagesTrimmed.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            if (guarded && this.ver2){
-                String guard = generateGuard(random, nameVerifier, messages);
-                // todo: add null check
-                sb.append(guard).append("&(");
-            }
-            sb.append(String.join(" -> ", randomSubList(messagesTrimmed, false)));
-            if (guarded && this.ver2){
-                sb.append(")");
-            }
-            return sb.toString();
+            return String.join(" -> ", randomSubList(messagesTrimmed, false));
         }
         return "";
     }
 
-    //private List<> get
+    private List<String> generateGuardedEdges(List<String> messages, Pair<String,String> parameter){
+        List<String> edges = new ArrayList<>();
+        List<String> messagesTrimmed = new ArrayList<>(messages);
+        messagesTrimmed.removeIf(n-> Objects.equals(n, "")); // remove empty strings from this
+        if (!messagesTrimmed.isEmpty()) {
+            List<String> guard = generateGuardPair(nameVerifier, random, parameter.getKey(), parameter.getValue());
+            for (int i=0; i < 2; i++){
+                StringBuilder sb = new StringBuilder();
+                sb.append(guard.get(i)).append("&(");
+                sb.append(String.join(" -> ", randomSubList(messagesTrimmed, false)));
+                sb.append(")");
+                edges.add(sb.toString());
+            }
+
+            return edges;
+        }
+        return List.of();
+    }
 
     private List<String> getMessagesFromGraph(CSPGraph graph){
         List<String> messages = new ArrayList<>();

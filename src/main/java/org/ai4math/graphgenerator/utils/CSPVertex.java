@@ -1,5 +1,7 @@
 package org.ai4math.graphgenerator.utils;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +27,7 @@ public class CSPVertex {
     private Set<String> hidden;
     private Set<String> projected;
     private Map<String,String> renaming;
-    private String parameter;
+    private Pair<String,String> parameter;
     //private List<Map<String,String>> links;
 
     public CSPVertex(String name, boolean initialVertex){
@@ -259,11 +261,11 @@ public class CSPVertex {
         this.scopedVars = scopedVars;
     }
 
-    public String getParameter() {
+    public Pair<String,String> getParameter() {
         return parameter;
     }
 
-    public void setParameter(String parameter) {
+    public void setParameter(Pair<String,String> parameter) {
         this.parameter = parameter;
     }
 
