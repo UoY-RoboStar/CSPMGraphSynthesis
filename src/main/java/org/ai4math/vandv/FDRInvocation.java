@@ -19,6 +19,7 @@ public class FDRInvocation {
     private static final String TAUS = "--reveal-taus";
     private static final String FORMAT = "--format=json";
     private static final String QUIET = "--q";
+    private static final String REUSE = "--compiler-reuse-machines=off";
 
     private FDROutput fdrOutput;
 
@@ -26,7 +27,7 @@ public class FDRInvocation {
 
     public void performVerification(String filepath){
         System.out.println("Running FDR on " + filepath);
-        ProcessBuilder PB = new ProcessBuilder(FDR_COMMAND, filepath, FORMAT, QUIET, TAUS);
+        ProcessBuilder PB = new ProcessBuilder(FDR_COMMAND, filepath, FORMAT, REUSE, TAUS, QUIET);
         Process process = null;
         fdrOutput = new FDROutput();
 

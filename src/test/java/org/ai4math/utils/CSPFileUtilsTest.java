@@ -152,16 +152,18 @@ public class CSPFileUtilsTest {
     }
 
     @Test
-    public void givenExistingPathName_whenCreateCSPFiles_thenFileCreated() throws IOException {
+    public void givenExistingPathName_whenCreateCSPFiles_thenUpdatedFileNameCreated() throws IOException {
         @SuppressWarnings("unchecked")
         CSPFileUtils fileUtils = new CSPFileUtils();
         String resourcePath = System.getProperty("user.home");
         String file1Name = "cspfiles1Test.csp";
+        String file1NameExtra = "cspfiles1Test0.csp";
         String fileContent = "CSP Initial Test File Content";
         String content = "CSP Test File Content";
         String resourceFolderPath = Paths.get(resourcePath, "test", "fileutils").toString();
         Path dir = Paths.get(resourceFolderPath, "CSPMGraphSynthesis");
         String filePath = Paths.get(dir.toAbsolutePath().toString(), file1Name).toString();
+        String fileExtraPath = Paths.get(dir.toAbsolutePath().toString(), file1NameExtra).toString();
         File file = new File(filePath);
         file.createNewFile();
 
@@ -169,15 +171,14 @@ public class CSPFileUtilsTest {
             bw.write(fileContent);
         }
 
-        long expectedFileSize = file.length();
-
         String actualFilePath = fileUtils.createCSPFile(resourceFolderPath, file1Name, content);
         File createdFile = new File(actualFilePath);
 
         assertTrue(createdFile.exists(), "File exists");
-        assertEquals(filePath, actualFilePath,
+        assertNotEquals(filePath, actualFilePath,
                 "File path unexpected: "+actualFilePath);
-        assertNotEquals(expectedFileSize, createdFile.length(), "The file sizes match");
+        assertEquals(fileExtraPath, actualFilePath,
+                "File path unexpected: "+actualFilePath);
 
         file.delete();
         createdFile.delete();

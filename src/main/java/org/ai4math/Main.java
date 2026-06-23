@@ -20,7 +20,7 @@ public class Main {
         try {
             CommandLineOptions parsedArgs = CommandLineOptions.parseCommandLine(args);
 
-            GraphGenerator graphGenerator = new GraphGenerator(parsedArgs.isDecorated(), parsedArgs.isRenaming());
+            GraphGenerator graphGenerator = new GraphGenerator(parsedArgs.getGraphGenerationOptions());
             List<CSPGraph> graphs = graphGenerator.generateGraphSet(
                     parsedArgs.getBaseGraphs(),
                     parsedArgs.getCombinedGraphs()

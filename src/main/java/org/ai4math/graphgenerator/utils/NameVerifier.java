@@ -2,9 +2,7 @@ package org.ai4math.graphgenerator.utils;
 
 import org.ai4math.cspm.Keywords;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.ai4math.cspm.Keywords.*;
 
@@ -15,6 +13,9 @@ public class NameVerifier {
 
     private List<String> processNames = new ArrayList<>();
     private List<String> channelNames = new ArrayList<>();
+    private Map<String, Boolean> channelTyped = new HashMap<>();
+    private List<String> typeNames = new ArrayList<>();
+    private List<String> parameterNames = new ArrayList<>();
     private final List<String> keywords = Arrays.asList(CHAOS, SKIP, STOP, DIV, LOOP, RUN, WAIT, MODULE,
             END_MODULE, EXTERNAL, EXPORTS, TRANSPARENT, INCLUDE, CHANNEL, DATATYPE, NAMETYPE, PRINT,
             ASSERT, NOT, AND, OR, IF, THEN, ELSE, LET, WITHIN, INSTANCE, TIMED, TYPE, LITTLE_FALSE,
@@ -26,12 +27,13 @@ public class NameVerifier {
             PRIORITISE_NO_CACHE, PRIORITISE_PO, SBISIM, TAU_LOOP_FACTOR, TRACE_WATCHDOG, TIMED_PRIORITY,
             WBISIM, MTRANSCLOSE, RELATIONAL_IMAGE, RELATIONAL_INVERSE_IMAGE, TRANSPOSE,
             TICK, LAMBDA, TAU, ONESTEP, DEADLOCK, DIVERGENCE, DETERMINISTIC, HAS, FREE, FAILURES,
-            TRACES, FAILURES_DIVERGENCES);
+            TRACES, FAILURES_DIVERGENCES, TYPE_PLACEHOLDER);
 
 
-    public boolean isProcessNameAcceptable(String name){
+    public boolean isProcessNameAcceptable(String name) {
         if (this.channelNames.contains(name) || this.processNames.contains(name)
-                || this.keywords.contains(name)){
+                || this.keywords.contains(name) || this.typeNames.contains(name)
+                || this.parameterNames.contains(name)){
             return false;
         }
 
@@ -41,8 +43,9 @@ public class NameVerifier {
         return true;
     }
 
-    public boolean isChannelNameAcceptable(String name){
-        if (this.processNames.contains(name) || this.keywords.contains(name)){
+    public boolean isChannelNameAcceptable(String name) {
+        if (this.processNames.contains(name) || this.keywords.contains(name)
+                || this.typeNames.contains(name) || this.parameterNames.contains(name)){
             return false;
         } else if (this.channelNames.contains(name)) {
             return true;
@@ -52,6 +55,51 @@ public class NameVerifier {
         channels.add(name);
         this.channelNames = channels;
         return true;
+    }
+
+    public boolean isTypeNameAcceptable(String name) {
+        if (this.processNames.contains(name) || this.keywords.contains(name)
+                || this.parameterNames.contains(name) || this.channelNames.contains(name)){
+            return false;
+        } else if (this.typeNames.contains(name)) {
+            return true;
+        }
+
+        List<String> constants = new ArrayList<>(this.typeNames);
+        constants.add(name);
+        this.typeNames = constants;
+        return true;
+    }
+
+    public boolean isParameterNameAcceptable(String name) {
+        if (this.processNames.contains(name) || this.keywords.contains(name)
+                || this.typeNames.contains(name) || this.channelNames.contains(name)){
+            return false;
+        } else if ( this.parameterNames.contains(name)) {
+            return true;
+        }
+
+        List<String> constants = new ArrayList<>(this.parameterNames);
+        constants.add(name);
+        this.parameterNames = constants;
+        return true;
+    }
+
+    public boolean isChannelNameTyped(String channel) {
+        if (this.channelTyped.containsKey(channel)){
+            return this.channelTyped.get(channel);
+        }
+
+        // used to indicate that the channel *can* be typed
+        return true;
+    }
+
+    public void setChannelNameTyped(String channel, Boolean typed) {
+        if(!this.channelTyped.containsKey(channel)){
+            Map<String, Boolean> typedChannels = new HashMap<>(this.channelTyped);
+            typedChannels.put(channel, typed);
+            this.channelTyped = typedChannels;
+        }
     }
 
     public List<String> getChannelNames() {
@@ -68,5 +116,33 @@ public class NameVerifier {
 
     public void setProcessNames(List<String> processNames) {
         this.processNames = processNames;
+    }
+
+    public List<String> getTypeNames() {
+        return typeNames;
+    }
+
+    public void setTypeNames(List<String> typeNames) {
+        this.typeNames = typeNames;
+    }
+
+    public List<String> getParameterNames() {
+        return parameterNames;
+    }
+
+    public void setParameterNames(List<String> parameterNames) {
+        this.parameterNames = parameterNames;
+    }
+
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setChannelTyped(Map<String, Boolean> channelTyped) {
+        this.channelTyped = channelTyped;
+    }
+
+    public Map<String, Boolean> getChannelTyped() {
+        return channelTyped;
     }
 }

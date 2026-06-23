@@ -5,23 +5,27 @@ import org.ai4math.graphgenerator.utils.CSPGraph;
 import org.ai4math.graphgenerator.utils.CSPVertex;
 
 import org.ai4math.graphgenerator.utils.RelationshipEdge;
+import org.ai4math.utils.GraphGenerationOptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
+import static org.ai4math.testutils.Utils.typeOf;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class GraphGeneratorTest {
 
     private static CSPGraph baseGraph;
+    private static CSPGraph decoratedGraph;
 
     @BeforeAll
     static void initialise(){
         CSPGraph cspGraph = new CSPGraph();
+        CSPGraph decGraph = new CSPGraph();
 
         CSPVertex x1 = new CSPVertex("x1", true, true);
         CSPVertex x2 = new CSPVertex("x2", false, true);
@@ -30,19 +34,40 @@ public class GraphGeneratorTest {
         cspGraph.addVertex(x1);
         cspGraph.addVertex(x2);
         cspGraph.addVertex(x3);
+        decGraph.addVertex(x1);
+        decGraph.addVertex(x2);
+        decGraph.addVertex(x3);
 
         cspGraph.setInitialVertex(x1);
+        decGraph.setInitialVertex(x1);
 
         RelationshipEdge e = cspGraph.addEdge(x1, x2);
         e.setLabel("label");
         cspGraph.addEdge(x2, x3);
         cspGraph.addEdge(x3, x1);
+
+        RelationshipEdge f = decGraph.addEdge(x1, x2);
+        f.setLabel("label");
+        decGraph.addEdge(x2, x3);
+        decGraph.addEdge(x3, x1);
+        RelationshipEdge g = decGraph.addEdge(x1, x2);
+        g.setLabel("charlabel?'a'");
+        RelationshipEdge h = decGraph.addEdge(x2, x3);
+        h.setLabel("enumlabel$HUnwow");
+        RelationshipEdge i = decGraph.addEdge(x3, x1);
+        i.setLabel("intlabel!40");
+        RelationshipEdge j = decGraph.addEdge(x3, x3);
+        j.setLabel("boollabel!true");
+        RelationshipEdge k = decGraph.addEdge(x3, x2);
+        k.setLabel("boollabel2.false");
         baseGraph = cspGraph;
+        decoratedGraph = decGraph;
     }
 
     @Test
     void givenCountOfOne_whenGenerateBaseGraphs_thenAValidGraphShouldBeDefined() throws IOException{
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.generateBaseGraphs(1);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
@@ -58,7 +83,8 @@ public class GraphGeneratorTest {
 
     @Test
     void givenCountOfTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.generateBaseGraphs(2);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
@@ -77,7 +103,8 @@ public class GraphGeneratorTest {
 
     @Test
     void givenCountGreaterThanTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.generateBaseGraphs(5);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
@@ -96,7 +123,8 @@ public class GraphGeneratorTest {
 
     @Test
     void givenCountOfOne_whenGenerateBaseGraphsThenCombinedGraph_thenAValidGraphShouldBeDefined() throws IOException{
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.generateBaseGraphs(1);
 
         List<CSPGraph> graphs = graphGenerator.getGraphs();
@@ -127,7 +155,8 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(0);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -157,7 +186,8 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(1);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true, false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -183,11 +213,12 @@ public class GraphGeneratorTest {
     }
 
     @Test
-    void givenOneBaseGraph_whenGenerateCombinedGraphSetToExternalChoice_thenGraphGeneratedWithExternalChoiceVertex(){
+    void givenOneBaseGraph_whenGenerateCombinedGraphSetToExternalChoiceUnguarded_thenGraphGeneratedWithExternalChoiceVertex(){
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(2);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -199,17 +230,59 @@ public class GraphGeneratorTest {
 
         CSPGraph graph = graphs.getFirst();
         Set<CSPVertex> vertices = graph.vertexSet();
-        boolean extChoice = false;
+        CSPVertex extVertex = null;
         for (CSPVertex vertex: vertices){
             if (vertex.isExternalChoice()){
-                extChoice = true;
+                extVertex = vertex;
             }
             if (graph.edgesOf(vertex).isEmpty()){
                 assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
             }
         }
 
-        assertTrue(extChoice, "Esternal choice vertex was not found in graph: "+graph.toString());
+        assertNotNull(extVertex, "External choice vertex was not found in graph: "+graph.toString());
+        for(RelationshipEdge edge : graph.edgesOf(extVertex)){
+            assertFalse(edge.getLabel().contains("&"),
+                    "Guards are present on the branches of the choice: "+edge.getLabel());
+        }
+    }
+
+    @Test
+    void givenOneBaseGraph_whenGenerateCombinedGraphSetToExternalChoiceGuardedRandom_thenGraphGeneratedWithExternalChoiceVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,9)).thenReturn(2);
+        when(random.nextInt(7,9)).thenReturn(8);
+        when(random.nextBoolean()).thenReturn(true);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(baseGraph);
+        graphGenerator.combineGraphs(1);
+
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(baseGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        CSPVertex extVertex = null;
+        for (CSPVertex vertex: vertices){
+            if (vertex.isExternalChoice()){
+                extVertex = vertex;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertNotNull(extVertex, "External choice vertex was not found in graph: "+graph.toString());
+        for(RelationshipEdge edge : graph.outgoingEdgesOf(extVertex)){
+            assertTrue(edge.getLabel().contains("&"),
+                    "Guards are present on the branches of the choice: "+edge.getLabel());
+        }
     }
 
     @Test
@@ -217,7 +290,8 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(3);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -250,7 +324,8 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(4);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -284,7 +359,8 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(5);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -310,12 +386,109 @@ public class GraphGeneratorTest {
     }
 
     @Test
+    void givenOneBaseGraph_whenGenerateCombinedGraphSetToInterrupt_thenGraphGeneratedWithInterruptVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,9)).thenReturn(6);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(baseGraph);
+        graphGenerator.combineGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(baseGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        boolean inter = false;
+        for (CSPVertex vertex: vertices){
+            if (vertex.isInterrupt()){
+                inter = true;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertTrue(inter, "Interrupt vertex was not found in graph: "+graph.toString());
+    }
+
+    @Test
+    void givenOneBaseGraph_whenGenerateCombinedGraphSetToException_thenGraphGeneratedWithExceptionVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,9)).thenReturn(7);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(baseGraph);
+        graphGenerator.combineGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(baseGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        boolean excep = false;
+        CSPVertex excepVert = graph.getInitialVertex();
+        for (CSPVertex vertex: vertices){
+            if (vertex.isException()){
+                excep = true;
+                excepVert = vertex;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertTrue(excep, "Exception vertex was not found in graph: "+graph.toString());
+        assertNotNull(excepVert.getAlphabet(), "Alphabet of exception vertex is null");
+    }
+
+    @Test
+    void givenOneBaseGraph_whenGenerateCombinedGraphSetToTimeout_thenGraphGeneratedWithTimeoutVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,9)).thenReturn(8);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(baseGraph);
+        graphGenerator.combineGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(baseGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        boolean time = false;
+        for (CSPVertex vertex: vertices){
+            if (vertex.isTimeout()){
+                time = true;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertTrue(time, "Timeout vertex was not found in graph: "+graph.toString());
+    }
+
+    @Test
     void givenOneBaseGraph_whenGenerateBaseGraphWithHidden_thenGraphGeneratedWithHiddenVertex(){
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(5);
         when(random.nextInt(0,30)).thenReturn(7);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -340,14 +513,14 @@ public class GraphGeneratorTest {
         assertTrue(hidden, "A hidden set was not found in graph: "+graph.toString());
     }
 
-
     @Test
     void givenOneBaseGraph_whenGenerateBaseGraphWithRenaming_thenGraphGeneratedWithRenamingVertex(){
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(5);
         when(random.nextInt(0,30)).thenReturn(18);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,true);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, true, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -359,26 +532,76 @@ public class GraphGeneratorTest {
 
         CSPGraph graph = graphs.getFirst();
         Set<CSPVertex> vertices = graph.vertexSet();
-        boolean renaming = false;
+        CSPVertex renamingVert = null;
         for (CSPVertex vertex: vertices){
             if (!vertex.getRenaming().isEmpty()){
-                renaming = true;
+                renamingVert = vertex;
             }
             if (graph.edgesOf(vertex).isEmpty()){
                 assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
             }
         }
 
-        assertTrue(renaming, "Renaming was not found in graph: "+graph.toString());
+        assertNotNull(renamingVert, "Renaming was not found in graph: "+graph.toString());
+        Pattern pattern = Pattern.compile("[a-zA-Z]*[!?$][a-zA-Z0-9]*]");
+        for (String renamingChannel : renamingVert.getRenaming().keySet()) {
+            assertFalse(pattern.matcher(renamingChannel).find());
+            assertFalse(pattern.matcher(renamingVert.getRenaming().get(renamingChannel)).find());
+            assertEquals(typeOf(renamingChannel), typeOf(renamingVert.getRenaming().get(renamingChannel)),
+                    "Types of renamings are not equal");
+        }
     }
 
+    @Test
+    void givenOneBaseGraphForceDecorated_whenGenerateBaseGraphWithRenaming_thenGraphGeneratedWithRenamingVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,6)).thenReturn(5);
+        when(random.nextInt(0,30)).thenReturn(18);
+        when(random.nextInt(1,23)).thenReturn(23);
+        when(random.nextInt(0,10)).thenReturn(5);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, true, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(decoratedGraph);
+        graphGenerator.combineGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(decoratedGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        CSPVertex renamingVert = null;
+        for (CSPVertex vertex: vertices){
+            if (!vertex.getRenaming().isEmpty()){
+                renamingVert = vertex;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertNotNull(renamingVert, "Renaming was not found in graph: "+graph.toString());
+        Pattern pattern = Pattern.compile("[a-zA-Z]*[!?$][a-zA-Z0-9]*]");
+        for (String renamingChannel : renamingVert.getRenaming().keySet()) {
+            System.out.println(renamingChannel);
+            assertFalse(pattern.matcher(renamingChannel).find());
+            System.out.println(renamingVert.getRenaming().get(renamingChannel));
+            assertFalse(pattern.matcher(renamingVert.getRenaming().get(renamingChannel)).find());
+            assertEquals(typeOf(renamingChannel), typeOf(renamingVert.getRenaming().get(renamingChannel)),
+                    "Types of renamings are not equal");
+        }
+    }
 
     @Test
     void givenOneBaseGraph_whenGenerateBaseGraphWithRenamingFlagFalse_thenGraphGeneratedWithoutRenamingVertex(){
         Random random = spy(Random.class);
         when(random.nextInt(0,6)).thenReturn(5);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
 
         graphGenerator.addGraph(baseGraph);
@@ -409,7 +632,8 @@ public class GraphGeneratorTest {
         Random random = spy(Random.class);
         when(random.nextInt(1,5)).thenReturn(3);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
         List<String> messages = new ArrayList<>(List.of("random!true", "list?false", "of.4", "possible", "strings"));
         Map<String, List<String>> decorations = new HashMap<>();
@@ -435,7 +659,8 @@ public class GraphGeneratorTest {
 
     @Test
     void givenEmptyListOfStringsForNonAlphabet_whenRandomSubList_thenEmptyListOfMessagesIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         List<String> messages = new ArrayList<>();
 
         List<String> sublist = graphGenerator.randomSubList(messages, false);
@@ -444,11 +669,12 @@ public class GraphGeneratorTest {
     }
 
     @Test
-    void givenNonEmptyListOfDecoratedStringsForAlphabet_whenRandomSubList_thenListOfUndecoratedMessagesReturned(){
+    void givenNonEmptyListOfDecoratedStringsForAlphabet_whenRandomSubList_thenListOfDottedMessagesReturned(){
         Random random = spy(Random.class);
         when(random.nextInt(1,5)).thenReturn(3);
 
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         graphGenerator.setRandom(random);
         List<String> messages = new ArrayList<>(List.of("random!true", "list?false", "of.4", "possible", "strings"));
         Map<String, List<String>> decorations = new HashMap<>();
@@ -463,18 +689,20 @@ public class GraphGeneratorTest {
         assertEquals(3, sublist.size());
 
         for (String message: sublist){
+            assertFalse(message.contains("!"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("?"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("$"), "Message "+message+" contains an unexpected decoration");
             String[] comps = message.splitWithDelimiters("[!?$\\.]",0);
             if (comps.length>1){
-                assertTrue(decorations.containsKey(comps[0]), "Random message generated"+comps[0]);
                 assertEquals(".", comps[1]);
-                assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
-            }
+           }
         }
     }
 
     @Test
     void givenEmptyListOfStringsForAlphabet_whenRandomSubList_thenEmptyListIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         List<String> messages = new ArrayList<>();
 
         List<String> sublist = graphGenerator.randomSubList(messages, true);
@@ -484,7 +712,8 @@ public class GraphGeneratorTest {
 
     @Test
     void givenSingletonListOfDecoratedStringForAlphabet_whenRandomSubList_thenListOfSingleUndecoratedMessageIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         List<String> messages = new ArrayList<>(List.of("strings?4"));
 
         List<String> sublist = graphGenerator.randomSubList(messages, true);
@@ -492,14 +721,19 @@ public class GraphGeneratorTest {
         assertFalse(sublist.isEmpty(), "Messages list is empty");
         assertEquals(1, sublist.size());
 
+        assertFalse(sublist.getFirst().contains("!"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
+        assertFalse(sublist.getFirst().contains("?"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
+        assertFalse(sublist.getFirst().contains("$"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
         String[] comps = sublist.getFirst().splitWithDelimiters("[!?$\\.]",0);
-        assertEquals(".", comps[1]);
-        assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
+        if (comps.length>1){
+            assertEquals(".", comps[1]);
+        }
     }
 
     @Test
     void givenSingletonListOfUndecoratedStringForAlphabet_whenRandomSubList_thenListOfSingleUndecoratedMessageIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         List<String> messages = new ArrayList<>(List.of("strings"));
 
         List<String> sublist = graphGenerator.randomSubList(messages, true);
@@ -514,7 +748,8 @@ public class GraphGeneratorTest {
 
     @Test
     void givenEmptyStringsListForAlphabet_whenRandomSubList_thenListIsReturned(){
-        GraphGenerator graphGenerator = new GraphGenerator(true,false);
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
         List<String> messages = new ArrayList<>(List.of("", ""));
 
         List<String> sublist = graphGenerator.randomSubList(messages, true);
@@ -585,11 +820,12 @@ public class GraphGeneratorTest {
         assertEquals(5, sublist.size());
 
         for (String message: sublist){
+            assertFalse(message.contains("!"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("?"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("$"), "Message "+message+" contains an unexpected decoration");
             String[] comps = message.splitWithDelimiters("[!?$\\.]",0);
             if (comps.length>1){
-                assertTrue(decorations.containsKey(comps[0]), "Random message generated"+comps[0]);
                 assertEquals(".", comps[1]);
-                assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
             }
         }
     }
@@ -604,7 +840,7 @@ public class GraphGeneratorTest {
     }
 
     @Test
-    void givenSingletonListOfDecoratedStringForAlphabet_whenRandomSetSizeSubList_thenListOfSingleUndecoratedMessageIsReturned(){
+    void givenSingletonListOfDecoratedStringForAlphabet_whenRandomSetSizeSubList_thenListOfSingleDottedMessageIsReturned(){
         List<String> messages = new ArrayList<>(List.of("strings?4"));
 
         List<String> sublist = GraphGenerator.randomSetSizeSubList(messages, 2,true);
@@ -612,9 +848,13 @@ public class GraphGeneratorTest {
         assertFalse(sublist.isEmpty(), "Messages list is empty");
         assertEquals(1, sublist.size());
 
+        assertFalse(sublist.getFirst().contains("!"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
+        assertFalse(sublist.getFirst().contains("?"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
+        assertFalse(sublist.getFirst().contains("$"), "Message "+sublist.getFirst()+" contains an unexpected decoration");
         String[] comps = sublist.getFirst().splitWithDelimiters("[!?$\\.]",0);
-        assertEquals(".", comps[1]);
-        assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
+        if (comps.length>1){
+            assertEquals(".", comps[1]);
+        }
     }
 
     @Test
@@ -655,11 +895,12 @@ public class GraphGeneratorTest {
         assertEquals(4, sublist.size());
 
         for (String message: sublist){
+            assertFalse(message.contains("!"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("?"), "Message "+message+" contains an unexpected decoration");
+            assertFalse(message.contains("$"), "Message "+message+" contains an unexpected decoration");
             String[] comps = message.splitWithDelimiters("[!?$\\.]",0);
             if (comps.length>1){
-                assertTrue(decorations.containsKey(comps[0]), "Random message generated"+comps[0]);
                 assertEquals(".", comps[1]);
-                assertEquals(Keywords.TYPE_PLACEHOLDER, comps[2]);
             }
         }
     }

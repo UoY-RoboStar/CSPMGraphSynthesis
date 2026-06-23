@@ -1,5 +1,7 @@
 package org.ai4math.graphgenerator.utils;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,11 +16,19 @@ public class CSPVertex {
     private boolean internalChoice;
     private boolean generalisedParallel;
     private boolean alphabetisedParallel;
+    //private boolean linkedParallel;
     private boolean interleave;
+    private boolean interrupt;
+    private boolean exception;
+    private boolean timeout;
     private List<Set<String>> alphabet;
     private String name;
+    private Map<String,String> scopedVars; //variables in scope for the process
     private Set<String> hidden;
+    private Set<String> projected;
     private Map<String,String> renaming;
+    private Pair<String,String> parameter;
+    //private List<Map<String,String>> links;
 
     public CSPVertex(String name, boolean initialVertex){
         this.initialVertex = initialVertex;
@@ -31,10 +41,18 @@ public class CSPVertex {
         this.externalChoice = false;
         this.generalisedParallel = false;
         this.alphabetisedParallel = false;
+        //this.linkedParallel = false;
         this.interleave = false;
+        this.interrupt = false;
+        this.exception = false;
+        this.timeout = false;
         this.alphabet = List.of(Set.of());
         this.hidden = Set.of();
+        this.projected = Set.of();
         this.renaming = Map.of();
+        //this.links = List.of(Map.of());
+        this.scopedVars = Map.of();
+        this.parameter = null;
     }
 
     public CSPVertex(String name, boolean initialVertex, boolean processVertex){
@@ -48,10 +66,18 @@ public class CSPVertex {
         this.externalChoice = false;
         this.generalisedParallel = false;
         this.alphabetisedParallel = false;
+        //this.linkedParallel = false;
         this.interleave = false;
+        this.interrupt = false;
+        this.exception = false;
+        this.timeout = false;
         this.alphabet = List.of(Set.of());
         this.hidden = Set.of();
+        this.projected = Set.of();
         this.renaming = Map.of();
+        //this.links = List.of(Map.of());
+        this.scopedVars = Map.of();
+        this.parameter = null;
     }
 
     public CSPVertex(String name){
@@ -65,10 +91,18 @@ public class CSPVertex {
         this.externalChoice = false;
         this.generalisedParallel = false;
         this.alphabetisedParallel = false;
+        //this.linkedParallel = false;
         this.interleave = false;
+        this.interrupt = false;
+        this.exception = false;
+        this.timeout = false;
         this.alphabet = List.of(Set.of());
         this.hidden = Set.of();
+        this.projected = Set.of();
         this.renaming = Map.of();
+        //this.links = List.of(Map.of());
+        this.scopedVars = Map.of();
+        this.parameter = null;
     }
 
     public void setInitialVertex(boolean initialVertex) {
@@ -143,12 +177,44 @@ public class CSPVertex {
         this.generalisedParallel = generalisedParallel;
     }
 
+    /*public boolean isLinkedParallel() {
+        return linkedParallel;
+    }
+
+    public void setLinkedParallel(boolean linkedParallel) {
+        this.linkedParallel = linkedParallel;
+    }*/
+
     public boolean isInterleave() {
         return interleave;
     }
 
     public void setInterleave(boolean interleave) {
         this.interleave = interleave;
+    }
+
+    public void setInterrupt(boolean interrupt) {
+        this.interrupt = interrupt;
+    }
+
+    public boolean isInterrupt() {
+        return interrupt;
+    }
+
+    public boolean isException() {
+        return exception;
+    }
+
+    public void setException(boolean exception) {
+        this.exception = exception;
+    }
+
+    public boolean isTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(boolean timeout) {
+        this.timeout = timeout;
     }
 
     public void setAlphabet(List<Set<String>> alphabet) {
@@ -167,6 +233,14 @@ public class CSPVertex {
         return hidden;
     }
 
+    public Set<String> getProjected() {
+        return projected;
+    }
+
+    public void setProjected(Set<String> projected) {
+        this.projected = projected;
+    }
+
     public Map<String, String> getRenaming() { return renaming; }
 
     public void setRenaming(Map<String, String> renaming) { this.renaming = renaming; }
@@ -177,6 +251,22 @@ public class CSPVertex {
 
     public String getName() {
         return name;
+    }
+
+    public Map<String,String> getScopedVars() {
+        return scopedVars;
+    }
+
+    public void setScopedVars(Map<String,String> scopedVars) {
+        this.scopedVars = scopedVars;
+    }
+
+    public Pair<String,String> getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(Pair<String,String> parameter) {
+        this.parameter = parameter;
     }
 
     @Override
