@@ -9,6 +9,7 @@ import org.ai4math.utils.CSPFileUtils;
 
 import org.ai4math.cspmtransformer.utils.StringConstants;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.*;
@@ -89,7 +90,7 @@ public class CSPMTransformer {
             this.traversed = List.of();
             if (vertex.isInitialVertex() && vertex.isProcessVertex()) {
                 String processDefinition = addProcessDefinition(vertex, graph, true) + "\n";
-                String processName = vertex.getParameter()==null?vertex.getName():formatParameterProcess(vertex);
+                String processName = vertex.getParameter()==null?vertex.getName():formatParameterProcess(vertex,graph);
 
                 initialVertices.add(vertex);
                 this.currentCSPFile += StringConstants.processDeclaration()
@@ -101,9 +102,16 @@ public class CSPMTransformer {
         return initialVertices;
     }
 
-    private String formatParameterProcess(CSPVertex vertex){
+    private String formatParameterProcess(CSPVertex vertex, CSPGraph graph){
+        String paramName = vertex.getParameter().getKey();
+        String paramType = vertex.getParameter().getValue();
+        List<String> types = List.of(Keywords.CHAR, Keywords.INT, Keywords.BOOL);
+        if (!types.contains(paramType)) {
+            addParameterDataType(paramType);
+            updateTypeWithGuardValues(paramType,graph.outgoingEdgesOf(vertex));
+        }
         StringBuilder processName = new StringBuilder();
-        processName.append(vertex.getName()).append("(").append(vertex.getParameter().getKey()).append(")");
+        processName.append(vertex.getName()).append("(").append(paramName).append(")");
         return processName.toString();
     }
 
@@ -491,18 +499,30 @@ public class CSPMTransformer {
 
 
     private String formatValueParameterProcess(CSPVertex vertex, CSPGraph graph){
+        String paramType = vertex.getParameter().getValue();
+        List<String> types = List.of(Keywords.CHAR, Keywords.INT, Keywords.BOOL);
+        if (!types.contains(paramType)) {
+            addParameterDataType(paramType);
+        }
         StringBuilder processName = new StringBuilder();
         processName.append(vertex.getName()).append("(")
-                .append(randomValue(vertex.getParameter().getValue(),graph.outgoingEdgesOf(vertex))).append(")");
+                .append(randomValue(paramType,graph.outgoingEdgesOf(vertex))).append(")");
         return processName.toString();
     }
 
 
     private void addAssertion(List<CSPVertex> initialVertices){
         for (CSPVertex initialProcess : initialVertices) {
+            String processName = initialProcess.getName();
+            Pair<String,String> param = initialProcess.getParameter();
+            if (param!=null){
+                StringBuilder sb = new StringBuilder();
+                processName = sb.append(initialProcess.getName()).append("(")
+                        .append(randomValue(param.getValue(), Set.of())).append(")").toString();
+            }
             String assertion = StringConstants.assertDeclaration()
                     .replace("assertion", StringConstants.deadlockAssertion());
-            this.currentCSPFile += assertion.replace("process", initialProcess.getName());
+            this.currentCSPFile += assertion.replace("process", processName);
         }
     }
 
@@ -512,7 +532,12 @@ public class CSPMTransformer {
         for (RelationshipEdge edge: graph.edgeSet()) {
             if (edge.getLabel() != null){
                 System.out.println(edge.getLabel());
-                String[] edgeComponents = edge.getLabel().split(" -> ");
+                String[] removeGuards = edge.getLabel().split("&");
+                String edgeTransitions;
+                if (removeGuards.length>1)
+                    edgeTransitions = removeGuards[1].replace("(","").replace(")","");
+                else edgeTransitions = removeGuards[0];
+                String[] edgeComponents = edgeTransitions.split(" -> ");
                 for (String component : edgeComponents) {
                     // "[a-zA-Z]*(;\\n)" would be a process, not a channel
                     if (component.matches("[a-zA-Z]*([!?$.]'?[a-zA-Z0-9]*'?)?")) {
@@ -695,12 +720,23 @@ public class CSPMTransformer {
         for (int i = 0; i<typeCount; i++) {
             String enumVal = RandomStringUtils.random(r.nextInt(2, 15), true, false);
             if (!this.currentCSPFile.contains(enumVal) && !nv.getKeywords().contains(enumVal)){
-                types.add(enumVal);
+                types.add(enumVal.strip());
             }
         }
         if (value!=null) types.add(value);
         StringBuilder sb = new StringBuilder();
         return sb.append(String.join("|", types)).toString();
+    }
+
+
+    private void addParameterDataType(String name) {
+        if (!this.currentCSPFile.contains("datatype "+name)) {
+            String typeVal = randomDataType(null);
+
+            this.currentCSPFile = StringConstants.dataTypeDeclaration()
+                    .replace("name", name)
+                    .replace("typeVal", typeVal) + this.currentCSPFile;
+        }
     }
 
     private String randomValue(String type, Set<RelationshipEdge> edges){
@@ -716,7 +752,7 @@ public class CSPMTransformer {
         else if (Objects.equals(type, Keywords.INT)){
             return String.valueOf(r.nextInt());
         } else {
-            updateTypeWithGuardValues(type, edges);
+            if (!edges.isEmpty()) updateTypeWithGuardValues(type, edges);
             String[] data = getDataType(type).split("=");
             List<String> parts = new ArrayList<>(Arrays.stream(data[1].split("[|]")).toList());
             return parts.get(r.nextInt(0, parts.size())).strip();
@@ -727,15 +763,22 @@ public class CSPMTransformer {
         StringBuilder sb = new StringBuilder();
         String cspDatatype = getDataType(type);
         List<String> parameters = new ArrayList<>();
+        boolean guarded = false;
         for (RelationshipEdge edge : edges){
             String[] parts = edge.getLabel().replace("(","").replace(")","").split("&");
-            String[] guardParams = parts[0].split("!=|==");
+            if (parts.length>1) guarded=true;
+            else continue;
+            String[] guardParams = parts[0].split("!=|==|<|>|<=|>=");
             parameters.add(guardParams[guardParams.length-1]);
         }
-        for (String parameter:parameters) {
-            if (!cspDatatype.contains(parameter)) {
-                this.currentCSPFile = this.currentCSPFile.replace(cspDatatype,
-                        sb.append(cspDatatype).append("|").append(parameter).toString());
+        if (guarded){
+            for (String parameter : parameters) {
+                if (!cspDatatype.contains(parameter)) {
+                    this.currentCSPFile = this.currentCSPFile.replace(cspDatatype,
+                            sb.append(cspDatatype).append("|").append(parameter.strip()).toString());
+                }
+                cspDatatype = getDataType(type);
+                sb = new StringBuilder();
             }
         }
     }
