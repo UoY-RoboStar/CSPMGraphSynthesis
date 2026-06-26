@@ -171,11 +171,14 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(true);
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(true);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
+        Random r = mock(Random.class);
+        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(0,11)).thenReturn(5);
 
-        List<String> names = NameGenerator.generateMessages(new Random(), 40, nameVerifier, true);
+        List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, true);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(40, names.size(), "Fewer names generated than expected");
+        assertEquals(5, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
@@ -192,11 +195,14 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(false, false, true);
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(true);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
+        Random r = mock(Random.class);
+        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(0,11)).thenReturn(5);
 
-        List<String> names = NameGenerator.generateMessages(new Random(), 40, nameVerifier, true);
+        List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, true);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(40, names.size(), "Fewer names generated than expected");
+        assertEquals(5, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
@@ -213,11 +219,14 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(true);
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(true);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true);
+        Random r = mock(Random.class);
+        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(0,11)).thenReturn(5);
 
-        List<String> names = NameGenerator.generateMessages(new Random(), 40, nameVerifier, false);
+        List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, false);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(40, names.size(), "Fewer names generated than expected");
+        assertEquals(5, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
@@ -234,11 +243,14 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(true);
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(true,false,true);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
+        Random r = mock(Random.class);
+        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(0,11)).thenReturn(5);
 
-        List<String> names = NameGenerator.generateMessages(new Random(), 40, nameVerifier, true);
+        List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, true);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(40, names.size(), "Fewer names generated than expected");
+        assertEquals(5, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
@@ -255,11 +267,14 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(true);
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(false);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
+        Random r = mock(Random.class);
+        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(0,11)).thenReturn(5);
 
-        List<String> names = NameGenerator.generateMessages(new Random(), 40, nameVerifier, true);
+        List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, true);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(40, names.size(), "Fewer names generated than expected");
+        assertEquals(5, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){
@@ -276,11 +291,14 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameAcceptable(any())).thenReturn(false, false, true);
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(false);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
+        Random r = mock(Random.class);
+        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(0,11)).thenReturn(5);
 
-        List<String> names = NameGenerator.generateMessages(new Random(), 40, nameVerifier, false);
+        List<String> names = NameGenerator.generateMessages(r, 5, nameVerifier, false);
 
         assertNotNull(names, "name returned was null");
-        assertEquals(40, names.size(), "Fewer names generated than expected");
+        assertEquals(5, names.size(), "Fewer names generated than expected");
 
         boolean decorated = false;
         for (String name: names){

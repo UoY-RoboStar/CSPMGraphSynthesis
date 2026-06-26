@@ -17,21 +17,16 @@ public class NameGenerator {
     }
 
     public static Pair<String, Pair<String,String>> generateTypedProcessName(
-            Random r, NameVerifier nameVerifier){
+            Random r, NameVerifier nameVerifier) {
+        return generateTypedProcessName(r, nameVerifier, null);
+    }
+
+    public static Pair<String, Pair<String,String>> generateTypedProcessName(
+            Random r, NameVerifier nameVerifier, String type){
         Pair<String, Pair<String,String>> typedProcess;
         String name = generateProcessName(nameVerifier);
 
-        String type;
-        int choice = r.nextInt(0,4);
-        if (choice == 0){
-            type = Keywords.BOOL;
-        } else if (choice == 1){
-            type = Keywords.CHAR;
-        } else if (choice == 2){
-            type = Keywords.INT;
-        } else {
-            type = generateEnum(r, nameVerifier);;
-        }
+        type = type==null?generateType(r, nameVerifier):type;
 
         String paramName;
         do {
@@ -42,6 +37,19 @@ public class NameGenerator {
         typedProcess = Pair.of(name,parameter);
 
         return typedProcess;
+    }
+
+    public static String generateType(Random r, NameVerifier nameVerifier) {
+        int choice = r.nextInt(0,4);
+        if (choice == 0){
+            return Keywords.BOOL;
+        } else if (choice == 1){
+            return Keywords.CHAR;
+        } else if (choice == 2){
+            return Keywords.INT;
+        } else {
+            return generateEnum(r, nameVerifier);
+        }
     }
 
     private static String generateEnum(Random r, NameVerifier nameVerifier) {
@@ -63,7 +71,7 @@ public class NameGenerator {
             int length = r.nextInt(1, 25);
             String message = RandomStringUtils.random(length, true, false);
             if (!message.isEmpty() && nameVerifier.isChannelNameAcceptable(message)) {
-                if (r.nextInt(0,10) == 5 && decorated && nameVerifier.isChannelNameTyped(message)){
+                if (r.nextInt(0,11) == 5 && decorated && nameVerifier.isChannelNameTyped(message)){
                     nameVerifier.setChannelNameTyped(message,true);
                     message = generateMessageWithDecoration(nameVerifier, message);
                 } else {

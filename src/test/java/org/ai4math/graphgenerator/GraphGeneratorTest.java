@@ -250,7 +250,7 @@ public class GraphGeneratorTest {
     @Test
     void givenOneBaseGraph_whenGenerateCombinedGraphSetToExternalChoiceGuardedRandom_thenGraphGeneratedWithExternalChoiceVertex(){
         Random random = spy(Random.class);
-        when(random.nextInt(0,9)).thenReturn(2);
+        when(random.nextInt(0,19)).thenReturn(2);
         when(random.nextInt(7,9)).thenReturn(8);
         when(random.nextBoolean()).thenReturn(true);
 
@@ -388,7 +388,7 @@ public class GraphGeneratorTest {
     @Test
     void givenOneBaseGraph_whenGenerateCombinedGraphSetToInterrupt_thenGraphGeneratedWithInterruptVertex(){
         Random random = spy(Random.class);
-        when(random.nextInt(0,9)).thenReturn(6);
+        when(random.nextInt(0,19)).thenReturn(6);
 
         GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
         GraphGenerator graphGenerator = new GraphGenerator(ggo);
@@ -419,7 +419,7 @@ public class GraphGeneratorTest {
     @Test
     void givenOneBaseGraph_whenGenerateCombinedGraphSetToException_thenGraphGeneratedWithExceptionVertex(){
         Random random = spy(Random.class);
-        when(random.nextInt(0,9)).thenReturn(7);
+        when(random.nextInt(0,19)).thenReturn(7);
 
         GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
         GraphGenerator graphGenerator = new GraphGenerator(ggo);
@@ -453,7 +453,7 @@ public class GraphGeneratorTest {
     @Test
     void givenOneBaseGraph_whenGenerateCombinedGraphSetToTimeout_thenGraphGeneratedWithTimeoutVertex(){
         Random random = spy(Random.class);
-        when(random.nextInt(0,9)).thenReturn(8);
+        when(random.nextInt(0,19)).thenReturn(8);
 
         GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
         GraphGenerator graphGenerator = new GraphGenerator(ggo);
@@ -479,6 +479,108 @@ public class GraphGeneratorTest {
         }
 
         assertTrue(time, "Timeout vertex was not found in graph: "+graph.toString());
+    }
+
+
+    @Test
+    void givenOneBaseGraph_whenGenerateCombinedGraphSetToRepOpExtChoice_thenGraphGeneratedWithRepOpExtChoiceVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,19)).thenReturn(9);
+        when(random.nextInt(0, 5)).thenReturn(3);
+        //when(random.nextInt(0,4)).thenReturn(1);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(baseGraph);
+        graphGenerator.combineGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(baseGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        CSPVertex repVert = null;
+        CSPVertex.RepOp repOp = null;
+        for (CSPVertex vertex: vertices){
+            if (vertex.getReplicatedOperator()!=null){
+                repOp = vertex.getReplicatedOperator();
+                repVert = vertex;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertNotNull(repVert, "Graph is missing a replicated operator: "+graph.toString());
+        assertNotNull(repVert.getRepOpType(), "Type of replicated operator vertex is null");
+        assertNotNull(repOp, "Replicated Operator not found within graph: "+graph.toString());
+        assertEquals(CSPVertex.RepOp.ExtChoice, repOp,
+                "Replicated Operator variant within the graph is unexpected: "+graph.toString());
+
+        Set<RelationshipEdge> outgoing = graph.outgoingEdgesOf(repVert);
+        CSPVertex target = null;
+        for (RelationshipEdge edge : outgoing){
+            if (edge.getLabel().equals(Keywords.LAMBDA)){
+                target = graph.getEdgeTarget(edge);
+            }
+        }
+
+        assertNotNull(target, "No transition found for rep operator");
+        assertNotNull(target.getParameter(), "No parameter defined for vertex: "+target.toString());
+        assertEquals(Keywords.INT, target.getParameter().getValue(), "Type of parameter is not expected");
+    }
+
+    @Test
+    void givenOneBaseGraph_whenGenerateCombinedGraphSetToRepOpAlphPar_thenGraphGeneratedWithRepOpAlphParVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,19)).thenReturn(9);
+        //when(random.nextInt(0,4)).thenReturn(1);
+        when(random.nextInt(0,5)).thenReturn(1);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(baseGraph);
+        graphGenerator.combineGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(baseGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        CSPVertex repVert = null;
+        CSPVertex.RepOp repOp = null;
+        for (CSPVertex vertex: vertices){
+            if (vertex.getReplicatedOperator()!=null){
+                repOp = vertex.getReplicatedOperator();
+                repVert = vertex;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertNotNull(repOp, "Replicated Operator not found within graph: "+graph.toString());
+        assertEquals(CSPVertex.RepOp.AlphParallel, repOp,
+                "Replicated Operator variant within the graph is unexpected: "+graph.toString());
+        assertNotNull(repVert.getAlphabet(), "Alphabet is not populated for: "+repVert.toString());
+
+        Set<RelationshipEdge> outgoing = graph.outgoingEdgesOf(repVert);
+        CSPVertex target = null;
+        for (RelationshipEdge edge : outgoing){
+            if (edge.getLabel().equals(Keywords.LAMBDA)){
+                target = graph.getEdgeTarget(edge);
+            }
+        }
+
+        assertNotNull(target, "No transition found for rep operator");
+        assertNotNull(target.getParameter(), "No parameter defined for vertex: "+target.toString());
+        assertEquals(Keywords.INT, target.getParameter().getValue(), "Type of parameter is not expected");
     }
 
     @Test
@@ -555,10 +657,10 @@ public class GraphGeneratorTest {
     @Test
     void givenOneBaseGraphForceDecorated_whenGenerateBaseGraphWithRenaming_thenGraphGeneratedWithRenamingVertex(){
         Random random = spy(Random.class);
-        when(random.nextInt(0,6)).thenReturn(5);
+        when(random.nextInt(0,19)).thenReturn(5);
         when(random.nextInt(0,30)).thenReturn(18);
         when(random.nextInt(1,23)).thenReturn(23);
-        when(random.nextInt(0,10)).thenReturn(5);
+        when(random.nextInt(0,11)).thenReturn(5);
 
         GraphGenerationOptions ggo = new GraphGenerationOptions(true, true, 1);
         GraphGenerator graphGenerator = new GraphGenerator(ggo);

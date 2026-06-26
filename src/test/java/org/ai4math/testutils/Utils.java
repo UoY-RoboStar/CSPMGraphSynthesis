@@ -16,7 +16,7 @@ public class Utils {
                     Character.isAlphabetic(value.charAt(1))) {
                 return Keywords.CHAR;
             } else if (value.matches("-?\\d+(\\.\\d+)?")) {
-                return message;
+                return Keywords.INT;
             }
         }
         return null;
