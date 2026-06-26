@@ -2054,6 +2054,100 @@ public class CSPMTransformerTest {
         file.delete();
     }
 
+
+    @Test
+    public void givenEnumGuardedDecoratedMultiExternalChoiceGraphUnreachable_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
+        CSPGraph graph = new CSPGraph();
+        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
+        graph.addVertex(initialVertex);
+        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
+        graph.addVertex(interimVertex);
+        CSPVertex extChoiceVertex = new CSPVertex("Ext", true, true);
+        extChoiceVertex.setExternalChoice(true);
+        Pair<String,String> param = Pair.of("param","afouae");
+        extChoiceVertex.setParameter(param);
+        graph.addVertex(extChoiceVertex);
+        CSPVertex skip = new CSPVertex("SKIP");
+        skip.setSkipVertex(true);
+        graph.addVertex(skip);
+
+        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
+        edge1.setLabel("one!false -> two -> three");
+        RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
+        edge2.setLabel("four -> five?'b' -> six");
+        RelationshipEdge edge4 = graph.addEdge(extChoiceVertex,skip);
+        edge4.setLabel("(param==wifpaf)&(four)");
+        RelationshipEdge edge3 = graph.addEdge(extChoiceVertex,interimVertex);
+        edge3.setLabel("(param==teja)&(one!true -> six)");
+        RelationshipEdge edge5 = graph.addEdge(extChoiceVertex,interimVertex);
+        edge5.setLabel("four -> six");
+
+        List<String> channels = new ArrayList<>();
+        channels.add("channel one : Bool");
+        channels.add("channel two");
+        channels.add("channel three");
+        channels.add("channel four");
+        channels.add("channel five : Char");
+        channels.add("channel six");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
+                .append("Interim = four -> five?'b' -> six -> SKIP").append("\n")
+                .append("Ext(param) = (((param==wifpaf)&(four -> SKIP)) [] ((param==teja)&(one!true -> six -> Interim)))" +
+                        " [] (four -> six -> Interim)").append("\n")
+                .append("assert Initial :[deadlock free]").append("\n")
+                .append("assert Interim :[deadlock free]").append("\n")
+                .append("assert Ext(");
+        String expectedCSPFile = sb.toString();
+        String completeCSP = ") :[deadlock free]";
+
+        CSPMTransformer cspmTransformer = new CSPMTransformer();
+        String fileName = "BasicTest";
+        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
+        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
+
+        List<String> cspFiles = cspmTransformer.getCspFiles(false);
+
+        assertEquals(1,cspFiles.size(), "File not included in list.");
+        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
+
+        File file = new File(filePath);
+        assertTrue(file.exists(), "File was not created");
+
+        List<String> values = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            for (int i = 0; i<7;i++){
+                String channel = br.readLine();
+                if (channel.startsWith("datatype")){
+                    String[] comps = channel.split(" = ");
+                    String enumName = comps[0].replace("datatype ","");
+                    values = Arrays.stream(comps[1].split("\\|")).toList();
+                    assertEquals("afouae", enumName, "Enum name is unexpected in "+channel);
+                    assertTrue(values.contains("wifpaf"), "Enum does not contain wifpaf: "+values);
+                    assertTrue(values.contains("teja"), "Enum does not contain teja: "+values);
+                } else {
+                    assertTrue(channels.contains(channel), "Channel " + channel + " was not expected");
+                }
+            }
+
+            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
+            assertTrue(content.startsWith(expectedCSPFile),
+                    "File contents is unexpected: " + content);
+            assertTrue(content.endsWith(completeCSP),
+                    "File contents, assertion, ending is unexpected: "+content);
+
+            String assertionParam = content.substring(expectedCSPFile.length(),
+                    content.length()-completeCSP.length());
+
+            assertTrue(values.contains(assertionParam),
+                    "Parameter passed to assertion was unexpected: "+assertionParam);
+        }
+
+        file.delete();
+    }
+
+
     @Test
     public void givenEnumParamDecoratedExternalChoiceGraphUnreachable_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
         CSPGraph graph = new CSPGraph();
@@ -2136,6 +2230,466 @@ public class CSPMTransformerTest {
 
             assertTrue(values.contains(assertionParam),
                     "Parameter passed to assertion was unexpected: "+assertionParam);
+        }
+
+        file.delete();
+    }
+
+    @Test
+    public void givenRepOpDecoratedExternalChoiceGraph_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
+        CSPGraph graph = new CSPGraph();
+        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
+        graph.addVertex(initialVertex);
+        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
+        graph.addVertex(interimVertex);
+        CSPVertex repOpVertex = new CSPVertex("Rep", true, true);
+        repOpVertex.setReplicatedOperator(CSPVertex.RepOp.ExtChoice);
+        repOpVertex.setRepOpType(Keywords.INT);
+        graph.addVertex(repOpVertex);
+        CSPVertex extChoiceVertex = new CSPVertex("Ext", true, true);
+        Pair<String,String> param = Pair.of("param",Keywords.INT);
+        extChoiceVertex.setParameter(param);
+        graph.addVertex(extChoiceVertex);
+        CSPVertex skip = new CSPVertex("SKIP");
+        skip.setSkipVertex(true);
+        graph.addVertex(skip);
+
+        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
+        edge1.setLabel("one!false -> two -> three");
+        RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
+        edge2.setLabel("four -> five?'b' -> six");
+        RelationshipEdge edge4 = graph.addEdge(repOpVertex,extChoiceVertex);
+        edge4.setLabel(Keywords.LAMBDA);
+        RelationshipEdge edge3 = graph.addEdge(extChoiceVertex,interimVertex);
+        edge3.setLabel("one!true -> six");
+
+        List<String> channels = new ArrayList<>();
+        channels.add("channel one : Bool");
+        channels.add("channel two");
+        channels.add("channel three");
+        channels.add("channel four");
+        channels.add("channel five : Char");
+        channels.add("channel six");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
+                .append("Interim = four -> five?'b' -> six -> SKIP").append("\n")
+                .append("Rep = [] param : {");
+        String startCSPFile = sb.toString();
+
+        sb = new StringBuilder();
+        sb.append("} @ Ext(param)").append("\n")
+                .append("Ext(param) = one!true -> six -> Interim").append("\n")
+                .append("assert Initial :[deadlock free]").append("\n")
+                .append("assert Interim :[deadlock free]").append("\n")
+                .append("assert Rep :[deadlock free]").append("\n")
+                .append("assert Ext(");
+        String expectedCSPFile = sb.toString();
+        String completeCSP = ") :[deadlock free]";
+
+        CSPMTransformer cspmTransformer = new CSPMTransformer();
+        String fileName = "BasicTest";
+        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
+        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
+
+        List<String> cspFiles = cspmTransformer.getCspFiles(false);
+
+        assertEquals(1,cspFiles.size(), "File not included in list.");
+        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
+
+        File file = new File(filePath);
+        assertTrue(file.exists(), "File was not created");
+
+        List<String> values = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            for (int i = 0; i < 6; i++) {
+                String channel = br.readLine();
+                assertTrue(channels.contains(channel), "Channel " + channel + " was not expected");
+            }
+
+
+            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
+            assertTrue(content.startsWith(startCSPFile),
+                    "File contents is unexpected: " + content);
+            assertTrue(content.contains(expectedCSPFile),
+                    "File contents ending is unexpected: "+content);
+            assertTrue(content.endsWith(completeCSP),
+                    "File contents, assertion, ending is unexpected: "+content);
+
+            String range = content.substring(startCSPFile.length(),
+                    content.indexOf(expectedCSPFile));
+
+            String[] bounds =
+                    range.replace("{", "").replace("}", "").split("\\.");
+
+            assertDoesNotThrow(
+                    () -> {Integer.parseInt(bounds[0]);},
+                    "Lower bound was unexpected: "+bounds[0]);
+
+            assertDoesNotThrow(
+                    () -> {Integer.parseInt(bounds[bounds.length-1]);},
+                    "Upper bound was unexpected: "+bounds[bounds.length-1]);
+
+            assertTrue(Integer.parseInt(bounds[0])<Integer.parseInt(bounds[bounds.length-1]),
+                    "Range of bounds is invalid: " + bounds);
+
+            String assertionParam = content.substring(
+                    startCSPFile.length() + range.length()+bounds.length+expectedCSPFile.length(), content.length() - completeCSP.length());
+
+            assertDoesNotThrow(
+                    () -> {
+                        Integer.parseInt(assertionParam);
+                    },
+                    "Parameter passed was unexpected: " + assertionParam);
+        }
+
+        file.delete();
+    }
+
+    @Test
+    public void givenRepOpDecoratedInterleaveGraph_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
+        CSPGraph graph = new CSPGraph();
+        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
+        graph.addVertex(initialVertex);
+        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
+        graph.addVertex(interimVertex);
+        CSPVertex repOpVertex = new CSPVertex("Rep", true, true);
+        repOpVertex.setReplicatedOperator(CSPVertex.RepOp.Interleave);
+        repOpVertex.setRepOpType(Keywords.INT);
+        graph.addVertex(repOpVertex);
+        CSPVertex extChoiceVertex = new CSPVertex("Inter", true, true);
+        Pair<String,String> param = Pair.of("param",Keywords.INT);
+        extChoiceVertex.setParameter(param);
+        graph.addVertex(extChoiceVertex);
+        CSPVertex skip = new CSPVertex("SKIP");
+        skip.setSkipVertex(true);
+        graph.addVertex(skip);
+
+        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
+        edge1.setLabel("one!false -> two -> three");
+        RelationshipEdge edge2 = graph.addEdge(interimVertex,repOpVertex);
+        edge2.setLabel("four -> five?'b' -> six");
+        RelationshipEdge edge4 = graph.addEdge(repOpVertex,extChoiceVertex);
+        edge4.setLabel(Keywords.LAMBDA);
+        RelationshipEdge edge3 = graph.addEdge(extChoiceVertex,interimVertex);
+        edge3.setLabel("one!true -> six");
+
+        List<String> channels = new ArrayList<>();
+        channels.add("channel one : Bool");
+        channels.add("channel two");
+        channels.add("channel three");
+        channels.add("channel four");
+        channels.add("channel five : Char");
+        channels.add("channel six");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
+                .append("Interim = four -> five?'b' -> six -> Rep").append("\n")
+                .append("Rep = ||| param : {");
+        String startCSPFile = sb.toString();
+
+        sb = new StringBuilder();
+        sb.append("} @ Inter(param)").append("\n")
+                .append("Inter(param) = one!true -> six -> Interim").append("\n")
+                .append("assert Initial :[deadlock free]").append("\n")
+                .append("assert Interim :[deadlock free]").append("\n")
+                .append("assert Rep :[deadlock free]").append("\n")
+                .append("assert Inter(");
+        String expectedCSPFile = sb.toString();
+        String completeCSP = ") :[deadlock free]";
+
+        CSPMTransformer cspmTransformer = new CSPMTransformer();
+        String fileName = "BasicTest";
+        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
+        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
+
+        List<String> cspFiles = cspmTransformer.getCspFiles(false);
+
+        assertEquals(1,cspFiles.size(), "File not included in list.");
+        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
+
+        File file = new File(filePath);
+        assertTrue(file.exists(), "File was not created");
+
+        List<String> values = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            for (int i = 0; i<6;i++){
+                String channel = br.readLine();
+                assertTrue(channels.contains(channel), "Channel " + channel + " was not expected");
+            }
+
+            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
+            assertTrue(content.startsWith(startCSPFile),
+                    "File contents is unexpected: " + content);
+            assertTrue(content.contains(expectedCSPFile),
+                    "File contents ending is unexpected: "+content);
+            assertTrue(content.endsWith(completeCSP),
+                    "File contents, assertion, ending is unexpected: "+content);
+
+            String range = content.substring(startCSPFile.length(),
+                    content.indexOf(expectedCSPFile));
+
+            String[] bounds =
+                    range.replace("{", "").replace("}", "").split("\\.");
+
+            assertDoesNotThrow(
+                    () -> {Integer.parseInt(bounds[0]);},
+                    "Lower bound was unexpected: "+bounds[0]);
+
+            assertDoesNotThrow(
+                    () -> {Integer.parseInt(bounds[bounds.length-1]);},
+                    "Upper bound was unexpected: "+bounds[bounds.length-1]);
+
+            assertTrue(Integer.parseInt(bounds[0])<Integer.parseInt(bounds[bounds.length-1]),
+                    "Range of bounds is invalid: " + bounds);
+
+            String assertionParam = content.substring(
+                    startCSPFile.length() + range.length()+bounds.length+expectedCSPFile.length(), content.length() - completeCSP.length());
+
+            assertDoesNotThrow(
+                    () -> {
+                        Integer.parseInt(assertionParam);
+                    },
+                    "Parameter passed was unexpected: " + assertionParam);
+        }
+
+        file.delete();
+    }
+
+
+    @Test
+    public void givenRepOpDecoratedGenParGraph_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
+
+        Set<String> alphabet = Set.of("one", "four", "five.'f'");
+        List<Set<String>> alphabets = List.of(alphabet);
+
+        CSPGraph graph = new CSPGraph();
+        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
+        graph.addVertex(initialVertex);
+        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
+        graph.addVertex(interimVertex);
+        CSPVertex repOpVertex = new CSPVertex("Rep", true, true);
+        repOpVertex.setReplicatedOperator(CSPVertex.RepOp.GenParallel);
+        repOpVertex.setRepOpType(Keywords.INT);
+        repOpVertex.setAlphabet(alphabets);
+        graph.addVertex(repOpVertex);
+        CSPVertex extChoiceVertex = new CSPVertex("Gen", true, true);
+        Pair<String,String> param = Pair.of("param",Keywords.INT);
+        extChoiceVertex.setParameter(param);
+        graph.addVertex(extChoiceVertex);
+        CSPVertex skip = new CSPVertex("SKIP");
+        skip.setSkipVertex(true);
+        graph.addVertex(skip);
+
+        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
+        edge1.setLabel("one!false -> two -> three");
+        RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
+        edge2.setLabel("four -> five?'b' -> six");
+        RelationshipEdge edge4 = graph.addEdge(repOpVertex,extChoiceVertex);
+        edge4.setLabel(Keywords.LAMBDA);
+        RelationshipEdge edge3 = graph.addEdge(extChoiceVertex,interimVertex);
+        edge3.setLabel("one!true -> six");
+
+        List<String> channels = new ArrayList<>();
+        channels.add("channel one : Bool");
+        channels.add("channel two");
+        channels.add("channel three");
+        channels.add("channel four");
+        channels.add("channel five : Char");
+        channels.add("channel six");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
+                .append("Interim = four -> five?'b' -> six -> SKIP").append("\n")
+                .append("Rep = [| {");
+        String startCSPFile = sb.toString();
+        String midGen = "} |] param : {";
+
+        sb = new StringBuilder();
+        sb.append("} @ Gen(param)").append("\n")
+                .append("Gen(param) = one!true -> six -> Interim").append("\n")
+                .append("assert Initial :[deadlock free]").append("\n")
+                .append("assert Interim :[deadlock free]").append("\n")
+                .append("assert Rep :[deadlock free]").append("\n")
+                .append("assert Gen(");
+        String expectedCSPFile = sb.toString();
+        String completeCSP = ") :[deadlock free]";
+
+        CSPMTransformer cspmTransformer = new CSPMTransformer();
+        String fileName = "BasicTest";
+        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
+        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
+
+        List<String> cspFiles = cspmTransformer.getCspFiles(false);
+
+        assertEquals(1,cspFiles.size(), "File not included in list.");
+        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
+
+        File file = new File(filePath);
+        assertTrue(file.exists(), "File was not created");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            for (int i = 0; i<6;i++){
+                String channel = br.readLine();
+                assertTrue(channels.contains(channel), "Channel " + channel + " was not expected");
+            }
+
+            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
+            assertTrue(content.startsWith(startCSPFile),
+                    "File contents is unexpected: " + content);
+            assertTrue(content.contains(midGen),
+                    "File contents is unexpected: " + content);
+            assertTrue(content.contains(expectedCSPFile),
+                    "File contents ending is unexpected: "+content);
+            assertTrue(content.endsWith(completeCSP),
+                    "File contents, assertion, ending is unexpected: "+content);
+
+            String alpha = content.substring(startCSPFile.length(),
+                    content.indexOf(midGen));
+
+            String[] alph = alpha.replace("{","").replace("}","")
+                    .split(",");
+
+            for (String channel : alph){
+                assertTrue(alphabet.contains(channel), "Missing channel: "+channel);
+            }
+
+            String range = content.substring(startCSPFile.length()+alpha.length()+midGen.length(),
+                    content.indexOf(expectedCSPFile));
+
+            String[] bounds =
+                    range.replace("{", "").replace("}", "").split("\\.");
+
+            assertDoesNotThrow(
+                    () -> {Integer.parseInt(bounds[0]);},
+                    "Lower bound was unexpected: "+bounds[0]);
+
+            assertDoesNotThrow(
+                    () -> {Integer.parseInt(bounds[bounds.length-1]);},
+                    "Upper bound was unexpected: "+bounds[bounds.length-1]);
+
+            assertTrue(Integer.parseInt(bounds[0])<Integer.parseInt(bounds[bounds.length-1]),
+                    "Range of bounds is invalid: " + bounds);
+
+            String assertionParam = content.substring(
+                    startCSPFile.length()+alpha.length()+midGen.length() + range.length()+bounds.length+expectedCSPFile.length(), content.length() - completeCSP.length());
+
+            assertDoesNotThrow(
+                    () -> {
+                        Integer.parseInt(assertionParam);
+                    },
+                    "Parameter passed was unexpected: " + assertionParam);
+        }
+
+        file.delete();
+    }
+
+    @Test
+    public void givenRepOpDecoratedInternalChoiceGraph_whenGraphToCSPM_thenAccurateCSPFileGenerated() throws IOException {
+        CSPGraph graph = new CSPGraph();
+        CSPVertex initialVertex = new CSPVertex("Initial",true,true);
+        graph.addVertex(initialVertex);
+        CSPVertex interimVertex = new CSPVertex("Interim", true, true);
+        graph.addVertex(interimVertex);
+        CSPVertex repOpVertex = new CSPVertex("Rep", true, true);
+        repOpVertex.setReplicatedOperator(CSPVertex.RepOp.IntChoice);
+        repOpVertex.setRepOpType(Keywords.INT);
+        graph.addVertex(repOpVertex);
+        CSPVertex extChoiceVertex = new CSPVertex("IntChoice", true, true);
+        Pair<String,String> param = Pair.of("param",Keywords.INT);
+        extChoiceVertex.setParameter(param);
+        graph.addVertex(extChoiceVertex);
+        CSPVertex skip = new CSPVertex("SKIP");
+        skip.setSkipVertex(true);
+        graph.addVertex(skip);
+
+        RelationshipEdge edge1 = graph.addEdge(initialVertex,interimVertex);
+        edge1.setLabel("one!false -> two -> three");
+        RelationshipEdge edge2 = graph.addEdge(interimVertex,skip);
+        edge2.setLabel("four -> five?'b' -> six");
+        RelationshipEdge edge4 = graph.addEdge(repOpVertex,extChoiceVertex);
+        edge4.setLabel(Keywords.LAMBDA);
+        RelationshipEdge edge3 = graph.addEdge(extChoiceVertex,interimVertex);
+        edge3.setLabel("one!true -> six");
+
+        List<String> channels = new ArrayList<>();
+        channels.add("channel one : Bool");
+        channels.add("channel two");
+        channels.add("channel three");
+        channels.add("channel four");
+        channels.add("channel five : Char");
+        channels.add("channel six");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Initial = one!false -> two -> three -> Interim").append("\n")
+                .append("Interim = four -> five?'b' -> six -> SKIP").append("\n")
+                .append("Rep = |~| param : {");
+        String startCSPFile = sb.toString();
+
+        sb = new StringBuilder();
+        sb.append("} @ IntChoice(param)").append("\n")
+                .append("IntChoice(param) = one!true -> six -> Interim").append("\n")
+                .append("assert Initial :[deadlock free]").append("\n")
+                .append("assert Interim :[deadlock free]").append("\n")
+                .append("assert Rep :[deadlock free]").append("\n")
+                .append("assert IntChoice(");
+        String expectedCSPFile = sb.toString();
+        String completeCSP = ") :[deadlock free]";
+
+        CSPMTransformer cspmTransformer = new CSPMTransformer();
+        String fileName = "BasicTest";
+        String filePath = Paths.get(resourcePath,  "CSPMGraphSynthesis", fileName+".csp").toString();
+        cspmTransformer.graphToCSPM(resourcePath, graph, fileName);
+
+        List<String> cspFiles = cspmTransformer.getCspFiles(false);
+
+        assertEquals(1,cspFiles.size(), "File not included in list.");
+        assertEquals(filePath, cspFiles.getFirst(), "Filepath is unexpected: "+cspFiles.getFirst());
+
+        File file = new File(filePath);
+        assertTrue(file.exists(), "File was not created");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            for (int i = 0; i < 6; i++) {
+                String channel = br.readLine();
+                assertTrue(channels.contains(channel), "Channel " + channel + " was not expected");
+            }
+
+            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
+            assertTrue(content.startsWith(startCSPFile),
+                    "File contents is unexpected: " + content);
+            assertTrue(content.contains(expectedCSPFile),
+                    "File contents ending is unexpected: " + content);
+            assertTrue(content.endsWith(completeCSP),
+                    "File contents, assertion, ending is unexpected: " + content);
+
+            String range = content.substring(startCSPFile.length(),
+                    content.indexOf(expectedCSPFile));
+
+            String[] bounds =
+                    range.replace("{", "").replace("}", "").split("\\.");
+
+            assertDoesNotThrow(
+                    () -> {Integer.parseInt(bounds[0]);},
+                    "Lower bound was unexpected: "+bounds[0]);
+
+            assertDoesNotThrow(
+                    () -> {Integer.parseInt(bounds[bounds.length-1]);},
+                    "Upper bound was unexpected: "+bounds[bounds.length-1]);
+
+            assertTrue(Integer.parseInt(bounds[0])<Integer.parseInt(bounds[bounds.length-1]),
+                    "Range of bounds is invalid: " + bounds);
+
+            String assertionParam = content.substring(
+                    startCSPFile.length() + range.length()+bounds.length+expectedCSPFile.length(), content.length() - completeCSP.length());
+
+            assertDoesNotThrow(
+                    () -> {
+                        Integer.parseInt(assertionParam);
+                    },
+                    "Parameter passed was unexpected: " + assertionParam);
         }
 
         file.delete();

@@ -16,11 +16,12 @@ public class CSPVertex {
     private boolean internalChoice;
     private boolean generalisedParallel;
     private boolean alphabetisedParallel;
-    //private boolean linkedParallel;
     private boolean interleave;
     private boolean interrupt;
     private boolean exception;
     private boolean timeout;
+    private RepOp replicatedOperator;
+    private String repOpType;
     private List<Set<String>> alphabet;
     private String name;
     private Map<String,String> scopedVars; //variables in scope for the process
@@ -28,7 +29,6 @@ public class CSPVertex {
     private Set<String> projected;
     private Map<String,String> renaming;
     private Pair<String,String> parameter;
-    //private List<Map<String,String>> links;
 
     public CSPVertex(String name, boolean initialVertex){
         this.initialVertex = initialVertex;
@@ -41,7 +41,7 @@ public class CSPVertex {
         this.externalChoice = false;
         this.generalisedParallel = false;
         this.alphabetisedParallel = false;
-        //this.linkedParallel = false;
+        this.replicatedOperator = null;
         this.interleave = false;
         this.interrupt = false;
         this.exception = false;
@@ -50,9 +50,9 @@ public class CSPVertex {
         this.hidden = Set.of();
         this.projected = Set.of();
         this.renaming = Map.of();
-        //this.links = List.of(Map.of());
         this.scopedVars = Map.of();
         this.parameter = null;
+        this.repOpType = null;
     }
 
     public CSPVertex(String name, boolean initialVertex, boolean processVertex){
@@ -66,7 +66,7 @@ public class CSPVertex {
         this.externalChoice = false;
         this.generalisedParallel = false;
         this.alphabetisedParallel = false;
-        //this.linkedParallel = false;
+        this.replicatedOperator = null;
         this.interleave = false;
         this.interrupt = false;
         this.exception = false;
@@ -75,9 +75,9 @@ public class CSPVertex {
         this.hidden = Set.of();
         this.projected = Set.of();
         this.renaming = Map.of();
-        //this.links = List.of(Map.of());
         this.scopedVars = Map.of();
         this.parameter = null;
+        this.repOpType = null;
     }
 
     public CSPVertex(String name){
@@ -91,7 +91,7 @@ public class CSPVertex {
         this.externalChoice = false;
         this.generalisedParallel = false;
         this.alphabetisedParallel = false;
-        //this.linkedParallel = false;
+        this.replicatedOperator = null;
         this.interleave = false;
         this.interrupt = false;
         this.exception = false;
@@ -100,9 +100,14 @@ public class CSPVertex {
         this.hidden = Set.of();
         this.projected = Set.of();
         this.renaming = Map.of();
-        //this.links = List.of(Map.of());
         this.scopedVars = Map.of();
         this.parameter = null;
+        this.repOpType = null;
+    }
+
+    public enum RepOp {
+        GenParallel, AlphParallel, //SeqComp,
+        IntChoice, ExtChoice, Interleave
     }
 
     public void setInitialVertex(boolean initialVertex) {
@@ -177,13 +182,21 @@ public class CSPVertex {
         this.generalisedParallel = generalisedParallel;
     }
 
-    /*public boolean isLinkedParallel() {
-        return linkedParallel;
+    public RepOp getReplicatedOperator() {
+        return replicatedOperator;
     }
 
-    public void setLinkedParallel(boolean linkedParallel) {
-        this.linkedParallel = linkedParallel;
-    }*/
+    public void setReplicatedOperator(RepOp replicatedOperator) {
+        this.replicatedOperator = replicatedOperator;
+    }
+
+    public String getRepOpType() {
+        return repOpType;
+    }
+
+    public void setRepOpType(String repOpType) {
+        this.repOpType = repOpType;
+    }
 
     public boolean isInterleave() {
         return interleave;

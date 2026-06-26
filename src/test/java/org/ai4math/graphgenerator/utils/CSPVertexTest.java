@@ -1,5 +1,6 @@
 package org.ai4math.graphgenerator.utils;
 
+import org.ai4math.cspm.Keywords;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
@@ -301,5 +302,31 @@ public class CSPVertexTest {
 
         assertEquals(renaming, vertex.getRenaming(), "renaming channels of vertex are unexpected");
 
+    }
+
+    @Test
+    void givenVertexAdded_whenSetRepOp_thenGetRepOpReturnsRepOpVariant(){
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1", true, true);
+        x1.setReplicatedOperator(CSPVertex.RepOp.IntChoice);
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertEquals(CSPVertex.RepOp.IntChoice, vertex.getReplicatedOperator(), "repop variant of vertex are unexpected");
+    }
+
+    @Test
+    void givenVertexAdded_whenSetRepOpType_thenGetRepOpTypeReturnsRepOpType(){
+        CSPGraph g = new CSPGraph();
+
+        CSPVertex x1 = new CSPVertex("x1", true, true);
+        x1.setRepOpType(Keywords.INT);
+        g.addVertex(x1);
+
+        CSPVertex vertex = g.vertexSet().iterator().next();
+
+        assertEquals(Keywords.INT, vertex.getRepOpType(), "repop type of vertex are unexpected");
     }
 }

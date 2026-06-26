@@ -23,6 +23,7 @@ public class CSPMTransformer {
     private List<CSPVertex> traversed;
     private String path;
     private Map<String, String> types;
+    private Map<String, String> channels;
 
     public CSPMTransformer() {
         this.cspFiles = List.of();
@@ -30,6 +31,7 @@ public class CSPMTransformer {
         this.traversed = List.of();
         this.path = "";
         this.types = Map.of();
+        this.channels = new HashMap<>();
     }
     public CSPMTransformer(String path) {
         this.cspFiles = List.of();
@@ -37,12 +39,14 @@ public class CSPMTransformer {
         this.traversed = List.of();
         this.path = path;
         this.types = Map.of();
+        this.channels = new HashMap<>();
     }
 
     public void graphToCSPM (String path, CSPGraph graph, String filename) throws IOException{
         this.currentCSPFile = "";
         this.types = Map.of();
         this.path = path;
+        this.channels = new HashMap<>();
         addChannelDefinitions(graph);
         List<CSPVertex> initialVertices = addProcessDefinitions(graph);
         addAssertion(initialVertices);
@@ -68,9 +72,9 @@ public class CSPMTransformer {
 
     private void addChannelDefinitions(CSPGraph graph) {
 
-        Map<String, String> channels = getChannels(graph);
+        getChannels(graph);
 
-        for (Map.Entry<String, String> channel: channels.entrySet()){
+        for (Map.Entry<String, String> channel: this.channels.entrySet()){
             if (!channel.getKey().isEmpty()) {
                 if (channel.getValue() != null){
                     this.currentCSPFile += StringConstants.channelTypedDeclaration()
@@ -89,8 +93,8 @@ public class CSPMTransformer {
         for (CSPVertex vertex : graph.vertexSet()) {
             this.traversed = List.of();
             if (vertex.isInitialVertex() && vertex.isProcessVertex()) {
-                String processDefinition = addProcessDefinition(vertex, graph, true) + "\n";
                 String processName = vertex.getParameter()==null?vertex.getName():formatParameterProcess(vertex,graph);
+                String processDefinition = addProcessDefinition(vertex, graph, true) + "\n";
 
                 initialVertices.add(vertex);
                 this.currentCSPFile += StringConstants.processDeclaration()
@@ -133,6 +137,14 @@ public class CSPMTransformer {
         else if (vertex.isStopVertex() || vertexEdges.isEmpty()){
             addTraversedVertex(vertex);
             return "";
+        }
+        if (vertex.getReplicatedOperator()!=null){
+            repOp(
+                    processDefinition,
+                    vertexEdges,
+                    vertex,
+                    graph,
+                    initial);
         }
         if (vertex.isSeqCompositionVertex()){
             sequentialComposition(
@@ -215,7 +227,8 @@ public class CSPMTransformer {
         }
         if (!vertex.isException() && !vertex.isAlphabetisedParallel() && !vertex.isTimeout() &&
                 !vertex.isGeneralisedParallel() && !vertex.isInterleave() && !vertex.isInterrupt()
-                && !vertex.isInternalChoice() && !vertex.isExternalChoice() && !vertex.isSeqCompositionVertex()) {
+                && !vertex.isInternalChoice() && !vertex.isExternalChoice() && !vertex.isSeqCompositionVertex()
+                && vertex.getReplicatedOperator()==null) {
             addTraversedVertex(vertex);
             int edgeCount = 0;
             for (RelationshipEdge vertexEdge : vertexEdges) {
@@ -226,7 +239,7 @@ public class CSPMTransformer {
                 } else if (vertex.isProcessVertex() && !initial) {
                     //return processDefinition.toString();
                     break;
-                } else if (vertexEdge.getLabel() != null && !vertexEdge.getLabel().equals(LAMBDA) && !seqCompVertex) {
+                } else if (vertexEdge.getLabel() != null && !seqCompVertex) {
                     if (edgeCount > 0){
                         continue;
                     }
@@ -245,8 +258,11 @@ public class CSPMTransformer {
         if(!vertex.getRenaming().isEmpty() && initial){
             renaming(processDefinition, vertex);
         }
-
-        return processDefinition.toString();
+        String procDef = processDefinition.toString();
+        if (procDef.matches("([\\s\\S]*)SKIP([a-zA-Z]+[\\s\\S]*)")){
+            System.out.println("");
+        }
+        return procDef;
     }
 
     private void hidden(StringBuilder processDefinition, CSPVertex vertex){
@@ -285,60 +301,63 @@ public class CSPMTransformer {
     }
 
     private void interleave(StringBuilder processDefinition, RelationshipEdge vertexEdge,
-                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
-        // todo: add check for guards
+                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph, int i){
         processDefinition.append("(")
                 .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
                 .append(addProcessDefinition(targetVertex, graph, false))
-                .append(") ||| ");
+                .repeat(")", i+1)
+                .append(" ||| ");
 
     }
 
     private void interrupt(StringBuilder processDefinition, RelationshipEdge vertexEdge,
-                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
-        // todo: add check for guards
+                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph, int i){
         processDefinition.append("(")
                 .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
                 .append(addProcessDefinition(targetVertex, graph, false))
-                .append(") /\\ ");
+                .repeat(")", i+1)
+                .append(" /\\ ");
 
     }
 
     private void exception(StringBuilder processDefinition, RelationshipEdge vertexEdge,
-                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
+                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph, int i){
         // todo: add check for guards
         processDefinition.append("(")
                 .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
                 .append(addProcessDefinition(targetVertex, graph, false))
-                .append(") [| ").append(formatSet(vertex.getAlphabet().getFirst()))
+                .repeat(")", i+1)
+                .append(" [| ").append(formatSet(vertex.getAlphabet().getFirst()))
                 .append(" |> ");
     }
 
     private void timeout(StringBuilder processDefinition, RelationshipEdge vertexEdge,
-                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
-        // todo: add check for guards
+                                     CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph, int i){
         processDefinition.append("(")
                 .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
                 .append(addProcessDefinition(targetVertex, graph, false))
-                .append(") [> ");
+                .repeat(")", i+1)
+                .append(" [> ");
 
     }
 
     private void generalisedParallel(StringBuilder processDefinition, RelationshipEdge vertexEdge,
-                                              CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph) {
+                                              CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph, int i) {
         processDefinition.append("(")
                 .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
                 .append(addProcessDefinition(targetVertex, graph, false))
-                .append(") [| ").append(formatSet(vertex.getAlphabet().getFirst()))
+                .repeat(")", i+1)
+                .append(" [| ").append(formatSet(vertex.getAlphabet().getFirst()))
                 .append(" |] ");
     }
 
     private void alphabetisedParallel(StringBuilder processDefinition, RelationshipEdge vertexEdge,
-                                               CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
+                                               CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph, int i){
         processDefinition.append("(")
                 .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
                 .append(addProcessDefinition(targetVertex, graph, false))
-                .append(") [ ")
+                .repeat(")", i+1)
+                .append(" [ ")
                 .append(formatSet(vertex.getAlphabet().getFirst()))
                 .append(" || ")
                 .append(formatSet(vertex.getAlphabet().getLast()))
@@ -346,19 +365,133 @@ public class CSPMTransformer {
     }
 
     private void internalChoice(StringBuilder processDefinition, RelationshipEdge vertexEdge,
-                                               CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
+                                               CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph, int i){
         processDefinition.append("(")
                         .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
                         .append(addProcessDefinition(targetVertex, graph, false))
-                        .append(") |~| ");
+                .repeat(")", i+1)
+                .append(" |~| ");
     }
 
     private void externalChoice(StringBuilder processDefinition, RelationshipEdge vertexEdge,
-                                               CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph){
+                                               CSPVertex targetVertex, CSPVertex vertex, CSPGraph graph, int i){
         processDefinition.append("(")
                 .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
                 .append(addProcessDefinition(targetVertex, graph, false))
-                .append(") [] ");
+                .repeat(")", i+1)
+                .append(" [] ");
+    }
+
+    private void repOp(StringBuilder processDefinition, Set<RelationshipEdge> vertexEdges,
+                       CSPVertex vertex, CSPGraph graph, Boolean initial){
+        addTraversedVertex(vertex);
+        if (vertex.isProcessVertex() && !initial) {
+            return;
+        }
+
+        System.out.println("Repop vertex: "+vertex+" variant: "+vertex.getReplicatedOperator()+" type: "
+                +vertex.getRepOpType()+" alphabet"+vertex.getAlphabet());
+
+        CSPVertex.RepOp repop = vertex.getReplicatedOperator();
+        String type = vertex.getRepOpType();
+
+        for (RelationshipEdge vertexEdge : vertexEdges) {
+            CSPVertex targetVertex = graph.getEdgeTarget(vertexEdge);
+            System.out.println("Repop target vertex: "+targetVertex+" param"+targetVertex.getParameter());
+
+            if (targetVertex.getParameter()==null){
+                addProcessDefinition(targetVertex, graph, false);
+                continue;
+            }
+            addTraversedVertex(targetVertex);
+
+            String targetProcess = formatParameterProcess(targetVertex, graph);
+            String setSequence = createSetSequence(type);
+            if (setSequence==null){
+                processDefinition.append(addProcessDefinition(targetVertex, graph, false));
+                return;
+            }
+
+            if (repop.equals(CSPVertex.RepOp.IntChoice)) {
+                basicRepOp(processDefinition,setSequence,targetProcess,targetVertex,graph, "|~|");
+            } else if (repop.equals(CSPVertex.RepOp.ExtChoice)) {
+                basicRepOp(processDefinition,setSequence,targetProcess,targetVertex,graph, "[]");
+            } else if (repop.equals(CSPVertex.RepOp.Interleave)) {
+                basicRepOp(processDefinition,setSequence,targetProcess,targetVertex,graph, "|||");
+            //} else if (repop.equals(CSPVertex.RepOp.SeqComp)) {
+            //    basicRepOp(processDefinition,setSequence,targetProcess,targetVertex,graph, ";");
+            } else if (repop.equals(CSPVertex.RepOp.AlphParallel)) {
+                repOpAlphPar(processDefinition,vertex.getAlphabet().getFirst(),setSequence,targetProcess,targetVertex,graph);
+            } else if (repop.equals(CSPVertex.RepOp.GenParallel)) {
+                repOpGenPar(processDefinition,vertex.getAlphabet().getFirst(),setSequence,targetProcess,targetVertex,graph);
+            }
+        }
+    }
+
+    private String createSetSequence(String type){
+        Random r = new Random();
+       /* if (type.equals(Keywords.BOOL)) {
+            Set<String> options = Set.of(Keywords.TRUE, Keywords.FALSE);
+            return formatSet(options);
+        } else */
+        if (type.equals(Keywords.INT)) {
+            int upperBound = r.nextInt(0,1000);
+            int lowBound = r.nextInt(upperBound-40>=0?upperBound-10:0, upperBound);
+            return formatIntSet(lowBound, upperBound);
+        } /*else if (type.equals(Keywords.CHAR)){
+            Set<String> options = new HashSet<>();
+            for (int i = 0; i < r.nextInt(1,13); i++) {
+                options.add(randomValue(type, Set.of()));
+            }
+            return formatSet(options);
+        }  else {
+            Set<String> options = new HashSet<>();
+            for (int i = 0; i < r.nextInt(1,13); i++) {
+                options.add(randomValue(type, Set.of())+" :: "+type);
+            }
+            return formatSet(options);
+        }*/
+        return null;
+    }
+
+    private void basicRepOp(StringBuilder processDefinition, String setSequence,
+                            String targetProcess, CSPVertex targetVertex, CSPGraph graph, String operator){
+
+        processDefinition.append(operator).append(" ")
+                .append(targetVertex.getParameter().getKey())
+                .append(" : ")
+                .append(setSequence)
+                .append(" @ ")
+                .append(targetProcess);
+                //.append(addProcessDefinition(targetVertex, graph, false));
+    }
+
+    private void repOpGenPar(StringBuilder processDefinition, Set<String> alphabet, String setSequence,
+                              String targetProcess, CSPVertex targetVertex, CSPGraph graph){
+
+        processDefinition.append("[| ")
+                .append(formatSet(alphabet))
+                .append(" |] ")
+                .append(targetVertex.getParameter().getKey())
+                .append(" : ")
+                .append(setSequence)
+                .append(" @ ")
+                .append(targetProcess);
+              //  .append(addProcessDefinition(targetVertex, graph, false));
+    }
+
+    private void repOpAlphPar(StringBuilder processDefinition, Set<String> alphabet, String setSequence,
+                              String targetProcess, CSPVertex targetVertex, CSPGraph graph){
+
+        processDefinition.append("|| ")
+                .append(targetVertex.getParameter().getKey())
+                .append(" : ")
+                .append(setSequence)
+                .append(" @ [")
+                .append(formatSet(alphabet))
+                .append("] ")
+                .append(targetProcess);
+               // .append(addProcessDefinition(targetVertex, graph, false));
     }
 
     private void choiceOrParallel(StringBuilder processDefinition, CSPVertex vertex, CSPGraph graph,
@@ -370,10 +503,16 @@ public class CSPMTransformer {
         Iterator<RelationshipEdge> edges = vertexEdges.iterator();
         boolean incomplete = true;
         boolean seq = false;
+        int edgesCount  = vertexEdges.size();
         for (RelationshipEdge edge: vertexEdges){
             if (edge.getLabel().equals(Keywords.TICK)) {
                 processDefinition.append("(");
+                edgesCount =- 1;
             }
+        }
+        int i = 0;
+        if (edgesCount>2){
+            processDefinition.repeat("(", edgesCount - 2);
         }
 
         CSPVertex seqVertex = vertex;
@@ -401,31 +540,35 @@ public class CSPMTransformer {
                             vertexEdge,
                             targetVertex,
                             vertex,
-                            graph);
+                            graph,
+                            i);
                 }
-                if (operator == 1){
+                else if (operator == 1){
                     interrupt(
                             processDefinition,
                             vertexEdge,
                             targetVertex,
                             vertex,
-                            graph);
+                            graph,
+                            i);
                 }
-                if (operator == 2){
+                else if (operator == 2){
                     externalChoice(
                             processDefinition,
                             vertexEdge,
                             targetVertex,
                             vertex,
-                            graph);
+                            graph,
+                            i);
                 }
-                if (operator == 3){
+                else if (operator == 3){
                     internalChoice(
                             processDefinition,
                             vertexEdge,
                             targetVertex,
                             vertex,
-                            graph);
+                            graph,
+                            i);
                 }
                 else if (operator == 4){
                     exception(
@@ -433,7 +576,8 @@ public class CSPMTransformer {
                             vertexEdge,
                             targetVertex,
                             vertex,
-                            graph);
+                            graph,
+                            i);
                 }
                 else if (operator == 5){
                     generalisedParallel(
@@ -441,7 +585,8 @@ public class CSPMTransformer {
                             vertexEdge,
                             targetVertex,
                             vertex,
-                            graph);
+                            graph,
+                            i);
                 }
                 else if (operator == 6){
                     alphabetisedParallel(
@@ -449,7 +594,8 @@ public class CSPMTransformer {
                             vertexEdge,
                             targetVertex,
                             vertex,
-                            graph);
+                            graph,
+                            i);
                 }
                 else if (operator == 7){
                     interleave(
@@ -457,10 +603,16 @@ public class CSPMTransformer {
                             vertexEdge,
                             targetVertex,
                             vertex,
-                            graph);
+                            graph,
+                            i);
+                }
+
+                if(i<=edgesCount-2){
+                    i=+1;
                 }
             }
-            else if (nextVertex.isSeqCompositionVertex() || (!hasNext && !targetVertex.isSeqCompositionVertex())){
+            else if (nextVertex.isSeqCompositionVertex() ||
+                    (!hasNext && !targetVertex.isSeqCompositionVertex())) {//  && targetVertex.getReplicatedOperator()==null)){
                 // todo: add check for guards
                 processDefinition.append("(")
                         .append(addEdgeDefinition(vertexEdge, targetVertex, graph))
@@ -468,15 +620,23 @@ public class CSPMTransformer {
                         .append(")");
                 incomplete = false;
             }
-            /*else if (!hasNext && targetVertex.isSeqCompositionVertex()){
-                // todo: add check for guards
-                processDefinition.append(")");
+            /*else if (!hasNext && targetVertex.getReplicatedOperator()!=null){
                 incomplete = false;
             }*/
+            else if (nextVertex.getReplicatedOperator()!=null){
+                processDefinition.append(")");
+                incomplete = false;
+            }
         }
         if (seq){
             processDefinition.append(")").append(addProcessDefinition(seqVertex, graph, false));
         }
+    }
+
+    private String formatIntSet(int lowBound, int upperBound){
+        StringBuilder sb = new StringBuilder();
+        sb.append("{").append(lowBound).append("..").append(upperBound).append("}");
+        return sb.toString();
     }
 
     private String formatSet(Set<String> alphabet){
@@ -526,8 +686,7 @@ public class CSPMTransformer {
         }
     }
 
-    private Map<String, String> getChannels(CSPGraph graph){
-        Map<String, String> channels = new HashMap<>();
+    private void getChannels(CSPGraph graph){
 
         for (RelationshipEdge edge: graph.edgeSet()) {
             if (edge.getLabel() != null){
@@ -564,8 +723,10 @@ public class CSPMTransformer {
         }
 
         for (CSPVertex vertex: graph.vertexSet()){
-            if (vertex.isAlphabetisedParallel() || vertex.isGeneralisedParallel() || vertex.isException()){
+            if (vertex.isAlphabetisedParallel() || vertex.isGeneralisedParallel() || vertex.isException()
+                 || vertex.getReplicatedOperator()!=null){
                 for (Set<String> alphabet : vertex.getAlphabet()){
+                    if (alphabet.isEmpty()) continue;
                     for (String channel : alphabet){
                         String[] comps = channel.splitWithDelimiters("[!?$.]",0);
                         if (comps.length>1) {
@@ -616,8 +777,6 @@ public class CSPMTransformer {
                 }
             }
         }
-
-        return channels;
     }
 
     private String getTypes(String[] components){
@@ -719,7 +878,8 @@ public class CSPMTransformer {
         NameVerifier nv = new NameVerifier();
         for (int i = 0; i<typeCount; i++) {
             String enumVal = RandomStringUtils.random(r.nextInt(2, 15), true, false);
-            if (!this.currentCSPFile.contains(enumVal) && !nv.getKeywords().contains(enumVal)){
+            if (!this.currentCSPFile.contains(enumVal) && !this.channels.keySet().contains(enumVal)
+                    && !nv.getKeywords().contains(enumVal)){
                 types.add(enumVal.strip());
             }
         }
