@@ -35,12 +35,14 @@ public class FDRInvocation {
             process = PB.start();
             if (!process.waitFor(8, TimeUnit.SECONDS)){
                 reportError("Operation timed out");
+                process.destroy(); // Equivalent to process.terminate()
             } else {
 
                 String stdout = readStream(process.getInputStream());
                 String stderr = readStream(process.getErrorStream());
 
                 int exitCode = process.waitFor();
+                process.destroy(); // Equivalent to process.terminate()
                 System.out.println("Finished");
 
                 if (exitCode == 0) {
@@ -73,6 +75,10 @@ public class FDRInvocation {
             Thread.currentThread().interrupt();
         } catch (Exception e){
             System.err.println("Unexpected error occurred: " + e.getClass().getName() + " : " + e.getMessage());
+        } finally {
+            if (process != null) {
+                process.destroy(); // Equivalent to process.terminate()
+            }
         }
     }
 

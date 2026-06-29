@@ -433,7 +433,7 @@ public class CSPMTransformer {
             return formatSet(options);
         } else */
         if (type.equals(Keywords.INT)) {
-            int upperBound = r.nextInt(0,1000);
+            int upperBound = r.nextInt(1,1000);
             int lowBound = r.nextInt(upperBound-40>=0?upperBound-10:0, upperBound);
             return formatIntSet(lowBound, upperBound);
         } /*else if (type.equals(Keywords.CHAR)){

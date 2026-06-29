@@ -18,6 +18,8 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws IOException {
         try {
+            final long startTime = System.currentTimeMillis();
+
             CommandLineOptions parsedArgs = CommandLineOptions.parseCommandLine(args);
 
             System.out.println("Starting graph generation");
@@ -44,6 +46,9 @@ public class Main {
 
                 datasetGenerator.addEntryToDataSet(Files.readString(Path.of(file)),fdrInvocation.getFdrOutput());
             }
+
+            final long endTime = System.currentTimeMillis();
+            System.out.println("Total execution time: " + (endTime - startTime));
         } catch (ParseException | NumberFormatException exception) {
             System.exit(1);
         }
