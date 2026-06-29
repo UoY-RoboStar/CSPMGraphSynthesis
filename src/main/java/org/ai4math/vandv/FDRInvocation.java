@@ -33,8 +33,8 @@ public class FDRInvocation {
 
         try {
             process = PB.start();
-            if (!process.waitFor(3, TimeUnit.SECONDS)){
-                reportError("Operation timed out with ");
+            if (!process.waitFor(8, TimeUnit.SECONDS)){
+                reportError("Operation timed out");
             } else {
 
                 String stdout = readStream(process.getInputStream());

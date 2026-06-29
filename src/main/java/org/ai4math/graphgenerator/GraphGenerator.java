@@ -35,7 +35,10 @@ public class GraphGenerator {
         // side note: make a tool to parse the csp files to get data about representation in the dataset
         //              versus representation in existing examples
 
+        System.out.println("Starting basic graph generation");
         generateBaseGraphs(baseGraphs);
+
+        System.out.println("Starting complex graph generation");
         combineGraphs(combineGraphs);
 
         return this.graphs;
@@ -46,6 +49,7 @@ public class GraphGenerator {
         int i = 0;
 
         while (i<count){
+            System.out.println("Generating basic graph");
             CSPGraph baseGraph = new CSPGraph();
 
             String processName = generateProcessName(this.nameVerifier);
@@ -239,6 +243,7 @@ public class GraphGenerator {
         int i = 0;
 
         while (i<count){
+            System.out.println("Generating complex graph");
             CSPGraph sourceGraph = baseGraphs.get(this.random.nextInt(baseGraphs.size()));
             CSPGraph graph = new CSPGraph();
 

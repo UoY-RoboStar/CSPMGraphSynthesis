@@ -20,20 +20,24 @@ public class Main {
         try {
             CommandLineOptions parsedArgs = CommandLineOptions.parseCommandLine(args);
 
+            System.out.println("Starting graph generation");
             GraphGenerator graphGenerator = new GraphGenerator(parsedArgs.getGraphGenerationOptions());
             List<CSPGraph> graphs = graphGenerator.generateGraphSet(
                     parsedArgs.getBaseGraphs(),
                     parsedArgs.getCombinedGraphs()
             );
 
+            System.out.println("Starting transformation to csp");
             CSPMTransformer cspmTransformer = new CSPMTransformer();
             for (CSPGraph graph: graphs) {
                 cspmTransformer.graphToCSPM(parsedArgs.getFilePath(), graph,graph.getInitialVertex().getName());
             }
             List<String> cspFiles = cspmTransformer.getCspFiles(parsedArgs.isRegenerateDataset());
 
+            System.out.println("Starting dataset generation");
             DatasetGenerator datasetGenerator = new DatasetGenerator(parsedArgs.getFilePath(),"Dataset.csv");
 
+            System.out.println("Starting csp verification");
             for (String file: cspFiles){
                 FDRInvocation fdrInvocation = new FDRInvocation();
                 fdrInvocation.performVerification(file);

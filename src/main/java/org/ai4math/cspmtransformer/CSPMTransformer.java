@@ -14,9 +14,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.IOException;
 import java.util.*;
 
-import static org.ai4math.cspm.Keywords.LAMBDA;
-
-
 public class CSPMTransformer {
     private List<String> cspFiles;
     private String currentCSPFile;
@@ -47,6 +44,7 @@ public class CSPMTransformer {
         this.types = Map.of();
         this.path = path;
         this.channels = new HashMap<>();
+        System.out.println("Transforming graph to CSP");
         addChannelDefinitions(graph);
         List<CSPVertex> initialVertices = addProcessDefinitions(graph);
         addAssertion(initialVertices);
