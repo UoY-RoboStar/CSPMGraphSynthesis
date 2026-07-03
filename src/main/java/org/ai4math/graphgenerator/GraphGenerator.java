@@ -35,7 +35,10 @@ public class GraphGenerator {
         // side note: make a tool to parse the csp files to get data about representation in the dataset
         //              versus representation in existing examples
 
+        System.out.println("Starting basic graph generation");
         generateBaseGraphs(baseGraphs);
+
+        System.out.println("Starting complex graph generation");
         combineGraphs(combineGraphs);
 
         return this.graphs;
@@ -46,6 +49,7 @@ public class GraphGenerator {
         int i = 0;
 
         while (i<count){
+            System.out.println("Generating basic graph");
             CSPGraph baseGraph = new CSPGraph();
 
             String processName = generateProcessName(this.nameVerifier);
@@ -91,6 +95,13 @@ public class GraphGenerator {
         process.setInitialVertex(true);
         graph.addVertex(process);
 
+        int vertexCount = graph.vertexSet().size();
+        CSPVertex loopVertex = graph.vertexSet().stream().toList().get(random.nextInt(0,vertexCount));
+        if (!loopVertex.isSkipVertex() && !loopVertex.isStopVertex() && random.nextInt(0, 35)==33){
+            RelationshipEdge e = graph.addEdge(process, loopVertex);
+            e.setLabel(label);
+            return graph;
+        }
         CSPVertex newProcess = generateProcess(messages, false, limit == 1, null);
         graph.addVertex(newProcess);
         RelationshipEdge e = graph.addEdge(process, newProcess);
@@ -143,6 +154,13 @@ public class GraphGenerator {
                     counter++;
                 }
                 process.setRenaming(renamings);
+            }
+        }
+        if (ver2){
+            int project = this.random.nextInt(0,40);
+            if (project == 7) {
+                Set<String> projectedChannels = new HashSet<>(randomSubList(messages, true));
+                process.setProjected(projectedChannels);
             }
         }
 
@@ -239,6 +257,7 @@ public class GraphGenerator {
         int i = 0;
 
         while (i<count){
+            System.out.println("Generating complex graph");
             CSPGraph sourceGraph = baseGraphs.get(this.random.nextInt(baseGraphs.size()));
             CSPGraph graph = new CSPGraph();
 

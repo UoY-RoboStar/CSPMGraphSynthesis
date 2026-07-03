@@ -25,22 +25,24 @@ public class FDRInvocation {
 
     public FDRInvocation(){}
 
-    public void performVerification(String filepath){
-        System.out.println("Running FDR on " + filepath);
+    public void performVerification(String filepath, int count){
+        System.out.println("Running FDR on file "+count+": " + filepath );
         ProcessBuilder PB = new ProcessBuilder(FDR_COMMAND, filepath, FORMAT, REUSE, TAUS, QUIET);
         Process process = null;
         fdrOutput = new FDROutput();
 
         try {
             process = PB.start();
-            if (!process.waitFor(3, TimeUnit.SECONDS)){
-                reportError("Operation timed out with ");
+            if (!process.waitFor(8, TimeUnit.SECONDS)){
+                reportError("Operation timed out");
+                process.destroy(); // Equivalent to process.terminate()
             } else {
 
                 String stdout = readStream(process.getInputStream());
                 String stderr = readStream(process.getErrorStream());
 
                 int exitCode = process.waitFor();
+                process.destroy(); // Equivalent to process.terminate()
                 System.out.println("Finished");
 
                 if (exitCode == 0) {
@@ -73,6 +75,10 @@ public class FDRInvocation {
             Thread.currentThread().interrupt();
         } catch (Exception e){
             System.err.println("Unexpected error occurred: " + e.getClass().getName() + " : " + e.getMessage());
+        } finally {
+            if (process != null) {
+                process.destroy(); // Equivalent to process.terminate()
+            }
         }
     }
 

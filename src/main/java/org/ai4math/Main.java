@@ -18,28 +18,39 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws IOException {
         try {
+            final long startTime = System.currentTimeMillis();
+
             CommandLineOptions parsedArgs = CommandLineOptions.parseCommandLine(args);
 
+            System.out.println("Starting graph generation");
             GraphGenerator graphGenerator = new GraphGenerator(parsedArgs.getGraphGenerationOptions());
             List<CSPGraph> graphs = graphGenerator.generateGraphSet(
                     parsedArgs.getBaseGraphs(),
                     parsedArgs.getCombinedGraphs()
             );
 
+            System.out.println("Starting transformation to csp");
             CSPMTransformer cspmTransformer = new CSPMTransformer();
             for (CSPGraph graph: graphs) {
                 cspmTransformer.graphToCSPM(parsedArgs.getFilePath(), graph,graph.getInitialVertex().getName());
             }
             List<String> cspFiles = cspmTransformer.getCspFiles(parsedArgs.isRegenerateDataset());
 
+            System.out.println("Starting dataset generation");
             DatasetGenerator datasetGenerator = new DatasetGenerator(parsedArgs.getFilePath(),"Dataset.csv");
 
+            System.out.println("Starting csp verification");
+            int count = 1;
             for (String file: cspFiles){
                 FDRInvocation fdrInvocation = new FDRInvocation();
-                fdrInvocation.performVerification(file);
+                fdrInvocation.performVerification(file, count);
 
                 datasetGenerator.addEntryToDataSet(Files.readString(Path.of(file)),fdrInvocation.getFdrOutput());
+                count+=1;
             }
+
+            final long endTime = System.currentTimeMillis();
+            System.out.println("Total execution time: " + (endTime - startTime));
         } catch (ParseException | NumberFormatException exception) {
             System.exit(1);
         }
