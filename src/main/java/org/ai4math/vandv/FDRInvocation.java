@@ -25,8 +25,8 @@ public class FDRInvocation {
 
     public FDRInvocation(){}
 
-    public void performVerification(String filepath){
-        System.out.println("Running FDR on " + filepath);
+    public void performVerification(String filepath, int count){
+        System.out.println("Running FDR on file "+count+": " + filepath );
         ProcessBuilder PB = new ProcessBuilder(FDR_COMMAND, filepath, FORMAT, REUSE, TAUS, QUIET);
         Process process = null;
         fdrOutput = new FDROutput();

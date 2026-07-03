@@ -82,6 +82,31 @@ public class GraphGeneratorTest {
     }
 
     @Test
+    void givenCountOfOne_whenGenerateLoopBaseGraphs_thenAValidLoopGraphShouldBeDefined() throws IOException{
+        Random random = spy(Random.class);
+        when(random.nextInt(0,3)).thenReturn(2);
+        when(random.nextInt(0,35)).thenReturn(33);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.generateBaseGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+
+        assertEquals(1, graphs.size(), "Number of graphs is not equal to 1");
+        assertFalse(vertices.isEmpty(), "Graph has no vertices");
+        List<CSPVertex> vertx = vertices.stream().toList();
+
+        assertTrue(vertx.getFirst().isInitialVertex(), "First vertex is not initial");
+        assertFalse(vertx.getLast().isSkipVertex());
+        assertFalse(vertx.getLast().isStopVertex(), "Unexpected stop vertex in :"+graph);
+    }
+
+    @Test
     void givenCountOfTwo_whenGenerateBaseGraphs_thenValidGraphsShouldBeDefined() throws IOException{
         GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 1);
         GraphGenerator graphGenerator = new GraphGenerator(ggo);
@@ -613,6 +638,38 @@ public class GraphGeneratorTest {
         }
 
         assertTrue(hidden, "A hidden set was not found in graph: "+graph.toString());
+    }
+
+    @Test
+    void givenOneBaseGraph_whenGenerateBaseGraphWithProjection_thenGraphGeneratedWithProjectionVertex(){
+        Random random = spy(Random.class);
+        when(random.nextInt(0,6)).thenReturn(5);
+        when(random.nextInt(0,40)).thenReturn(7);
+
+        GraphGenerationOptions ggo = new GraphGenerationOptions(true, false, 2);
+        GraphGenerator graphGenerator = new GraphGenerator(ggo);
+        graphGenerator.setRandom(random);
+
+        graphGenerator.addGraph(baseGraph);
+        graphGenerator.combineGraphs(1);
+
+        List<CSPGraph> graphs = graphGenerator.getGraphs();
+        assertEquals(2, graphs.size());
+        graphs.remove(baseGraph);
+
+        CSPGraph graph = graphs.getFirst();
+        Set<CSPVertex> vertices = graph.vertexSet();
+        boolean projected = false;
+        for (CSPVertex vertex: vertices){
+            if (!vertex.getProjected().isEmpty()){
+                projected = true;
+            }
+            if (graph.edgesOf(vertex).isEmpty()){
+                assertTrue(vertex.isStopVertex() || vertex.isSkipVertex());
+            }
+        }
+
+        assertTrue(projected, "A projected set was not found in graph: "+graph.toString());
     }
 
     @Test

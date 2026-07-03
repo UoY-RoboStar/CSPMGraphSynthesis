@@ -23,7 +23,7 @@ public class FDRInvocationTest {
     @Test
     void givenValidDeadlockFreeCSP_whenPerformVerificationInvoked_thenOutputWithoutTraceFormed() {
         FDRInvocation fdrInvocation = new FDRInvocation();
-        fdrInvocation.performVerification(getResourcePath("DeadlockFreeCSP.csp"));
+        fdrInvocation.performVerification(getResourcePath("DeadlockFreeCSP.csp"), 0);
 
         FDROutput fdrOutput = fdrInvocation.getFdrOutput();
         List<FDRResults> fdrResults = fdrOutput.getFdrResults();
@@ -40,7 +40,7 @@ public class FDRInvocationTest {
     void givenValidDeadlockedCSP_whenPerformVerificationInvoked_thenOutputWithoutTraceFormed() {
         {
             FDRInvocation fdrInvocation = new FDRInvocation();
-            fdrInvocation.performVerification(getResourcePath("DeadlockedCSP.csp"));
+            fdrInvocation.performVerification(getResourcePath("DeadlockedCSP.csp"), 0);
 
             List<String> expectedTrace = new ArrayList<>(Arrays.asList("secondTestingChannel", "testingChannel"));
 
@@ -64,7 +64,7 @@ public class FDRInvocationTest {
     void givenValidImmediatelyDeadlockedCSP_whenPerformVerificationInvoked_thenOutputWithoutTraceFormed() {
         {
             FDRInvocation fdrInvocation = new FDRInvocation();
-            fdrInvocation.performVerification(getResourcePath("Deadlock.csp"));
+            fdrInvocation.performVerification(getResourcePath("Deadlock.csp"), 0);
 
             List<String> expectedTrace = new ArrayList<>(List.of());
 
@@ -87,7 +87,7 @@ public class FDRInvocationTest {
     @Test
     void givenInvalidCSP_whenPerformVerificationInvoked_thenOutputWithErrors() {
         FDRInvocation fdrInvocation = new FDRInvocation();
-        fdrInvocation.performVerification(getResourcePath("Invalid.csp"));
+        fdrInvocation.performVerification(getResourcePath("Invalid.csp"), 0);
 
         FDROutput fdrOutput = fdrInvocation.getFdrOutput();
         List<FDRResults> fdrResults = fdrOutput.getFdrResults();
@@ -106,7 +106,7 @@ public class FDRInvocationTest {
     @Test
     void givenValidCSPButInvalidCSPM_whenPerformVerificationInvoked_thenOutputWithErrors() {
         FDRInvocation fdrInvocation = new FDRInvocation();
-        fdrInvocation.performVerification(getResourcePath("InvalidCSPM.csp"));
+        fdrInvocation.performVerification(getResourcePath("InvalidCSPM.csp"), 0);
 
         String expectedError = "An operator that cannot be recursed through was recursed through. " +
                 "In particular, the process:\n    TestingProcess\ncontains a recursion through the process:\n    " +
@@ -129,7 +129,7 @@ public class FDRInvocationTest {
         System.setOut(new PrintStream(outContent));
 
         FDRInvocation fdrInvocation = new FDRInvocation();
-        fdrInvocation.performVerification("InvalidCSPM.csp");
+        fdrInvocation.performVerification("InvalidCSPM.csp", 0);
 
         assertTrue(
                 outContent.toString()

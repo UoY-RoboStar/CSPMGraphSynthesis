@@ -40,11 +40,13 @@ public class Main {
             DatasetGenerator datasetGenerator = new DatasetGenerator(parsedArgs.getFilePath(),"Dataset.csv");
 
             System.out.println("Starting csp verification");
+            int count = 1;
             for (String file: cspFiles){
                 FDRInvocation fdrInvocation = new FDRInvocation();
-                fdrInvocation.performVerification(file);
+                fdrInvocation.performVerification(file, count);
 
                 datasetGenerator.addEntryToDataSet(Files.readString(Path.of(file)),fdrInvocation.getFdrOutput());
+                count+=1;
             }
 
             final long endTime = System.currentTimeMillis();
