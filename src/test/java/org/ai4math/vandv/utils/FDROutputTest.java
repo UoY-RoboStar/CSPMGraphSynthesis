@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FDROutputTest {
 
     private static FDRResults validFdrResults;
+    private static FDRResults validFdrResults2;
     private static FDRResults emptyFdrResults;
     private static FDRResults passingFdrResults;
     private static FDRResults errorFdrResults;
@@ -31,15 +32,16 @@ public class FDROutputTest {
     void initialiseTests(){
         // Initialising event maps for testing
         ObjectMapper mapper = new ObjectMapper();
-        parsedEventmap = Map.of("1","τ","2","Trace","3","Value", "4", "Key");
+        parsedEventmap = Map.of("1","τ","2","Trace","3","Value",
+                "4", "Key", "5", "✓");
         validEventMap = mapper.valueToTree(parsedEventmap);
 
         parsedEmptyEventMap = Map.of();
         emptyJson = mapper.valueToTree(parsedEmptyEventMap);
 
         // Initialising FDR Results for testing
-        List<String> traceList = List.of("2", "3", "1", "2", "2");
-        List<String> revealedTraceList = List.of("2", "3", "4", "2", "2");
+        List<String> traceList = List.of("2", "3", "1", "2", "2", "5");
+        List<String> revealedTraceList = List.of("2", "3", "4", "2", "2", "5");
 
         ObjectNode impl = mapper.createObjectNode();
         ArrayNode arrayNode = impl.putArray("trace");
@@ -57,7 +59,13 @@ public class FDROutputTest {
 
         validFdrResults = new FDRResults();
         validFdrResults.addCounterexamples(counterexample);
+        validFdrResults.setAssertionString("Valid :[deadlock free]");
         validFdrResults.setPassed(false);
+
+        validFdrResults2 = new FDRResults();
+        validFdrResults2.addCounterexamples(counterexample);
+        validFdrResults2.setAssertionString("Valid(true) :[deadlock free]");
+        validFdrResults2.setPassed(false);
 
         ObjectNode emptyImpl = mapper.createObjectNode();
         emptyImpl.putArray("trace");
@@ -69,19 +77,22 @@ public class FDROutputTest {
 
         emptyFdrResults = new FDRResults();
         emptyFdrResults.addCounterexamples(emptyCounterexample);
+        emptyFdrResults.setAssertionString("Empty :[deadlock free]");
         emptyFdrResults.setPassed(false);
 
         passingFdrResults = new FDRResults();
         passingFdrResults.setPassed(true);
+        passingFdrResults.setAssertionString("Passing :[deadlock free]");
 
         errorFdrResults = new FDRResults();
         errorFdrResults.addCounterexamples(counterexample);
+        errorFdrResults.setAssertionString("Errors :[deadlock free]");
         errorFdrResults.addError(validEventMap);
 
 
         // Expected traces for testing
-        processesTrace = List.of("Trace", "Value", "τ", "Trace", "Trace");
-        revealedProcessesTrace = List.of("Trace", "Value", "Key", "Trace", "Trace");
+        processesTrace = List.of("Trace", "Value", "τ", "Trace", "Trace", "✓");
+        revealedProcessesTrace = List.of("Trace", "Value", "Key", "Trace", "Trace", "✓");
     }
 
     @Test
@@ -279,5 +290,57 @@ public class FDROutputTest {
         assertNull(fdrResults.getFdrCounterexamples().getFirst().getProcessesTrace());
         assertNull(fdrResults.getFdrCounterexamples().getFirst().getRevealedProcessesTrace());
         assertNotNull(fdrResults.getErrors());
+    }
+
+    @Test
+    void givenResultsWithTickCounterexample_whenCheckForTicks_thenProcessReturned(){
+        FDROutput fdrOutput = new FDROutput();
+        fdrOutput.setEventMap(validEventMap);
+        fdrOutput.addFdrResults(validFdrResults);
+        fdrOutput.transformCounterexamples();
+
+        List<String> rerunProcesses = fdrOutput.checkForTicks();
+
+        assertEquals(1, rerunProcesses.size());
+        assertEquals("Valid", rerunProcesses.getFirst());
+    }
+
+    @Test
+    void givenMultipleResultsWithTickCounterexample_whenCheckForTicks_thenProcessReturned(){
+        FDROutput fdrOutput = new FDROutput();
+        fdrOutput.setEventMap(validEventMap);
+        fdrOutput.addFdrResults(validFdrResults);
+        fdrOutput.addFdrResults(validFdrResults2);
+        fdrOutput.transformCounterexamples();
+
+        List<String> rerunProcesses = fdrOutput.checkForTicks();
+
+        assertEquals(2, rerunProcesses.size());
+        assertEquals("Valid", rerunProcesses.getFirst());
+        assertEquals("Valid(true)", rerunProcesses.getLast());
+    }
+
+    @Test
+    void givenResultsWithNoCounterexamples_whenCheckForTicks_thenNoProcessReturned(){
+        FDROutput fdrOutput = new FDROutput();
+        fdrOutput.setEventMap(validEventMap);
+        fdrOutput.addFdrResults(passingFdrResults);
+        fdrOutput.transformCounterexamples();
+
+        List<String> rerunProcesses = fdrOutput.checkForTicks();
+
+        assertEquals(0, rerunProcesses.size());
+    }
+
+    @Test
+    void givenResultsWithErrorResults_whenCheckForTicks_thenNoProcessReturned(){
+        FDROutput fdrOutput = new FDROutput();
+        fdrOutput.setEventMap(validEventMap);
+        fdrOutput.addFdrResults(errorFdrResults);
+        fdrOutput.transformCounterexamples();
+
+        List<String> rerunProcesses = fdrOutput.checkForTicks();
+
+        assertEquals(0, rerunProcesses.size());
     }
 }

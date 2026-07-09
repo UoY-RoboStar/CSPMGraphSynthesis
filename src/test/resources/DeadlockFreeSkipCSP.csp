@@ -1,0 +1,6 @@
+channel testingChannel
+channel secondTestingChannel
+
+TestingProcess = secondTestingChannel -> testingChannel -> SKIP
+
+assert TestingProcess :[deadlock free]

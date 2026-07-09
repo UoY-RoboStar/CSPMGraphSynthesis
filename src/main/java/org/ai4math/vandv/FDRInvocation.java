@@ -7,10 +7,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.ai4math.vandv.utils.FDROutput;
 import org.ai4math.vandv.utils.FDRResults;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -22,12 +20,24 @@ public class FDRInvocation {
     private static final String REUSE = "--compiler-reuse-machines=off";
 
     private FDROutput fdrOutput;
+    private String filepath;
+    private String rerunFilePath;
+    private int count;
 
     public FDRInvocation(){}
 
-    public void performVerification(String filepath, int count){
+    public void performVerification(String filepath, int count) {
+        performVerification(filepath, count, false);
+    }
+
+    public void performVerification(String filepath, int count, boolean rerun){
+        this.filepath = filepath;
+        this.count = count;
         System.out.println("Running FDR on file "+count+": " + filepath );
         ProcessBuilder PB = new ProcessBuilder(FDR_COMMAND, filepath, FORMAT, REUSE, TAUS, QUIET);
+        if (rerun){
+            PB = new ProcessBuilder(FDR_COMMAND, this.rerunFilePath, FORMAT, REUSE, TAUS, QUIET);
+        }
         Process process = null;
         fdrOutput = new FDROutput();
 
@@ -110,6 +120,11 @@ public class FDRInvocation {
         fdrOutput.setPrintStatementResults(parsedData.get("print_statement_results"));
         fdrOutput.setEventMap(parsedData.get("event_map"));
         fdrOutput.transformCounterexamples();
+
+        List<String> tickProcesses = fdrOutput.checkForTicks();
+        if (!tickProcesses.isEmpty()) {
+            rerunVerification(tickProcesses);
+        }
     }
 
     private void parseErrors(JsonNode parsedData){
@@ -164,5 +179,51 @@ public class FDRInvocation {
                 fdrOutput.addFdrResults(fdrResults);
             }
         }
+    }
+
+    private void rerunVerification(List<String> rerunProcesses) {
+        this.rerunFilePath = filepath.substring(0,filepath.indexOf("."))+"tempVerificationRerun.csp";
+
+        String cspContent;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(this.filepath))) {
+            cspContent = br.lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (Exception e) {
+            System.err.println("Exception occurred when reading file for rerun of verification: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        cspContent = replaceProcessAssertions(cspContent, rerunProcesses);
+
+        File file = new File(this.rerunFilePath);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(cspContent);
+        } catch (Exception e) {
+            System.err.println("Exception occurred when writing temp file for rerun of verification: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        performVerification(this.filepath, this.count, true);
+
+        file.delete();
+    }
+
+    private String replaceProcessAssertions(String csp, List<String> rerunProcesses){
+        for (String process : rerunProcesses) {
+            int loc = csp.indexOf("assert "+process);
+            String endString = csp.substring(loc);
+            String assertionString = endString.contains("\n")?endString.substring(0, endString.indexOf("\n")):endString;
+            String endAssertion = assertionString.substring(assertionString.indexOf(":"));
+            csp = csp.replace(assertionString, "assert "+process+"; RUN({"+getRandomChannel(csp)+"}) "+endAssertion);
+        }
+
+        return csp;
+    }
+
+    private String getRandomChannel(String csp){
+        String channels = csp.substring(csp.indexOf("channel "));
+        String channel = channels.substring(0, channels.indexOf("\n"));
+        String[] channelParts = channel.split(" : ");
+        return channelParts[0].replace("channel ", "");
     }
 }

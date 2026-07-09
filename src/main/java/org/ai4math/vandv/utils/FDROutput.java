@@ -3,6 +3,7 @@ package org.ai4math.vandv.utils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ai4math.cspm.Keywords;
 
 import java.io.IOException;
 import java.util.*;
@@ -129,5 +130,20 @@ public class FDROutput {
                 }
             }
         }
+    }
+
+    public List<String> checkForTicks() {
+        List<String> rerunProcesses = new ArrayList<>();
+        for (FDRResults fdrResult : this.fdrResults) {
+            if (!fdrResult.isPassed() && fdrResult.getErrors() == null) {
+                for (FDRCounterexample counterexamples : fdrResult.getFdrCounterexamples()) {
+                    if (counterexamples.getRevealedProcessesTrace().contains(Keywords.TICK)){
+                        rerunProcesses.add(fdrResult.getAssertionString().split(" :")[0]);
+                        break;
+                    }
+                }
+            }
+        }
+        return rerunProcesses;
     }
 }

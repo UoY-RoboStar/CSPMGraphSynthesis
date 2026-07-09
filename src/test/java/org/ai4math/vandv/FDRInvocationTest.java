@@ -37,7 +37,7 @@ public class FDRInvocationTest {
     }
 
     @Test
-    void givenValidDeadlockedCSP_whenPerformVerificationInvoked_thenOutputWithoutTraceFormed() {
+    void givenValidDeadlockedCSP_whenPerformVerificationInvoked_thenOutputWithTraceFormed() {
         {
             FDRInvocation fdrInvocation = new FDRInvocation();
             fdrInvocation.performVerification(getResourcePath("DeadlockedCSP.csp"), 0);
@@ -80,6 +80,23 @@ public class FDRInvocationTest {
                             "nonempty processes trace provided: "
                                     + counterexample.getProcessesTrace());
                 }
+            }
+        }
+    }
+
+    @Test
+    void givenValidSkipCSP_whenPerformVerificationInvoked_thenOutputWithoutTraceFormed() {
+        {
+            FDRInvocation fdrInvocation = new FDRInvocation();
+            fdrInvocation.performVerification(getResourcePath("DeadlockFreeSkipCSP.csp"), 0);
+
+            FDROutput fdrOutput = fdrInvocation.getFdrOutput();
+            List<FDRResults> fdrResults = fdrOutput.getFdrResults();
+            for (FDRResults fdrResult : fdrResults) {
+                assertTrue(fdrResult.isPassed(), "assertion did not pass");
+                List<FDRCounterexample> counterexamples = fdrResult.getFdrCounterexamples();
+                assertNull(counterexamples,
+                        "trace not null but: " + counterexamples);
             }
         }
     }
