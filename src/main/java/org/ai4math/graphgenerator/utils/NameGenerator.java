@@ -68,7 +68,7 @@ public class NameGenerator {
         int i = 0;
 
         while (i<count) {
-            int length = r.nextInt(1, 25);
+            int length = r.nextInt(1, 15);
             String message = RandomStringUtils.random(length, true, false);
             if (!message.isEmpty() && nameVerifier.isChannelNameAcceptable(message)) {
                 if (r.nextInt(0,11) == 5 && decorated && nameVerifier.isChannelNameTyped(message)){

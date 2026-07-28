@@ -12,10 +12,18 @@ public class FDRResults {
     private List<JsonNode> counterexamples;
     private boolean passed;
     private String assertionString;
+    private String runString = null;
     private List<FDRCounterexample> fdrCounterexamples;
     private List<JsonNode> errors;
 
     public void setAssertionString(String assertionString) {
+        if (assertionString.contains("; RUN")) {
+            runString = assertionString;
+            assertionString =
+                    assertionString.substring(0, assertionString.indexOf(" ;")) +
+                    assertionString.substring(assertionString.indexOf(" :"));
+        }
+
         this.assertionString = assertionString;
     }
 
@@ -89,5 +97,7 @@ public class FDRResults {
         return counterexamples;
     }
 
-
+    public String getRunString() {
+        return runString;
+    }
 }

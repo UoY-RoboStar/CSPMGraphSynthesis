@@ -1,0 +1,9 @@
+channel fourthTestingChannel : Bool
+channel thirdTestingChannel : Char
+channel fifthTestingChannel : {0..8}
+channel testingChannel
+channel secondTestingChannel
+
+TestingProcess = secondTestingChannel -> testingChannel -> SKIP
+
+assert TestingProcess :[deadlock free]

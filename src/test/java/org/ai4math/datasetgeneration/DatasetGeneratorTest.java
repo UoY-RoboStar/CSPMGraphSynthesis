@@ -28,6 +28,7 @@ public class DatasetGeneratorTest {
     public static String filePath;
     public static String errorFilePath;
     public static FDROutput fdrOutput;
+    public static FDROutput fdrTickOutput;
     public static FDROutput fdrErrorOutput;
     public static FDROutput fdrRecursionErrorOutput;
     public static FDROutput fdrLargeErrorOutput;
@@ -37,9 +38,12 @@ public class DatasetGeneratorTest {
     public static String largeError;
     public static String type = "testAssert :[deadlock free]";
     private static String processesTraceString;
+    private static String processesTickTraceString;
     private static String revealedProcessesTraceString;
+    private static String revealedTickProcessesTraceString;
     private static String revealedTauProcessesTraceString;
     private static String noTauTraceString;
+    private static String noTauTickTraceString;
     private static String hiddenString;
     private static String headerText;
     private static String errorHeaderText;
@@ -56,10 +60,16 @@ public class DatasetGeneratorTest {
 
         List<String> revealedProcessesTrace = List.of("Trace", "Value", "Key", "Trace", "Trace");
         revealedProcessesTraceString = "<Trace, Value, Key, Trace, Trace>";
+        List<String> revealedTickProcessesTrace = List.of("Trace", "Value", "Key", "Trace", "Trace","✓");
+        revealedTickProcessesTraceString = "<Trace, Value, Key, Trace, Trace>";
         List<String> processesTrace = List.of("τ", "Value", "Key", "τ", "τ");
         processesTraceString = "<τ, Value, Key, τ, τ>";
-        List<String> noTauTrace = List.of("Value", "Key");
+        List<String> processesTickTrace = List.of("τ", "Value", "Key", "τ", "τ","✓");
+        processesTickTraceString = "<τ, Value, Key, τ, τ>";
+        List<String> noTauTrace = List.of("Value", "Key","✓");
         noTauTraceString = "<Value, Key>";
+        List<String> noTauTickTrace = List.of("Value", "Key");
+        noTauTickTraceString = "<Value, Key>";
         Set<String> hidden = Set.of("Trace");
         hiddenString = "{Trace}";
 
@@ -83,6 +93,12 @@ public class DatasetGeneratorTest {
         when(fdrCounterexample.getNoTauTrace()).thenReturn(noTauTrace);
         when(fdrCounterexample.getHidden()).thenReturn(hidden);
 
+        FDRCounterexample fdrTickCounterexample = spy(FDRCounterexample.class);
+        fdrTickCounterexample.setRevealedProcessesTrace(revealedTickProcessesTrace);
+        fdrTickCounterexample.setProcessesTrace(processesTickTrace);
+        when(fdrTickCounterexample.getNoTauTrace()).thenReturn(noTauTickTrace);
+        when(fdrTickCounterexample.getHidden()).thenReturn(hidden);
+
         FDRCounterexample fdrTauCounterexample = spy(FDRCounterexample.class);
         fdrTauCounterexample.setRevealedProcessesTrace(revealedTauProcessesTrace);
         fdrTauCounterexample.setProcessesTrace(processesTrace);
@@ -100,6 +116,11 @@ public class DatasetGeneratorTest {
         when(fdrFailedResults.getFdrCounterexamples()).thenReturn(List.of(fdrCounterexample, fdrEmptyCounterexample));
         when(fdrFailedResults.isPassed()).thenReturn(false);
         when(fdrFailedResults.getAssertionString()).thenReturn(type);
+
+        FDRResults fdrTickResults = spy(FDRResults.class);
+        when(fdrTickResults.getFdrCounterexamples()).thenReturn(List.of(fdrTickCounterexample, fdrEmptyCounterexample));
+        when(fdrTickResults.isPassed()).thenReturn(false);
+        when(fdrTickResults.getAssertionString()).thenReturn(type);
 
         FDRResults fdrErrorResults = spy(FDRResults.class);
         when(fdrErrorResults.isPassed()).thenReturn(false);
@@ -123,6 +144,8 @@ public class DatasetGeneratorTest {
         fdrVerErrorOutput.addFdrResults(fdrErrorResults);
         fdrFailureOutput = new FDROutput();
         fdrFailureOutput.addFdrResults(fdrFailedResults);
+        fdrTickOutput = new FDROutput();
+        fdrTickOutput.addFdrResults(fdrTickResults);
 
         fdrErrorOutput = new FDROutput();
         fdrErrorOutput.addError(mapper.valueToTree(node.get("error")));
@@ -131,7 +154,7 @@ public class DatasetGeneratorTest {
         fdrLargeErrorOutput = new FDROutput();
         fdrLargeErrorOutput.addError(mapper.valueToTree(largeNode.get("error")));
 
-        headerText = "\"CSP\",\"Assertion\",\"Passed\",\"CounterExample\"," +
+        headerText = "\"CSP\",\"Assertion\",\"Rerun Assertion\",\"Passed\",\"CounterExample\"," +
                 "\"Revealed_Trace\",\"No_Taus\",\"Hidden\"";
         errorHeaderText = "\"CSP\",\"Assertion\",\"ErrorType\"";
 
@@ -212,6 +235,7 @@ public class DatasetGeneratorTest {
         StringBuilder entryText = new StringBuilder();
         entryText.append("\"").append(csp).append("\"").append(",")
                 .append("\"").append(type).append("\"").append(",")
+                .append("\"").append("\"").append(",")
                 .append("\"").append(true).append("\"").append(",")
                 .append("\"").append("<>").append("\"").append(",")
                 .append("\"").append("<>").append("\"").append(",")
@@ -244,6 +268,7 @@ public class DatasetGeneratorTest {
         StringBuilder firstEntryText = new StringBuilder();
         firstEntryText.append("\"").append(csp).append("\"").append(",")
                 .append("\"").append(type).append("\"").append(",")
+                .append("\"").append("\"").append(",")
                 .append("\"").append(false).append("\"").append(",")
                 .append("\"").append(processesTraceString).append("\"").append(",")
                 .append("\"").append(revealedProcessesTraceString).append("\"").append(",")
@@ -252,6 +277,7 @@ public class DatasetGeneratorTest {
         StringBuilder secondEntryText = new StringBuilder();
         secondEntryText.append("\"").append(csp).append("\"").append(",")
                 .append("\"").append(type).append("\"").append(",")
+                .append("\"").append("\"").append(",")
                 .append("\"").append(false).append("\"").append(",")
                 .append("\"").append("<>").append("\"").append(",")
                 .append("\"").append("<>").append("\"").append(",")
@@ -259,6 +285,50 @@ public class DatasetGeneratorTest {
                 .append("\"").append("{}").append("\"");
 
         datasetGenerator.addEntryToDataSet(csp, fdrFailureOutput);
+
+        File dataFile = new File(filePath);
+        File errorFile = new File(errorFilePath);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(dataFile))) {
+            String header = br.readLine();
+            assertEquals(headerText, header, "Header is unexpected: "+header);
+            String entry = br.readLine();
+            assertEquals(firstEntryText.toString(), entry, "Entry is unexpected: "+entry);
+            String secondEntry = br.readLine();
+            assertEquals(secondEntryText.toString(), secondEntry, "Entry is unexpected: "+entry);
+            String nextLine = br.readLine();
+            assertNull(nextLine, "File still has content: "+nextLine);
+        }
+
+        assertEquals(0, errorFile.length(), "Error file has content");
+    }
+
+    @Test
+    public void givenValidCSPAndFailingOutputWithTicks_whenAddEntryToDataset_thenDataFilePopulated() throws IOException{
+        @SuppressWarnings("unchecked")
+        DatasetGenerator datasetGenerator = new DatasetGenerator(resourcePath, datasetPath);
+
+        String csp = "failingCSP";
+        StringBuilder firstEntryText = new StringBuilder();
+        firstEntryText.append("\"").append(csp).append("\"").append(",")
+                .append("\"").append(type).append("\"").append(",")
+                .append("\"").append("\"").append(",")
+                .append("\"").append(false).append("\"").append(",")
+                .append("\"").append(processesTickTraceString).append("\"").append(",")
+                .append("\"").append(revealedTickProcessesTraceString).append("\"").append(",")
+                .append("\"").append(noTauTickTraceString).append("\"").append(",")
+                .append("\"").append(hiddenString).append("\"");
+        StringBuilder secondEntryText = new StringBuilder();
+        secondEntryText.append("\"").append(csp).append("\"").append(",")
+                .append("\"").append(type).append("\"").append(",")
+                .append("\"").append("\"").append(",")
+                .append("\"").append(false).append("\"").append(",")
+                .append("\"").append("<>").append("\"").append(",")
+                .append("\"").append("<>").append("\"").append(",")
+                .append("\"").append("<>").append("\"").append(",")
+                .append("\"").append("{}").append("\"");
+
+        datasetGenerator.addEntryToDataSet(csp, fdrTickOutput);
 
         File dataFile = new File(filePath);
         File errorFile = new File(errorFilePath);
@@ -286,6 +356,7 @@ public class DatasetGeneratorTest {
         StringBuilder firstEntryText = new StringBuilder();
         firstEntryText.append("\"").append(csp).append("\"").append(",")
                 .append("\"").append(type).append("\"").append(",")
+                .append("\"").append("\"").append(",")
                 .append("\"").append(false).append("\"").append(",")
                 .append("\"").append(processesTraceString).append("\"").append(",")
                 .append("\"").append(revealedTauProcessesTraceString).append("\"").append(",")

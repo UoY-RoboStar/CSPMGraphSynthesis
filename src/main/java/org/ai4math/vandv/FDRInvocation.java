@@ -7,10 +7,9 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.ai4math.vandv.utils.FDROutput;
 import org.ai4math.vandv.utils.FDRResults;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -22,14 +21,27 @@ public class FDRInvocation {
     private static final String REUSE = "--compiler-reuse-machines=off";
 
     private FDROutput fdrOutput;
+    private String filepath;
+    private String rerunFilePath;
+    private int count;
 
     public FDRInvocation(){}
 
-    public void performVerification(String filepath, int count){
+    public void performVerification(String filepath, int count) {
+        performVerification(filepath, count, false);
+    }
+
+    public void performVerification(String filepath, int count, boolean rerun){
+        this.filepath = filepath;
+        this.count = count;
         System.out.println("Running FDR on file "+count+": " + filepath );
         ProcessBuilder PB = new ProcessBuilder(FDR_COMMAND, filepath, FORMAT, REUSE, TAUS, QUIET);
+        if (rerun){
+            PB = new ProcessBuilder(FDR_COMMAND, this.rerunFilePath, FORMAT, REUSE, TAUS, QUIET);
+        } else {
+            fdrOutput = new FDROutput();
+        }
         Process process = null;
-        fdrOutput = new FDROutput();
 
         try {
             process = PB.start();
@@ -57,7 +69,7 @@ public class FDRInvocation {
                     // Parse the JSON data
                     ObjectMapper mapper = new ObjectMapper();
                     JsonNode parsedData = mapper.readTree(stdout);
-                    parseData(parsedData);
+                    parseData(parsedData, rerun);
 
                 } else {
                     System.out.println("Failed - exit code " + exitCode);
@@ -100,16 +112,23 @@ public class FDRInvocation {
         return "";
     }
 
-    private void parseData(JsonNode parsedData){
+    private void parseData(JsonNode parsedData, boolean rerun){
         parseErrors(parsedData);
         parseWarnings(parsedData);
 
         // Parse the Results
-        parseResults(parsedData);
+        List<FDRResults> results = parseResults(parsedData);
 
         fdrOutput.setPrintStatementResults(parsedData.get("print_statement_results"));
-        fdrOutput.setEventMap(parsedData.get("event_map"));
-        fdrOutput.transformCounterexamples();
+        JsonNode eventMap = parsedData.get("event_map");
+        fdrOutput.setEventMap(eventMap);
+        fdrOutput.transformCounterexamples(results);
+
+
+        List<String> tickProcesses = fdrOutput.checkForTicks();
+        if (!tickProcesses.isEmpty()) {
+            rerunVerification(tickProcesses);
+        }
     }
 
     private void parseErrors(JsonNode parsedData){
@@ -132,7 +151,8 @@ public class FDRInvocation {
         }
     }
 
-    private void parseResults(JsonNode parsedData){
+    private List<FDRResults> parseResults(JsonNode parsedData){
+        List<FDRResults> parsedResults = new ArrayList<>();
         if (parsedData.has("results")) {
             for (JsonNode assertion : parsedData.get("results")) {
                 FDRResults fdrResults = new FDRResults();
@@ -162,7 +182,80 @@ public class FDRInvocation {
                 }
 
                 fdrOutput.addFdrResults(fdrResults);
+                parsedResults.add(fdrResults);
             }
         }
+
+        return parsedResults;
+    }
+
+    private void rerunVerification(List<String> rerunProcesses) {
+        this.rerunFilePath = filepath.substring(0,filepath.indexOf("."))+"tempVerificationRerun.csp";
+
+        removeFdrResults(rerunProcesses);
+        String cspContent;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(this.filepath))) {
+            cspContent = br.lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (Exception e) {
+            System.err.println("Exception occurred when reading file for rerun of verification: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        cspContent = replaceProcessAssertions(cspContent, rerunProcesses);
+
+        File file = new File(this.rerunFilePath);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(cspContent);
+        } catch (Exception e) {
+            System.err.println("Exception occurred when writing temp file for rerun of verification: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        performVerification(this.filepath, this.count, true);
+
+        file.delete();
+    }
+
+    private String replaceProcessAssertions(String csp, List<String> rerunProcesses){
+        int loc = csp.indexOf("assert ");
+        csp = csp.substring(0,loc);
+        for (String process : rerunProcesses) {
+           /* int loc = csp.indexOf("assert "+process+" ");
+            String endString = csp.substring(loc);
+            String assertionString = endString.contains("\n")?endString.substring(0, endString.indexOf("\n")):endString;
+            String endAssertion = assertionString.substring(assertionString.indexOf(":"));
+            csp = csp.replace(assertionString, "assert "+process+"; RUN({"+getRandomChannel(csp)+"}) "+endAssertion);*/
+            csp = csp + "assert "+process+"; RUN({"+getRandomChannel(csp)+"}) :[deadlock free]\n";
+        }
+
+        return csp;
+    }
+
+    private String getRandomChannel(String csp){
+        boolean typed = true;
+        String channel = "";
+        while (typed) {
+            String channels = csp.substring(csp.indexOf("channel "));
+            String channelEntry = channels.substring(0, channels.indexOf("\n"));
+            if ((channelEntry.split(" : ")).length==1){
+                channel = channelEntry.replace("channel ", "");
+                typed = false;
+            }
+            csp = csp.substring(csp.indexOf(channelEntry)+channelEntry.length());
+        }
+        return channel;
+    }
+
+    private void removeFdrResults(List<String> rerunProcesses){
+        List<FDRResults> results = this.fdrOutput.getFdrResults();
+        List<FDRResults> rerunResults = new ArrayList<>();
+        for (FDRResults result:results){
+            String process = result.getAssertionString().split(" :")[0];
+            if (!rerunProcesses.contains(process)){
+                rerunResults.add(result);
+            }
+        }
+        this.fdrOutput.setFdrResults(rerunResults);
     }
 }

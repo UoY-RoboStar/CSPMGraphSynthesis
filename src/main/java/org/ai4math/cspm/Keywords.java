@@ -109,7 +109,7 @@ public class Keywords {
 
 
     // special characters
-    public static final String TICK = "✅";
+    public static final String TICK = "✓";
     public static final String LAMBDA = "λ";
     public static final String TAU = "τ";
 

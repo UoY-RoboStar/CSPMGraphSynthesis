@@ -54,7 +54,7 @@ public class GraphGenerator {
 
             String processName = generateProcessName(this.nameVerifier);
 
-            List<String> messages = generateMessages(this.random, this.random.nextInt(30),
+            List<String> messages = generateMessages(this.random, this.random.nextInt(20),
                     this.nameVerifier, this.decorated);
             String label = generateEdge(messages);
 
@@ -67,7 +67,7 @@ public class GraphGenerator {
             e.setLabel(label);
 
             if (!process.getName().equals(SKIP) && !process.getName().equals(STOP)){
-                CSPGraph newGraph = generateGraph(process, messages, 15);
+                CSPGraph newGraph = generateGraph(process, messages, 8);
                 if (!newGraph.vertexSet().isEmpty()) {
                     Graphs.addGraph(baseGraph, newGraph);
                 }
@@ -261,7 +261,7 @@ public class GraphGenerator {
             CSPGraph sourceGraph = baseGraphs.get(this.random.nextInt(baseGraphs.size()));
             CSPGraph graph = new CSPGraph();
 
-            int j = this.random.nextInt(1,6);
+            int j = this.random.nextInt(1,4);
             for (int k = 0; k <= j; k++){
                 generateCombinedGraph(sourceGraph, graph);
             }
