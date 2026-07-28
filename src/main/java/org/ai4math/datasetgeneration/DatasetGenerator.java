@@ -2,6 +2,7 @@ package org.ai4math.datasetgeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.opencsv.CSVWriter;
+import org.ai4math.cspm.Keywords;
 import org.ai4math.utils.CSPFileUtils;
 import org.ai4math.vandv.utils.FDRCounterexample;
 import org.ai4math.vandv.utils.FDROutput;
@@ -68,7 +69,7 @@ public class DatasetGenerator {
             CSVWriter writer = new CSVWriter(fileWriter);
 
             if (!this.exists) {
-                String[] headings = new String[]{"CSP", "Assertion", "Passed", "CounterExample", "Revealed_Trace", "No_Taus", "Hidden"};
+                String[] headings = new String[]{"CSP", "Assertion", "Rerun Assertion", "Passed", "CounterExample", "Revealed_Trace", "No_Taus", "Hidden"};
                 writer.writeNext(headings);
                 this.fileSize += 7;
             }
@@ -80,10 +81,12 @@ public class DatasetGenerator {
 
                     boolean passed = fdrResults.isPassed();
                     String assertion = fdrResults.getAssertionString();
+                    String run = fdrResults.getRunString() != null? fdrResults.getRunString() : "";
                     if (passed) {
                         String[] entry = new String[]{
                                 csp,
                                 assertion,
+                                run,
                                 "true",
                                 "<>",
                                 "<>",
@@ -107,6 +110,7 @@ public class DatasetGenerator {
                                     entry = new String[]{
                                             csp,
                                             assertion,
+                                            run,
                                             "false",
                                             "<>",
                                             "<>",
@@ -118,11 +122,28 @@ public class DatasetGenerator {
                                     entry = new String[]{
                                             csp,
                                             assertion,
+                                            run,
                                             "false",
-                                            counterexample.getProcessesTrace().toString().replace('[','<').replace(']', '>'),
-                                            counterexample.getRevealedProcessesTrace().toString().replace('[','<').replace(']', '>'),
-                                            counterexample.getNoTauTrace().toString().replace('[','<').replace(']', '>'),
-                                            counterexample.getHidden().toString().replace('[', '{').replace(']', '}')
+                                            counterexample.getProcessesTrace().toString()
+                                                    .replace('[','<').replace(']', '>')
+                                                    .replace(", "+ Keywords.TICK, "")
+                                                    .replace(Keywords.TICK+", ", "")
+                                                    .replace(Keywords.TICK, ""),
+                                            counterexample.getRevealedProcessesTrace().toString()
+                                                    .replace('[','<').replace(']', '>')
+                                                    .replace(", "+ Keywords.TICK, "")
+                                                    .replace(Keywords.TICK+", ", "")
+                                                    .replace(Keywords.TICK, ""),
+                                            counterexample.getNoTauTrace().toString()
+                                                    .replace('[','<').replace(']', '>')
+                                                    .replace(", "+ Keywords.TICK, "")
+                                                    .replace(Keywords.TICK+", ", "")
+                                                    .replace(Keywords.TICK, ""),
+                                            counterexample.getHidden().toString()
+                                                    .replace('[', '{').replace(']', '}')
+                                                    .replace(", "+ Keywords.TICK, "")
+                                                    .replace(Keywords.TICK+", ", "")
+                                                    .replace(Keywords.TICK, "")
                                     };
                                     this.fileSize += 7;
                                 }

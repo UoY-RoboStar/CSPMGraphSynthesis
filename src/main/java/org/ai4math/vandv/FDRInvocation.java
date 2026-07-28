@@ -8,6 +8,7 @@ import org.ai4math.vandv.utils.FDROutput;
 import org.ai4math.vandv.utils.FDRResults;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -37,9 +38,10 @@ public class FDRInvocation {
         ProcessBuilder PB = new ProcessBuilder(FDR_COMMAND, filepath, FORMAT, REUSE, TAUS, QUIET);
         if (rerun){
             PB = new ProcessBuilder(FDR_COMMAND, this.rerunFilePath, FORMAT, REUSE, TAUS, QUIET);
+        } else {
+            fdrOutput = new FDROutput();
         }
         Process process = null;
-        fdrOutput = new FDROutput();
 
         try {
             process = PB.start();
@@ -67,7 +69,7 @@ public class FDRInvocation {
                     // Parse the JSON data
                     ObjectMapper mapper = new ObjectMapper();
                     JsonNode parsedData = mapper.readTree(stdout);
-                    parseData(parsedData);
+                    parseData(parsedData, rerun);
 
                 } else {
                     System.out.println("Failed - exit code " + exitCode);
@@ -110,16 +112,18 @@ public class FDRInvocation {
         return "";
     }
 
-    private void parseData(JsonNode parsedData){
+    private void parseData(JsonNode parsedData, boolean rerun){
         parseErrors(parsedData);
         parseWarnings(parsedData);
 
         // Parse the Results
-        parseResults(parsedData);
+        List<FDRResults> results = parseResults(parsedData);
 
         fdrOutput.setPrintStatementResults(parsedData.get("print_statement_results"));
-        fdrOutput.setEventMap(parsedData.get("event_map"));
-        fdrOutput.transformCounterexamples();
+        JsonNode eventMap = parsedData.get("event_map");
+        fdrOutput.setEventMap(eventMap);
+        fdrOutput.transformCounterexamples(results);
+
 
         List<String> tickProcesses = fdrOutput.checkForTicks();
         if (!tickProcesses.isEmpty()) {
@@ -147,7 +151,8 @@ public class FDRInvocation {
         }
     }
 
-    private void parseResults(JsonNode parsedData){
+    private List<FDRResults> parseResults(JsonNode parsedData){
+        List<FDRResults> parsedResults = new ArrayList<>();
         if (parsedData.has("results")) {
             for (JsonNode assertion : parsedData.get("results")) {
                 FDRResults fdrResults = new FDRResults();
@@ -177,13 +182,17 @@ public class FDRInvocation {
                 }
 
                 fdrOutput.addFdrResults(fdrResults);
+                parsedResults.add(fdrResults);
             }
         }
+
+        return parsedResults;
     }
 
     private void rerunVerification(List<String> rerunProcesses) {
         this.rerunFilePath = filepath.substring(0,filepath.indexOf("."))+"tempVerificationRerun.csp";
 
+        removeFdrResults(rerunProcesses);
         String cspContent;
 
         try (BufferedReader br = new BufferedReader(new FileReader(this.filepath))) {
@@ -209,21 +218,44 @@ public class FDRInvocation {
     }
 
     private String replaceProcessAssertions(String csp, List<String> rerunProcesses){
+        int loc = csp.indexOf("assert ");
+        csp = csp.substring(0,loc);
         for (String process : rerunProcesses) {
-            int loc = csp.indexOf("assert "+process);
+           /* int loc = csp.indexOf("assert "+process+" ");
             String endString = csp.substring(loc);
             String assertionString = endString.contains("\n")?endString.substring(0, endString.indexOf("\n")):endString;
             String endAssertion = assertionString.substring(assertionString.indexOf(":"));
-            csp = csp.replace(assertionString, "assert "+process+"; RUN({"+getRandomChannel(csp)+"}) "+endAssertion);
+            csp = csp.replace(assertionString, "assert "+process+"; RUN({"+getRandomChannel(csp)+"}) "+endAssertion);*/
+            csp = csp + "assert "+process+"; RUN({"+getRandomChannel(csp)+"}) :[deadlock free]\n";
         }
 
         return csp;
     }
 
     private String getRandomChannel(String csp){
-        String channels = csp.substring(csp.indexOf("channel "));
-        String channel = channels.substring(0, channels.indexOf("\n"));
-        String[] channelParts = channel.split(" : ");
-        return channelParts[0].replace("channel ", "");
+        boolean typed = true;
+        String channel = "";
+        while (typed) {
+            String channels = csp.substring(csp.indexOf("channel "));
+            String channelEntry = channels.substring(0, channels.indexOf("\n"));
+            if ((channelEntry.split(" : ")).length==1){
+                channel = channelEntry.replace("channel ", "");
+                typed = false;
+            }
+            csp = csp.substring(csp.indexOf(channelEntry)+channelEntry.length());
+        }
+        return channel;
+    }
+
+    private void removeFdrResults(List<String> rerunProcesses){
+        List<FDRResults> results = this.fdrOutput.getFdrResults();
+        List<FDRResults> rerunResults = new ArrayList<>();
+        for (FDRResults result:results){
+            String process = result.getAssertionString().split(" :")[0];
+            if (!rerunProcesses.contains(process)){
+                rerunResults.add(result);
+            }
+        }
+        this.fdrOutput.setFdrResults(rerunResults);
     }
 }

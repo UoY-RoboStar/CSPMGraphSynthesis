@@ -94,6 +94,7 @@ public class FDRInvocationTest {
             List<FDRResults> fdrResults = fdrOutput.getFdrResults();
             for (FDRResults fdrResult : fdrResults) {
                 assertTrue(fdrResult.isPassed(), "assertion did not pass");
+                assertEquals("TestingProcess :[deadlock free]", fdrResult.getAssertionString());
                 List<FDRCounterexample> counterexamples = fdrResult.getFdrCounterexamples();
                 assertNull(counterexamples,
                         "trace not null but: " + counterexamples);

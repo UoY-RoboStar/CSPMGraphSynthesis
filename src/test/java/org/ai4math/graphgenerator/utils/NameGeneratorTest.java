@@ -172,7 +172,7 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(true);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
         Random r = mock(Random.class);
-        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(1,15)).thenReturn(6,14,7,12,4);
         when(r.nextInt(0,11)).thenReturn(5);
 
         List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, true);
@@ -196,7 +196,7 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(true);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
         Random r = mock(Random.class);
-        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(1,15)).thenReturn(6,14,7,12,4);
         when(r.nextInt(0,11)).thenReturn(5);
 
         List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, true);
@@ -220,7 +220,7 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(true);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true);
         Random r = mock(Random.class);
-        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(1,15)).thenReturn(6,14,7,12,4);
         when(r.nextInt(0,11)).thenReturn(5);
 
         List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, false);
@@ -244,7 +244,7 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(true,false,true);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
         Random r = mock(Random.class);
-        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(1,15)).thenReturn(6,7,14,12,4);
         when(r.nextInt(0,11)).thenReturn(5);
 
         List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, true);
@@ -268,7 +268,7 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(false);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
         Random r = mock(Random.class);
-        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(1,15)).thenReturn(6,14,7,12,4);
         when(r.nextInt(0,11)).thenReturn(5);
 
         List<String> names = NameGenerator.generateMessages(r, 5,  nameVerifier, true);
@@ -292,7 +292,7 @@ public class NameGeneratorTest {
         when(nameVerifier.isChannelNameTyped(any())).thenReturn(false);
         when(nameVerifier.isTypeNameAcceptable(any())).thenReturn(true,false,true);
         Random r = mock(Random.class);
-        when(r.nextInt(1,25)).thenReturn(6,14,26,12,4);
+        when(r.nextInt(1,15)).thenReturn(6,14,7,12,4);
         when(r.nextInt(0,11)).thenReturn(5);
 
         List<String> names = NameGenerator.generateMessages(r, 5, nameVerifier, false);

@@ -110,18 +110,20 @@ public class FDROutput {
     public void parseEventMap(JsonNode eventMap){
         TypeReference<Map<String, String>> typeReferenceMap = new TypeReference<Map<String, String>>() {};
         if (eventMap != null) {
-            try {
-                this.eventMapParsed = new ObjectMapper().readValue(eventMap.traverse(), typeReferenceMap);
-            } catch (IOException e) {
-                System.out.println("Error encountered parsing the eventMap: " + e.getMessage());
+            if (!eventMap.isEmpty()) {
+                try {
+                    this.eventMapParsed = new ObjectMapper().readValue(eventMap.traverse(), typeReferenceMap);
+                } catch (IOException e) {
+                    System.out.println("Error encountered parsing the eventMap: " + e.getMessage());
+                }
             }
         }
     }
 
-    public void transformCounterexamples(){
+    public void transformCounterexamples(List<FDRResults> results){
         parseEventMap(this.eventMap);
-        if (this.eventMap != null && this.fdrResults != null) {
-            for (FDRResults fdrResult : this.fdrResults) {
+        if (this.eventMap != null && results != null) {
+            for (FDRResults fdrResult : results) {
                 if (!fdrResult.isPassed() && fdrResult.getErrors()==null) {
                     for (FDRCounterexample counterexamples : fdrResult.getFdrCounterexamples()) {
                         counterexamples.convertTraceToProcesses(this.eventMapParsed);
@@ -137,9 +139,13 @@ public class FDROutput {
         for (FDRResults fdrResult : this.fdrResults) {
             if (!fdrResult.isPassed() && fdrResult.getErrors() == null) {
                 for (FDRCounterexample counterexamples : fdrResult.getFdrCounterexamples()) {
-                    if (counterexamples.getRevealedProcessesTrace().contains(Keywords.TICK)){
-                        rerunProcesses.add(fdrResult.getAssertionString().split(" :")[0]);
-                        break;
+                    if (counterexamples.getRevealedProcessesTrace() != null){
+                        if (counterexamples.getRevealedProcessesTrace().size() > 0) {
+                            if (counterexamples.getRevealedProcessesTrace().getLast().equals(Keywords.TICK)) {
+                                rerunProcesses.add(fdrResult.getAssertionString().split(" :")[0]);
+                                break;
+                            }
+                        }
                     }
                 }
             }
