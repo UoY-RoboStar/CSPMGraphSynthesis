@@ -3,7 +3,8 @@
 This package synthesises, and verifies the deadlock-freedom of, CSP models via a graph-based approach. The outputs of operation are:
 - Database.csv: a dataset of entries including
     - the CSP model,
-    - the refinement property checked,
+    - the refinement property checked, 
+    - the refinement property checked (modified to counter FDR considering SKIP as termination),
     - the outcome of the verification,
     - the counterexample,
     - a version of the counterexample with hidden events revealed,
@@ -27,6 +28,17 @@ The following CSP operators are featured within generated models, either by defa
 - Alphabetised Parallel
 - Interleave
 - Hide
+- Rename
+- Project
+- Exception
+- Interrupt
+- Timeout
+- Guard
+- Replicated Interleave
+- Replicated Alphabetised Parallel
+- Replicated Generalised Parallel
+- Replicated Internal Choice
+- Replicated External Choice 
 
 ## Team
 [Holly Hendry](https://www.cs.york.ac.uk/people/?username=hrh): University of York  
@@ -54,6 +66,7 @@ OR
 - re: [optional] (boolean) a flag to indicate whether to include renaming of CSP channels
 - b: [required] (Integer) the number of basic graphs generate that form a basis of the complex CSP models
 - c: [required] (Integer) the number of complex graphs to create based on the basic graphs
+- v: [optional] (Integer) setting this to 2 enables inclusion of replicated operators, guards, exceptions, timeouts, interrupts and projection within generated CSP models
 
   
 ## Step-by-step Replication
@@ -69,13 +82,13 @@ Manual refinement was required to balance the generated dataset for use in initi
 The generated examples for CSP are weighted heavily towards deadlocked models, resulting in the dataset consisting of more failure cases when verifying against a deadlock-free assertion. 
 
 ### Further details
-The creation of deadlock-free examples was at a rate of 126 to every 10000 failing cases.  
-For every CSP file generated, multiple assertions may be specified. In the generation of this dataset, ~43,000 assertions were defined across ~3650 CSP files for an average of 12 assertions per file.  
-Of the ~3680 CSP files generated, ~295 of these had passing assertions; indicating an 8% chance of files including deadlock-free processes. 
+The creation of deadlock-free examples was at a rate of 1 to every 2 failing cases.  
+For every CSP file generated, multiple assertions may be specified. In the generation of one dataset, ~61000 assertions were defined across ~6000 CSP files for an average of 10 assertions per file.  
+Of the ~6000 CSP files generated, ~4336 of these had passing assertions; indicating an 72% chance of files including deadlock-free processes. 
 
-To guarantee enough examples to create a balanced dataset of 1000 entries (500 passing:500 failing), approximately 50000 assertions would need creating.  
+To guarantee enough examples to create a balanced dataset of 10000 entries (5000 passing:5000 failing), approximately 16000 assertions would need creating.  
 This is achievable through parameters:   
-``` -b 300 -c 4000 ```
+``` -b 1200 -c 4800 ```
 
 
 ## Acknowledgements
